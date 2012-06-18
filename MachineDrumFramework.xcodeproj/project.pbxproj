@@ -7,9 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */; };
 		36B920DE158F81670025F0B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920DD158F81670025F0B3 /* Foundation.framework */; };
 		36B920E3158F81680025F0B3 /* MachineDrumFramework.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B920E2158F81680025F0B3 /* MachineDrumFramework.h */; };
 		36B920E5158F81680025F0B3 /* MachineDrumFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B920E4158F81680025F0B3 /* MachineDrumFramework.m */; };
+		36B920EC158F81760025F0B3 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920EB158F81760025F0B3 /* CoreMIDI.framework */; };
+		36B920F3158F81AE0025F0B3 /* MDMidiFoundation.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B920F2158F81AE0025F0B3 /* MDMidiFoundation.m */; };
+		36B92128158F82CC0025F0B3 /* MDKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92107158F82CC0025F0B3 /* MDKit.m */; };
+		36B92129158F82CC0025F0B3 /* MDKitLFOSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92109158F82CC0025F0B3 /* MDKitLFOSettings.m */; };
+		36B9212A158F82CC0025F0B3 /* MDKitMachine.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9210B158F82CC0025F0B3 /* MDKitMachine.m */; };
+		36B9212B158F82CC0025F0B3 /* MDKitParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9210D158F82CC0025F0B3 /* MDKitParser.m */; };
+		36B9212C158F82CC0025F0B3 /* MDKitReceiveTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9210F158F82CC0025F0B3 /* MDKitReceiveTester.m */; };
+		36B9212D158F82CC0025F0B3 /* MDKitTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92111158F82CC0025F0B3 /* MDKitTrack.m */; };
+		36B9212E158F82CC0025F0B3 /* MDKitTrackParams.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92113158F82CC0025F0B3 /* MDKitTrackParams.m */; };
+		36B9212F158F82CC0025F0B3 /* MDMachineDrum.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92115158F82CC0025F0B3 /* MDMachineDrum.m */; };
+		36B92130158F82CC0025F0B3 /* MDParameterLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92117158F82CC0025F0B3 /* MDParameterLock.m */; };
+		36B92131158F82CC0025F0B3 /* MDParameterLockRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92119158F82CC0025F0B3 /* MDParameterLockRow.m */; };
+		36B92132158F82CC0025F0B3 /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9211B158F82CC0025F0B3 /* MDPattern.m */; };
+		36B92133158F82CC0025F0B3 /* MDPatternParameterLocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9211D158F82CC0025F0B3 /* MDPatternParameterLocks.m */; };
+		36B92134158F82CC0025F0B3 /* MDPatternParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9211F158F82CC0025F0B3 /* MDPatternParser.m */; };
+		36B92135158F82CC0025F0B3 /* MDPatternReceiveTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92121158F82CC0025F0B3 /* MDPatternReceiveTester.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,11 +43,49 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumPublic.h; sourceTree = "<group>"; };
+		36B4B0B5158F9263009CFC0A /* MDSysexRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSysexRouter.h; sourceTree = "<group>"; };
+		36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSysexRouter.m; sourceTree = "<group>"; };
 		36B920DA158F81670025F0B3 /* libMachineDrumFramework.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachineDrumFramework.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		36B920DD158F81670025F0B3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		36B920E1158F81670025F0B3 /* MachineDrumFramework-Prefix.pch */ = {isa = PBXFileReference; path = "MachineDrumFramework-Prefix.pch"; sourceTree = "<group>"; };
+		36B920E1158F81670025F0B3 /* MachineDrumFramework-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MachineDrumFramework-Prefix.pch"; sourceTree = "<group>"; };
 		36B920E2158F81680025F0B3 /* MachineDrumFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MachineDrumFramework.h; sourceTree = "<group>"; };
 		36B920E4158F81680025F0B3 /* MachineDrumFramework.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MachineDrumFramework.m; sourceTree = "<group>"; };
+		36B920EB158F81760025F0B3 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		36B920F1158F81AE0025F0B3 /* MDMidiFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMidiFoundation.h; sourceTree = "<group>"; };
+		36B920F2158F81AE0025F0B3 /* MDMidiFoundation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMidiFoundation.m; sourceTree = "<group>"; };
+		36B92106158F82CC0025F0B3 /* MDKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKit.h; sourceTree = "<group>"; };
+		36B92107158F82CC0025F0B3 /* MDKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKit.m; sourceTree = "<group>"; };
+		36B92108158F82CC0025F0B3 /* MDKitLFOSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitLFOSettings.h; sourceTree = "<group>"; };
+		36B92109158F82CC0025F0B3 /* MDKitLFOSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitLFOSettings.m; sourceTree = "<group>"; };
+		36B9210A158F82CC0025F0B3 /* MDKitMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitMachine.h; sourceTree = "<group>"; };
+		36B9210B158F82CC0025F0B3 /* MDKitMachine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitMachine.m; sourceTree = "<group>"; };
+		36B9210C158F82CC0025F0B3 /* MDKitParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitParser.h; sourceTree = "<group>"; };
+		36B9210D158F82CC0025F0B3 /* MDKitParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitParser.m; sourceTree = "<group>"; };
+		36B9210E158F82CC0025F0B3 /* MDKitReceiveTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitReceiveTester.h; sourceTree = "<group>"; };
+		36B9210F158F82CC0025F0B3 /* MDKitReceiveTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitReceiveTester.m; sourceTree = "<group>"; };
+		36B92110158F82CC0025F0B3 /* MDKitTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitTrack.h; sourceTree = "<group>"; };
+		36B92111158F82CC0025F0B3 /* MDKitTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitTrack.m; sourceTree = "<group>"; };
+		36B92112158F82CC0025F0B3 /* MDKitTrackParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitTrackParams.h; sourceTree = "<group>"; };
+		36B92113158F82CC0025F0B3 /* MDKitTrackParams.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitTrackParams.m; sourceTree = "<group>"; };
+		36B92114158F82CC0025F0B3 /* MDMachineDrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachineDrum.h; sourceTree = "<group>"; };
+		36B92115158F82CC0025F0B3 /* MDMachineDrum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMachineDrum.m; sourceTree = "<group>"; };
+		36B92116158F82CC0025F0B3 /* MDParameterLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDParameterLock.h; sourceTree = "<group>"; };
+		36B92117158F82CC0025F0B3 /* MDParameterLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDParameterLock.m; sourceTree = "<group>"; };
+		36B92118158F82CC0025F0B3 /* MDParameterLockRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDParameterLockRow.h; sourceTree = "<group>"; };
+		36B92119158F82CC0025F0B3 /* MDParameterLockRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDParameterLockRow.m; sourceTree = "<group>"; };
+		36B9211A158F82CC0025F0B3 /* MDPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPattern.h; sourceTree = "<group>"; };
+		36B9211B158F82CC0025F0B3 /* MDPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPattern.m; sourceTree = "<group>"; };
+		36B9211C158F82CC0025F0B3 /* MDPatternParameterLocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternParameterLocks.h; sourceTree = "<group>"; };
+		36B9211D158F82CC0025F0B3 /* MDPatternParameterLocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternParameterLocks.m; sourceTree = "<group>"; };
+		36B9211E158F82CC0025F0B3 /* MDPatternParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternParser.h; sourceTree = "<group>"; };
+		36B9211F158F82CC0025F0B3 /* MDPatternParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternParser.m; sourceTree = "<group>"; };
+		36B92120158F82CC0025F0B3 /* MDPatternReceiveTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternReceiveTester.h; sourceTree = "<group>"; };
+		36B92121158F82CC0025F0B3 /* MDPatternReceiveTester.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDPatternReceiveTester.m; sourceTree = "<group>"; };
+		36B92122158F82CC0025F0B3 /* MDPatternTrack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDPatternTrack.h; sourceTree = "<group>"; };
+		36B92123158F82CC0025F0B3 /* MDPatternTrack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrack.m; sourceTree = "<group>"; };
+		36B92126158F82CC0025F0B3 /* MDSysexUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDSysexUtil.h; sourceTree = "<group>"; };
+		36B92127158F82CC0025F0B3 /* MDSysexUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDSysexUtil.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36B920EC158F81760025F0B3 /* CoreMIDI.framework in Frameworks */,
 				36B920DE158F81670025F0B3 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,6 +121,7 @@
 		36B920DC158F81670025F0B3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				36B920EB158F81760025F0B3 /* CoreMIDI.framework */,
 				36B920DD158F81670025F0B3 /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -73,6 +130,43 @@
 		36B920DF158F81670025F0B3 /* MachineDrumFramework */ = {
 			isa = PBXGroup;
 			children = (
+				36B4B0B5158F9263009CFC0A /* MDSysexRouter.h */,
+				36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */,
+				36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */,
+				36B92106158F82CC0025F0B3 /* MDKit.h */,
+				36B92107158F82CC0025F0B3 /* MDKit.m */,
+				36B92108158F82CC0025F0B3 /* MDKitLFOSettings.h */,
+				36B92109158F82CC0025F0B3 /* MDKitLFOSettings.m */,
+				36B9210A158F82CC0025F0B3 /* MDKitMachine.h */,
+				36B9210B158F82CC0025F0B3 /* MDKitMachine.m */,
+				36B9210C158F82CC0025F0B3 /* MDKitParser.h */,
+				36B9210D158F82CC0025F0B3 /* MDKitParser.m */,
+				36B9210E158F82CC0025F0B3 /* MDKitReceiveTester.h */,
+				36B9210F158F82CC0025F0B3 /* MDKitReceiveTester.m */,
+				36B92110158F82CC0025F0B3 /* MDKitTrack.h */,
+				36B92111158F82CC0025F0B3 /* MDKitTrack.m */,
+				36B92112158F82CC0025F0B3 /* MDKitTrackParams.h */,
+				36B92113158F82CC0025F0B3 /* MDKitTrackParams.m */,
+				36B92114158F82CC0025F0B3 /* MDMachineDrum.h */,
+				36B92115158F82CC0025F0B3 /* MDMachineDrum.m */,
+				36B92116158F82CC0025F0B3 /* MDParameterLock.h */,
+				36B92117158F82CC0025F0B3 /* MDParameterLock.m */,
+				36B92118158F82CC0025F0B3 /* MDParameterLockRow.h */,
+				36B92119158F82CC0025F0B3 /* MDParameterLockRow.m */,
+				36B9211A158F82CC0025F0B3 /* MDPattern.h */,
+				36B9211B158F82CC0025F0B3 /* MDPattern.m */,
+				36B9211C158F82CC0025F0B3 /* MDPatternParameterLocks.h */,
+				36B9211D158F82CC0025F0B3 /* MDPatternParameterLocks.m */,
+				36B9211E158F82CC0025F0B3 /* MDPatternParser.h */,
+				36B9211F158F82CC0025F0B3 /* MDPatternParser.m */,
+				36B92120158F82CC0025F0B3 /* MDPatternReceiveTester.h */,
+				36B92121158F82CC0025F0B3 /* MDPatternReceiveTester.m */,
+				36B92122158F82CC0025F0B3 /* MDPatternTrack.h */,
+				36B92123158F82CC0025F0B3 /* MDPatternTrack.m */,
+				36B92126158F82CC0025F0B3 /* MDSysexUtil.h */,
+				36B92127158F82CC0025F0B3 /* MDSysexUtil.m */,
+				36B920F1158F81AE0025F0B3 /* MDMidiFoundation.h */,
+				36B920F2158F81AE0025F0B3 /* MDMidiFoundation.m */,
 				36B920E2158F81680025F0B3 /* MachineDrumFramework.h */,
 				36B920E4158F81680025F0B3 /* MachineDrumFramework.m */,
 				36B920E0158F81670025F0B3 /* Supporting Files */,
@@ -140,6 +234,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				36B920E5158F81680025F0B3 /* MachineDrumFramework.m in Sources */,
+				36B920F3158F81AE0025F0B3 /* MDMidiFoundation.m in Sources */,
+				36B92128158F82CC0025F0B3 /* MDKit.m in Sources */,
+				36B92129158F82CC0025F0B3 /* MDKitLFOSettings.m in Sources */,
+				36B9212A158F82CC0025F0B3 /* MDKitMachine.m in Sources */,
+				36B9212B158F82CC0025F0B3 /* MDKitParser.m in Sources */,
+				36B9212C158F82CC0025F0B3 /* MDKitReceiveTester.m in Sources */,
+				36B9212D158F82CC0025F0B3 /* MDKitTrack.m in Sources */,
+				36B9212E158F82CC0025F0B3 /* MDKitTrackParams.m in Sources */,
+				36B9212F158F82CC0025F0B3 /* MDMachineDrum.m in Sources */,
+				36B92130158F82CC0025F0B3 /* MDParameterLock.m in Sources */,
+				36B92131158F82CC0025F0B3 /* MDParameterLockRow.m in Sources */,
+				36B92132158F82CC0025F0B3 /* MDPattern.m in Sources */,
+				36B92133158F82CC0025F0B3 /* MDPatternParameterLocks.m in Sources */,
+				36B92134158F82CC0025F0B3 /* MDPatternParser.m in Sources */,
+				36B92135158F82CC0025F0B3 /* MDPatternReceiveTester.m in Sources */,
+				36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +341,7 @@
 				36B920EA158F81680025F0B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
