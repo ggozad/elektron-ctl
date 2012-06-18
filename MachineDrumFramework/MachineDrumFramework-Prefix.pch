@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'MachineDrumFramework' target in the 'MachineDrumFramework' project
+//
+
+#ifdef __OBJC__
+	#import <Foundation/Foundation.h>
+#endif
