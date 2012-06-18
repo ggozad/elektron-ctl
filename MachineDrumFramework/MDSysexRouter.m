@@ -7,6 +7,8 @@
 //
 
 #import "MDSysexRouter.h"
+#import "MDMachinedrumPublic.h"
+
 #define kKitDumpMessageID 0x52
 #define kPatternDumpMessageID 0x67
 

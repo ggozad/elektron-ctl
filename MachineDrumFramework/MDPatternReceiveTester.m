@@ -9,6 +9,7 @@
 #import "MDPatternReceiveTester.h"
 #import "MDPattern.h"
 #import "MDSysexUtil.h"
+#import "MDMachinedrumPublic.h"
 
 @interface MDPatternReceiveTester()
 - (void) handlePatternReceivedNotification:(NSNotification *)notification;

@@ -19,5 +19,3 @@
 #   define ULog(...)
 #endif
 
-#define kMDSysexPatternDumpNotification @"kMDSysexPatternDumpNotification"
-#define kMDSysexKitDumpNotification @"kMDSysexKitDumpNotification"

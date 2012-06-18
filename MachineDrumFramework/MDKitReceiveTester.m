@@ -10,6 +10,7 @@
 #import "MDKit.h"
 #import "MDKitParser.h"
 #import "MDSysexUtil.h"
+#import "MDMachinedrumPublic.h"
 
 @interface MDKitReceiveTester()
 - (void) handleKitReceivedNotification:(NSNotification *) notification;

@@ -15,4 +15,8 @@
 #import "MDPatternReceiveTester.h"
 #import "MDSysexRouter.h"
 
+#define kMDSysexPatternDumpNotification @"kMDSysexPatternDumpNotification"
+#define kMDSysexKitDumpNotification @"kMDSysexKitDumpNotification"
+#define kMIDIFoundationReadyChange @"kMIDIFoundationReadyChange"
+
 #endif

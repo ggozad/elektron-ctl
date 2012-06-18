@@ -10,6 +10,7 @@
 #import "MDMidiFoundation.h"
 #import "MDKit.h"
 #import "MDSysexUtil.h"
+#import "MDMachinedrumPublic.h"
 
 #define kElektronTM1DisplayName @"Elektron TM-1"
 
@@ -95,10 +96,12 @@ midiSysexSendRequest, ready, tempo;
 - (void)setup
 {
 	self.ready = [self autoSetup];
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMIDIFoundationReadyChange object:self];
 }
 
 - (BOOL)autoSetup
 {
+	
 	OSStatus result = noErr;
 	
 	if(!self.midiClientRef)
@@ -113,6 +116,8 @@ midiSysexSendRequest, ready, tempo;
 		}
 	}
 	
+	DLog(@"looking for %@ device...", kElektronTM1DisplayName);
+	
 	BOOL success = NO;
 	
 	//DLog(@"Iterate through destinations");
@@ -124,28 +129,35 @@ midiSysexSendRequest, ready, tempo;
 		if (dest)
 		{
 			NSString *displayname = getDisplayName(dest);
-			//DLog(@"  Destination: %@", displayname);
+			DLog(@"  Destination: %@", displayname);
 			if([displayname isEqualToString:kElektronTM1DisplayName])
 				success = [self setupDestination:dest];
 		}
 	}
 	
-	//if(!success) return success;
+	NSMutableArray *destStrings = [NSMutableArray array];
 	
-	// Virtual sources and destinations don't have entities
 	ItemCount sourceCount = MIDIGetNumberOfSources();
-	for (ItemCount i = 0 ; i < sourceCount ; ++i) {
+	for (ItemCount i = 0 ; i < sourceCount ; ++i)
+	{
 		
 		MIDIEndpointRef source = MIDIGetSource(i);
-		if (source) {
+		if (source)
+		{
 			NSString *displayname = getDisplayName(source);
-			//DLog(@"  Destination: %@", displayname);
+			[destStrings addObject:displayname];
+			DLog(@"  Destination: %@", displayname);
 			if([displayname isEqualToString:kElektronTM1DisplayName])
+			{
 				success = [self setupSource:source];
+			}
+				
 		}
 	}
 	
-	DLog(@"%@", success ? @"succeeded." : @"failed.");
+	DLog(@"%@ %@found, autosetup %@", kElektronTM1DisplayName, success ? @"" : @"not ", success ? @"succeeded." : @"failed.");
+	
+	
 	return success;
 }
 
@@ -200,6 +212,8 @@ midiSysexSendRequest, ready, tempo;
 {
 	DLog(@"sending sysex.");
 	self.ready = NO;
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMIDIFoundationReadyChange object:self];
+	
 	self.exchangingMidiData = YES;
 	UInt32 length = (UInt32)[data length];
 	const unsigned char *bytes = data.bytes;
@@ -239,7 +253,11 @@ midiSysexSendRequest, ready, tempo;
 					NSString *displayname = getDisplayName(source);
 					//DLog(@"  Destination: %@", displayname);
 					if([displayname isEqualToString:kElektronTM1DisplayName])
+					{
+						DLog(@"connecting %@", kElektronTM1DisplayName);
 						self.ready = [self setupSource:source];
+						[[NSNotificationCenter defaultCenter] postNotificationName:kMIDIFoundationReadyChange object:self];
+					}
 				}
 			}
 		}
@@ -253,7 +271,7 @@ midiSysexSendRequest, ready, tempo;
 		MIDIEndpointRef endPoint = notification->child;
 		if([getDisplayName(endPoint) isEqualToString:kElektronTM1DisplayName])
 		{
-
+			DLog(@"disconnecting %@", kElektronTM1DisplayName);
 			OSStatus err = noErr;
 			
 			err = MIDIPortDisconnectSource(self.midiInPortRef, self.midiEndPointRefForInput);
@@ -267,6 +285,7 @@ midiSysexSendRequest, ready, tempo;
 			self.midiEndPointRefForOutput = 0;
 			self.midiInPortRef = 0;
 			self.ready = NO;
+			[[NSNotificationCenter defaultCenter] postNotificationName:kMIDIFoundationReadyChange object:self];
 		}
 	}
 }
@@ -289,6 +308,7 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
 	
 	MDMidiFoundation *slf = (__bridge MDMidiFoundation *)(request->completionRefCon);
 	slf.ready = YES;
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMIDIFoundationReadyChange object:slf];
 	slf.exchangingMidiData = NO;
 }
 
