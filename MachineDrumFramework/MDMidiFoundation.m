@@ -13,8 +13,15 @@
 #import "MDMachinedrumPublic.h"
 
 #define kElektronTM1DisplayName @"Elektron TM-1"
+#define kDesiredSysexSpeed 10000
 
-
+static void SetGetSpeed(MIDIEndpointRef ep, SInt32 speed)
+{
+	MIDIObjectSetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, speed);
+	SInt32 speed2 = 0;
+	MIDIObjectGetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, &speed2);
+	printf("%d -> %d\n", (int)speed, (int)speed2);
+}
 
 static NSString *getDisplayName(MIDIObjectRef object)
 {
@@ -43,7 +50,6 @@ static NSString *getDisplayName(MIDIObjectRef object)
 
 @implementation MDMidiFoundation
 @synthesize
-deviceList,
 midiEndPointRefForOutput,
 midiEndPointRefForInput,
 midiInPortRef,
@@ -68,29 +74,10 @@ midiSysexSendRequest, ready, tempo;
 
 }
 
-- (void) machineDrum:(id)md wantsToSendSysExData:(NSData *)data
+- (void)sendTurboMidiSpeedRequest
 {
-	if(!self.ready)
-	{
-		NSLog(@"  >:|  MIDI not ready! ");
-		return;
-	}
-	else
-	{
-		[self sendSysexData:data];
-	}
-}
-
-- (id)init
-{
-	if(self = [super init])
-	{
-		
-		
-		
-		
-	}
-	return self;
+	const signed char bytes[] = {0xf0, 0x00, 0x20, 0x3c, 0x00, 0x00, 0x10, 0xf7};
+	[self sendSysexData:[NSData dataWithBytes:&bytes length:8]];
 }
 
 - (void)setup
@@ -164,6 +151,7 @@ midiSysexSendRequest, ready, tempo;
 - (BOOL)setupDestination:(MIDIEndpointRef)i
 {
 	self.midiEndPointRefForOutput = i;
+	SetGetSpeed(self.midiEndPointRefForOutput, kDesiredSysexSpeed);
 	return YES;
 }
 
@@ -242,6 +230,7 @@ midiSysexSendRequest, ready, tempo;
 		if([getDisplayName(endPoint) isEqualToString:kElektronTM1DisplayName])
 		{
 			self.midiEndPointRefForOutput = endPoint;
+			SetGetSpeed(self.midiEndPointRefForOutput, kDesiredSysexSpeed);
 			
 			ItemCount sourceCount = MIDIGetNumberOfSources();
 			for (ItemCount i = 0 ; i < sourceCount ; ++i)

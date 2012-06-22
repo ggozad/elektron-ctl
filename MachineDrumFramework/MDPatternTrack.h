@@ -22,6 +22,6 @@
 @property int32_t swingPattern_00_31;
 @property int32_t swingPattern_32_63;
 
-- (BOOL) hasTrigAtStep:(NSUInteger) step;
+- (BOOL) trigAtStep:(NSUInteger) step;
 - (void) setTrigAtStep:(NSUInteger) step to:(BOOL) active;
 @end

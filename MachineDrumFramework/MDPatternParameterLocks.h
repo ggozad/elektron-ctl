@@ -11,12 +11,12 @@
 @class MDPattern;
 
 @interface MDPatternParameterLocks : NSObject
-@property uint8_t rowCount;
-@property uint8_t totalCount;
+@property (readonly) uint8_t rowCount;
+@property (readonly) uint8_t totalCount;
 @property (weak, nonatomic) MDPattern *pattern;
-@property (strong, nonatomic) NSMutableArray *lockRows;
+@property (strong, nonatomic, readonly) NSMutableArray *lockRows;
 
-
+- (void) clearLocksAtTrack:(uint8_t)t step:(uint8_t)s;
 - (BOOL) setLock:(MDParameterLock *)lock;
 - (void) printRows;
 

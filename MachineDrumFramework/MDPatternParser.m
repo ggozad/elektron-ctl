@@ -129,7 +129,12 @@
 	if(isLongPattern)
 		[data appendData:[self dataForOptionalExtraPatternInPattern:pattern]];
 	[data appendData:[self dataForEndOfMessageData:data]];
-	return data;
+	
+	DLog(@"done building data, validating..");
+	
+	BOOL success = [self patternDataIsValid:data];
+	if(success) return data;
+	return nil;
 }
 
 
@@ -373,7 +378,17 @@
 + (BOOL)patternDataIsValid:(NSData *)data
 {
 	DLog(@"sanity checking data...");
-	const uint8_t *bytes = data.bytes;
+	const char *bytes = data.bytes;
+	
+	
+	for(int i = 0; i < data.length-1; i++)
+	{
+		if(bytes[i] == 0xf7)
+		{
+			DLog(@"message end where it shouldn't be: 0x%x", i);
+		}
+	}
+	
 	
 	if(data.length != 0xacb && data.length != 0x1522)
 	{
@@ -390,7 +405,7 @@
 	if(![self messageLengthIsValid:data] ||
 	   ![self checksumIsValid:data]) return NO;
 	
-	DLog(@"OK");
+	DLog(@"OK\n\n");
 	
 	return YES;
 }
@@ -531,11 +546,11 @@
 						int8_t value = bytesForCurrentRow[step];
 						if(value > -1)
 						{
-							MDParameterLock *lock = [MDParameterLock new];
-							lock.track = track;
-							lock.param = param;
-							lock.step = step;
-							lock.lockValue = value;
+							MDParameterLock *
+							lock = [MDParameterLock lockForTrack:track
+														   param:param
+															step:step
+														   value:value];
 							
 							if([pattern.locks setLock:lock]);
 								totalHydratedLocks++;
@@ -548,11 +563,12 @@
 							int8_t value = bytesForCurrentRow64[step];
 							if(value > -1)
 							{
-								MDParameterLock *lock = [MDParameterLock new];
-								lock.track = track;
-								lock.param = param;
-								lock.step = step + 32;
-								lock.lockValue = value;
+								MDParameterLock *
+								lock = [MDParameterLock lockForTrack:track
+															   param:param
+																step:step + 32
+															   value:value];
+								
 								
 								if([pattern.locks setLock:lock]);
 									totalHydratedLocks++;
@@ -568,10 +584,32 @@
 	}
 	
 	//DLog(@"total locks \nreceived: %ld \nhydrated: %ld", totalReceivedLocks, totalHydratedLocks);
-
-	/*
+/*
+	DLog(@"locks data:\n");
+	for(int i = 0; i < 64; i++)
+	{
+		DLog(@"0-31:\n");
+		for(int j = 0; j < 32; j++)
+		{
+			printf("%4d ", locksBytes[i*32 + j]);
+		}
+		printf("\n");
+		
+		if(locksBytes64)
+		{
+			DLog(@"32-64:\n");
+			for(int j = 0; j < 32; j++)
+			{
+				printf("%4d ", locksBytes64[i*32 + j]);
+			}
+		}
+		printf("\n\n");
+	}
+	
+	
 	DLog(@"lock rows after setting lock:");
 	[pattern.locks printRows];
+	
 	*/
 }
 

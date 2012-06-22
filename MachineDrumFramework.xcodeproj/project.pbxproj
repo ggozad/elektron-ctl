@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
+		369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 369774E6158FE95100FCC379 /* MDPatternPublicWrapper.m */; };
 		36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */; };
 		36B920DE158F81670025F0B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920DD158F81670025F0B3 /* Foundation.framework */; };
 		36B920E3158F81680025F0B3 /* MachineDrumFramework.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B920E2158F81680025F0B3 /* MachineDrumFramework.h */; };
@@ -43,6 +45,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		36814F011594CD8700220C88 /* MDConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDConstants.h; sourceTree = "<group>"; };
+		36814F021594CD8700220C88 /* MDPitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPitch.h; sourceTree = "<group>"; };
+		36814F031594CD8700220C88 /* MDPitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPitch.m; sourceTree = "<group>"; };
+		369774E5158FE95100FCC379 /* MDPatternPublicWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternPublicWrapper.h; sourceTree = "<group>"; };
+		369774E6158FE95100FCC379 /* MDPatternPublicWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternPublicWrapper.m; sourceTree = "<group>"; };
 		36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumPublic.h; sourceTree = "<group>"; };
 		36B4B0B5158F9263009CFC0A /* MDSysexRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSysexRouter.h; sourceTree = "<group>"; };
 		36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSysexRouter.m; sourceTree = "<group>"; };
@@ -130,6 +137,9 @@
 		36B920DF158F81670025F0B3 /* MachineDrumFramework */ = {
 			isa = PBXGroup;
 			children = (
+				36814F011594CD8700220C88 /* MDConstants.h */,
+				36814F021594CD8700220C88 /* MDPitch.h */,
+				36814F031594CD8700220C88 /* MDPitch.m */,
 				36B4B0B5158F9263009CFC0A /* MDSysexRouter.h */,
 				36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */,
 				36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */,
@@ -170,6 +180,8 @@
 				36B920E2158F81680025F0B3 /* MachineDrumFramework.h */,
 				36B920E4158F81680025F0B3 /* MachineDrumFramework.m */,
 				36B920E0158F81670025F0B3 /* Supporting Files */,
+				369774E5158FE95100FCC379 /* MDPatternPublicWrapper.h */,
+				369774E6158FE95100FCC379 /* MDPatternPublicWrapper.m */,
 			);
 			path = MachineDrumFramework;
 			sourceTree = "<group>";
@@ -250,6 +262,8 @@
 				36B92134158F82CC0025F0B3 /* MDPatternParser.m in Sources */,
 				36B92135158F82CC0025F0B3 /* MDPatternReceiveTester.m in Sources */,
 				36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */,
+				369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */,
+				36814F041594CD8700220C88 /* MDPitch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

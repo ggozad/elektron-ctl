@@ -248,5 +248,11 @@
 		[self.delegate machineDrum:self wantsToSendSysExData:sysexData];
 }
 
+- (void)sendPattern:(MDPatternPublicWrapper *)pattern
+{
+	NSData *d = [pattern sysexData];
+	if(d) [self.delegate machineDrum:self wantsToSendSysExData:d];
+}
+
 
 @end

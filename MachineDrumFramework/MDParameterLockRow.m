@@ -32,6 +32,21 @@
 	if(bytes[step] != value) DLog(@"FOOOOOCK");
 }
 
+- (BOOL)isEmpty
+{
+	char *bytes = (char *) self.valueStepData.bytes;
+	BOOL empty = YES;
+	for (int i = 0; i < 64; i++)
+	{
+		if(bytes[i] > -1)
+		{
+			empty = NO;
+			break;
+		}
+	}
+	return empty;
+}
+
 + (MDParameterLockRow *)parameterLockRowForTrack:(uint8_t)track param:(uint8_t)param withValueStepData:(NSData *)data
 {
 	MDParameterLockRow *row = [MDParameterLockRow new];

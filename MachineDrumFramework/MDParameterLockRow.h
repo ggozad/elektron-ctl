@@ -16,5 +16,6 @@
 + (MDParameterLockRow *)parameterLockRowForLock:(MDParameterLock *)lock;
 + (MDParameterLockRow *)parameterLockRowForTrack:(uint8_t)track param: (uint8_t) param withValueStepData:(NSData *)data;
 - (void) setStep:(uint8_t) step toValue: (int8_t) value;
+- (BOOL) isEmpty;
 
 @end

@@ -18,8 +18,7 @@ void midiInputCallback (const MIDIPacketList *list,
 						void *srcRef);
 
 
-@interface MDMidiFoundation : NSObject <MDMachineDrumDelegate>
-@property (strong, nonatomic) NSArray *deviceList;
+@interface MDMidiFoundation : NSObject
 @property int tempo;
 @property BOOL ready;
 @property BOOL exchangingMidiData;
@@ -28,7 +27,7 @@ void midiInputCallback (const MIDIPacketList *list,
 
 - (void) sendSysexData:(NSData *)data;
 - (void) setup;
-
+- (void) sendTurboMidiSpeedRequest;
 
 
 @end

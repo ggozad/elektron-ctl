@@ -11,7 +11,10 @@
 #import "MDParameterLockRow.h"
 
 @interface MDPatternParameterLocks()
-
+{
+	//uint8_t _rowCount;
+	//uint8_t _totalCount;
+}
 @end
 
 
@@ -21,15 +24,32 @@
 {
 	if(self = [super init])
 	{
-		self.lockRows = [NSMutableArray array];
+		_lockRows = [NSMutableArray array];
 	}
 	return self;
+}
+
+- (void)clearLocksAtTrack:(uint8_t)t step:(uint8_t)s
+{
+	for(NSUInteger i = [self.lockRows count]; i > 0; i--)
+	{
+		MDParameterLockRow *row = [_lockRows objectAtIndex:i];
+		if(row.track == t)
+		{
+			[row setStep:s toValue:-1]; _totalCount--;
+			if([row isEmpty])
+			{
+				[self.lockRows removeObject:row];
+				_rowCount--;
+			}
+		}
+	}
 }
 
 - (BOOL)setLock:(MDParameterLock *)lock
 {
 	//DLog(@"track %2ld param %2ld step %2ld -> %3ld", lock.track, lock.param, lock.step, lock.lockValue);
-	if( ! [[self.pattern.tracks objectAtIndex:lock.track] hasTrigAtStep:lock.step])
+	if( ! [[self.pattern.tracks objectAtIndex:lock.track] trigAtStep:lock.step])
 	{
 		//DLog(@"no step!");
 		return NO;

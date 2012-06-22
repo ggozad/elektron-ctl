@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MDPatternPublicWrapper.h"
 
 @class MDMachineDrum;
 
@@ -29,5 +30,6 @@
 - (void) requestCurrentKitNumber;
 
 - (void) sendRandomPatternToSlot:(NSUInteger) slot;
+- (void) sendPattern:(MDPatternPublicWrapper *)pattern;
 
 @end

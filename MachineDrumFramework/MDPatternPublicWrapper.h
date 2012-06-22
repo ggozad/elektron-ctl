@@ -1,0 +1,42 @@
+//
+//  MDPatternPublicWrapper.h
+//  MachineDrumFramework
+//
+//  Created by Jakob Penca on 6/19/12.
+//  Copyright (c) 2012 Jakob Penca. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "MDPattern.h"
+
+typedef enum MDPatternScale
+{
+	MDPatternScale_16,
+	MDPatternScale_32,
+	MDPatternScale_48,
+	MDPatternScale_64
+}
+MDPatternScale;
+
+
+
+
+@interface MDPatternPublicWrapper : NSObject
+
++ (MDPatternPublicWrapper *) pattern;
++ (MDPatternPublicWrapper *) patternWithData:(NSData *)sysexData;
+
+
+- (void) setKitNumber:(uint8_t)kit;
+- (void) setLength:(uint8_t)len;
+- (void) setScale:(MDPatternScale)scale;
+- (void) setTrigAtTrack: (uint8_t) track step: (uint8_t) step toValue: (BOOL) val;
+- (BOOL) trigAtTrack: (uint8_t) track step: (uint8_t) step;
+- (BOOL) setLock:(MDParameterLock *)lock setTrigIfNone:(BOOL)setTrig;
+- (void) clearLockAtTrack:(uint8_t)t param:(uint8_t)p step:(uint8_t)s clearTrig:(BOOL) clearTrig;
+- (void) clearLock:(MDParameterLock *)lock clearTrig:(BOOL) clearTrig;
+- (uint8_t) numberOfUniqueLocks;
+
+- (NSData *)sysexData;
+
+@end

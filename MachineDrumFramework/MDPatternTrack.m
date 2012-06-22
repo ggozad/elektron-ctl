@@ -11,7 +11,7 @@
 
 @implementation MDPatternTrack
 
-- (BOOL)hasTrigAtStep:(NSUInteger)step
+- (BOOL)trigAtStep:(NSUInteger)step
 {
 	if(step < 32)
 		return CFSwapInt32BigToHost(self.trigPattern_00_31) & (1 << step) ? 1 : 0;
@@ -22,19 +22,23 @@
 - (void)setTrigAtStep:(NSUInteger)step to:(BOOL)active
 {
 	//TODO: test this!
+	
+	int32_t newTrig =  (1 << step);
+	newTrig = CFSwapInt32HostToBig(newTrig);
+	
 	if(step < 32)
 	{
 		if(active)
-			self.trigPattern_00_31 |= (1 << step);
+			self.trigPattern_00_31 |= newTrig;
 		else
-			self.trigPattern_00_31 &= ~(1 << step);
+			self.trigPattern_00_31 &= ~newTrig;
 	}
 	else
 	{
 		if(active)
-			self.trigPattern_32_63 |= (1 << step);
+			self.trigPattern_32_63 |= newTrig;
 		else
-			self.trigPattern_32_63 &= ~(1 << step);
+			self.trigPattern_32_63 &= ~newTrig;
 	}
 	
 	
