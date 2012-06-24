@@ -26,7 +26,7 @@
 	{
 		self.params = [MDKitTrackParams new];
 		self.level = [NSNumber numberWithInt:100];
-		self.drumModel = [NSNumber numberWithInt:0];
+		self.machine = MDMachineName_GND_EM;
 		self.lfoSettings = [MDKitLFOSettings new];
 		self.trigGroup = -1;
 		self.muteGroup = -1;

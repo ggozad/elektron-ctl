@@ -9,6 +9,7 @@
 #ifndef MachineDrumFramework_MDMachinedrumPublic_h
 #define MachineDrumFramework_MDMachinedrumPublic_h
 
+#import "MDConstants.h"
 #import "MDMidiFoundation.h"
 #import "MDMachineDrum.h"
 #import "MDKitReceiveTester.h"
@@ -16,9 +17,6 @@
 #import "MDSysexRouter.h"
 #import "MDPatternPublicWrapper.h"
 #import "MDPitch.h"
-
-#import "MDConstants.h"
-
-
+#import "MDKitMachine.h"
 
 #endif

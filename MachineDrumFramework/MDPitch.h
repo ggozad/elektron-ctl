@@ -7,15 +7,45 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MDConstants.h"
+#import "MDKitMachine.h"
 
 #ifndef MD_PITCH_STRUCTS
 #define MD_PITCH_STRUCTS
 
-typedef struct MDlalalalala
+
+typedef enum MDPitchOctaves
 {
-	int la;
-	
-}MDlalalalala;
+	MDPitchOctave_MINUS_TWO = 0,
+	MDPitchOctave_MINUS_ONE = 12,
+	MDPitchOctave_ZERO = 24,
+	MDPitchOctave_ONE = 36,
+	MDPitchOctave_TWO = 48,
+	MDPitchOctave_THREE = 60,
+	MDPitchOctave_FOUR = 72,
+	MDPitchOctave_FIVE = 84,
+	MDPitchOctave_SIX = 96,
+	MDPitchOctave_SEVEN = 108,
+	MDPitchOctave_EIGHT = 120
+}
+MDPitchOctaves;
+
+typedef enum MDPitchNotes
+{
+	MDPitchNote_C,
+	MDPitchNote_C_SHARP,
+	MDPitchNote_D,
+	MDPitchNote_D_SHARP,
+	MDPitchNote_E,
+	MDPitchNote_F,
+	MDPitchNote_F_SHARP,
+	MDPitchNote_G,
+	MDPitchNote_G_SHARP,
+	MDPitchNote_A,
+	MDPitchNote_A_SHARP,
+	MDPitchNote_B
+}
+MDPitchNotes;
 
 
 typedef struct MDNoteRange
@@ -32,12 +62,18 @@ typedef struct MDMachineAbsoluteNoteRange
 }
 MDMachineAbsoluteNoteRange;
 
+MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h);
+
 #endif
 
 
 @interface MDPitch : NSObject
 
 + (MDNoteRange) noteRangeForMachineAbsoluteRange:(MDMachineAbsoluteNoteRange)fr;
-+ (uint8_t) pitchParamValueForNote:(uint8_t)note withFrequencyRange:(MDMachineAbsoluteNoteRange)fr;
++ (MDNoteRange) noteRangeForMachine:(MDMachineID)machineID;
++ (int8_t) pitchParamValueForNote:(uint8_t)note withAbsoluteNoteRange:(MDMachineAbsoluteNoteRange)fr;
++ (int8_t) pitchParamValueForNote:(uint8_t)note forMachine:(MDMachineID)machineID;
++ (int8_t) pitchParamValueForNote:(uint8_t)note forMachineName:(NSUInteger)machineName;
++ (MDMachineAbsoluteNoteRange)absoluteNoteRangeForMachineID:(MDMachineID)mid;
 
 @end

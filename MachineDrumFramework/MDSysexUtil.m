@@ -96,7 +96,7 @@
 + (NSData *)dataPackedWith7BitSysexEncoding:(NSData *)inData
 {
 	NSUInteger inLength = inData.length;
-	uint8_t *outData;
+	uint8_t *outDataBytes;
 	NSUInteger outLength = 0;
 	
 	int blocksOfSevenInBytes = inLength / 7;
@@ -104,8 +104,8 @@
 	blocksOfSevenInBytes += 1;
 	outLength = blocksOfSevenInBytes + inLength;
 	
-	outData = calloc(outLength, 1);
-	outData[0] = 0;
+	outDataBytes = calloc(outLength, 1);
+	outDataBytes[0] = 0;
 	
 	const uint8_t *inBytes = [inData bytes];
 	NSUInteger count7 = 0;
@@ -117,18 +117,18 @@
 		uint8_t msb = inBytes[i] & 0x80;
 		msb = msb >> 7;
 		
-		outData[outIndex] |= msb << (6 - count7);
-		outData[outIndex + 1 + count7] = rest;
+		outDataBytes[outIndex] |= msb << (6 - count7);
+		outDataBytes[outIndex + 1 + count7] = rest;
 		
 		if(++count7 == 7)
 		{
 			outIndex += 8;
-			outData[outIndex] = 0;
+			outDataBytes[outIndex] = 0;
 			count7 = 0;
 		}
 	}
 	
-	return  [NSData dataWithBytesNoCopy:outData length:outLength freeWhenDone:YES];
+	return  [NSData dataWithBytesNoCopy:outDataBytes length:outLength freeWhenDone:YES];
 }
 
 + (NSData *)dataUnpackedFrom7BitSysexEncoding:(NSData *)inData

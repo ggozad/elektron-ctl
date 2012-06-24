@@ -29,6 +29,20 @@
 	return self;
 }
 
+- (void)clearLock:(MDParameterLock *)lock
+{
+	for(NSUInteger i = [self.lockRows count]; i > 0; i--)
+	{
+		MDParameterLockRow *row = [_lockRows objectAtIndex:i];
+		if(row.track == lock.track && row.param == lock.param)
+		{
+			[row setStep:lock.step toValue:lock.lockValue];
+			if([row isEmpty]) [self.lockRows removeObject:row];
+			_rowCount--;
+		}
+	}
+}
+
 - (void)clearLocksAtTrack:(uint8_t)t step:(uint8_t)s
 {
 	for(NSUInteger i = [self.lockRows count]; i > 0; i--)
@@ -56,7 +70,6 @@
 	}
 	
 	
-	
 	MDParameterLockRow *existingLockRow = nil;
 	for (MDParameterLockRow *row in self.lockRows)
 	{
@@ -71,6 +84,7 @@
 	if(existingLockRow)
 	{
 		[existingLockRow setStep:lock.step toValue:lock.lockValue];
+		
 	}
 	else
 	{

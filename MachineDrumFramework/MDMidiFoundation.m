@@ -33,17 +33,22 @@ static NSString *getDisplayName(MIDIObjectRef object)
 }
 
 @interface MDMidiFoundation()
+
 @property MIDIEndpointRef midiEndPointRefForOutput;
 @property MIDIEndpointRef midiEndPointRefForInput;
 @property MIDIPortRef midiInPortRef;
 @property MIDIClientRef midiClientRef;
 @property MIDISysexSendRequest *midiSysexSendRequest;
-@property (strong, atomic) NSMutableData *tempIncomingSysexData;
+
+@property (strong, nonatomic) NSMutableArray *sysexSendQueueArray;
+
 
 - (BOOL) autoSetup;
 - (BOOL) setupDestination:(MIDIEndpointRef)i;
 - (BOOL) setupSource:(MIDIEndpointRef)i;
 - (void) handleIncomingSysexMessageData:(NSData *)data;
+- (void) sendSysexData:(NSData *)data;
+- (void) dequeueAndSendData;
 
 @end
 
@@ -56,9 +61,40 @@ midiInPortRef,
 midiClientRef,
 midiSysexSendRequest, ready, tempo;
 
+- (void)dequeueAndSendData
+{
+	if(!self.ready) return;
+	if(!self.sysexSendQueueArray.count) return;
+	
+	NSData *d = [self.sysexSendQueueArray objectAtIndex:0];
+	if(d)
+	{
+		[self.sysexSendQueueArray removeObject:d];
+	}
+	
+	[self sendSysexData:d];
+}
+
+- (void)enqueueSysexMessage:(NSData *)data
+{
+	[self.sysexSendQueueArray addObject:data];
+}
+
+
+
+- (id)init
+{
+	if(self = [super init])
+	{
+		self.sysexSendQueueArray = [NSMutableArray array];
+		[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(dequeueAndSendData) userInfo:nil repeats:YES];
+	}
+	return self;
+}
+
 - (void)handleIncomingSysexMessageData:(NSData *)data
 {
-	DLog(@"incoming sysex raw data (%d bytes):", data.length);
+	DLog(@"incoming sysex raw data (%ld bytes):", data.length);
 	//data = [MDSysexUtil dataWithInvalidBytesStrippedFromData:data];
 
 	if(data.length <= 64)

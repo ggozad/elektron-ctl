@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "MDKitTrackParams.h"
 #import "MDKitLFOSettings.h"
+#import "MDConstants.h"
+#import "MDKitMachine.h"
 
 @interface MDKitTrack : NSObject
 @property (strong, nonatomic) MDKitTrackParams *params;
 @property (strong, nonatomic) NSNumber *level;
-@property (strong, nonatomic) NSNumber *drumModel;
+@property MDMachineID machine;
 @property (strong, nonatomic) MDKitLFOSettings *lfoSettings;
 @property NSInteger trigGroup;
 @property NSInteger muteGroup;

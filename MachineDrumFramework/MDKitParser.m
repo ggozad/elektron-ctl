@@ -155,20 +155,15 @@
 {
 	char unpackedBytes[16*4];
 	for (int i = 0; i < 16*4; i++)
-	{
 		unpackedBytes[i] = 0;
-	}
 	
 	for (int i = 0; i < 16; i++)
 	{
 		MDKitTrack *track = [kit.tracks objectAtIndex:i];
-		unpackedBytes[3 + i * 4] = track.drumModel.intValue & 0xff;
+		unpackedBytes[3 + i * 4] = track.machine;
 	}
 	
 	NSData *unpackedData = [NSData dataWithBytes:&unpackedBytes length:16*4];
-	
-	//DLog(@"drum models data in repack: %@", unpackedData);
-	
 	NSData *packedData = [MDSysexUtil dataPackedWith7BitSysexEncoding:unpackedData];
 	return packedData;
 }
@@ -315,14 +310,14 @@
 + (void) hydrateKit:(MDKit *)kit  originalPositionFromData:(NSData *)data;
 {
 	kit.originalPosition = ((const char *)data.bytes)[0x09];
-	DLog(@"original position: %d", kit.originalPosition);
+	//DLog(@"original position: %d", kit.originalPosition);
 }
 
 + (void) hydrateKit:(MDKit *)kit nameFromData:(NSData *)data
 {
 	const char *name = &((const char *)data.bytes)[0x0a];
 	kit.kitName = [NSData dataWithBytes:name length:16];
-	DLog(@"name: %@ bytes: %s", kit.kitName, name);
+	//DLog(@"name: %@ bytes: %s", kit.kitName, name);
 }
 
 + (void)hydrateKit:(MDKit *)kit trackParamsFromData:(NSData *)data
@@ -342,37 +337,57 @@
 + (void)hydrateKit:(MDKit *)kit levelsFromData:(NSData *)data
 {
 	const char *trackLevels = &((const char *)data.bytes)[0x19a]; // +16
-	DLog(@"track levels: \n");
+	//DLog(@"track levels: \n");
 	for (int i  = 0; i < 16; i++)
 	{
 		MDKitTrack *track = [kit.tracks objectAtIndex:i];
 		track.level = [NSNumber numberWithInt:trackLevels[i]];
-		printf("%d ", track.level.intValue);
+		//printf("%d ", track.level.intValue);
 	}
-	printf("\n\n");
+	//printf("\n\n");
 }
 
 + (void)hydrateKit:(MDKit *)kit drumModelsFromData:(NSData *)data
 {
-	const char *drumModels = &((const char *)data.bytes)[0x1aa]; // +74
-	NSUInteger drumModelsLength = 74;
-	NSData *drumModelsUnpacked = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:
-								  [NSData dataWithBytes:drumModels length:drumModelsLength]];
+	// NSData is a Cocoa class which is just a convenient wrapper
+	// around any blob of bytes, easier to pass around in method calls etc.
+	// the data argument here is just the entire sysex kit message,
+	// has nothing to do with what Elektron describe as data in the sysex docs.
 	
+	const char *packedDrumModelBytes = &((const char *)data.bytes)[0x1aa]; // grab the packed bytes from the sysex message
+	NSUInteger packedDrumModelsLength = 74;							// when packed, they're 74 bytes
+	
+	// now unpack them.
+	// my MDSysexUtil class handles unpacking the 7bit encoding:
+	
+	NSData *packedDrumModelsData = [NSData dataWithBytes:packedDrumModelBytes length:packedDrumModelsLength];
+	NSData *drumModelsUnpacked = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding: packedDrumModelsData];
+	
+	// grab the bytes from the unpacked data
+	// these are 16*4 = 64 bytes:
 	
 	const char *drumModelsUnpackedBytes = drumModelsUnpacked.bytes;
 	
-	DLog(@"drum models:\n\n");
+	printf("\n");
 	
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i++) // loop through tracks
 	{
-		uint8_t model = drumModelsUnpackedBytes[3 + i * 4];
-		MDKitTrack *track = [kit.tracks objectAtIndex:i];
-		track.drumModel = [NSNumber numberWithInt:model];
-		printf("track %d drum model: %d\n", i, track.drumModel.intValue);
+		// here's the interesting part.
+		// every track gets 4 bytes for its drum model, the first 3 of which are just 0,
+		// we only need every 4th byte.
+		// so in the subscript brackets below, 3 + i * 4 would give you the first bytes per track,
+		// we offset that by 3 to get the machine number we want.
+		
+		MDMachineID model = drumModelsUnpackedBytes[3 + i * 4];
+		MDKitTrack *track = [kit.tracks objectAtIndex:i];			// get track at i
+		track.machine = model;								// and set its drum model
+		
+		DLog(@"track %2d machine: %d", i, track.machine);
+		
+		
 	}
 	
-	printf("\n\n");
+	printf("\n");
 }
 
 + (void)hydrateKit:(MDKit *)kit LFOSettingsFromData:(NSData *)data
@@ -385,7 +400,7 @@
 	const char *lfoSettingsUnpackedBytes = lfoSettingsUnpacked.bytes;
 	
 	
-	DLog(@"LFO settings: \n\n");
+	//DLog(@"LFO settings: \n\n");
 	
 	for (int i  = 0; i < 16; i++)
 	{
@@ -400,37 +415,37 @@
 		lfo.type = lfoPerTrack[0x04];
 		lfo.internalState = [NSData dataWithBytes:&lfoPerTrack[0x05] length:31];
 		
-		DLog(@"lfo internal state: %@", lfo.internalState);
+		//DLog(@"lfo internal state: %@", lfo.internalState);
 		
-		DLog(@"track %d:", i);
-		DLog(@"%@", lfo);
+		//DLog(@"track %d:", i);
+		//DLog(@"%@", lfo);
 		
 	}
-	printf("\n\n");
+	//printf("\n\n");
 }
 
 + (void)hydrateKit:(MDKit *)kit reverbSettingsFromData:(NSData *)data
 {
 	kit.reverbSettings = [MDSysexUtil numbersFromBytes:&((const char *)data.bytes)[0x487] withLength:8];
-	DLog(@"reverb settings: %@", kit.reverbSettings);
+	//DLog(@"reverb settings: %@", kit.reverbSettings);
 }
 
 + (void)hydrateKit:(MDKit *)kit delaySettingsFromData:(NSData *)data
 {
 	kit.delaySettings = [MDSysexUtil numbersFromBytes:&((const char *)data.bytes)[0x48f] withLength:8];
-	DLog(@"delay settings: %@", kit.delaySettings);
+	//DLog(@"delay settings: %@", kit.delaySettings);
 }
 
 + (void)hydrateKit:(MDKit *)kit EQSettingsFromData:(NSData *)data
 {
 	kit.eqSettings = [MDSysexUtil numbersFromBytes:&((const char *)data.bytes)[0x497] withLength:8];
-	DLog(@"eq settings: %@", kit.eqSettings);
+	//DLog(@"eq settings: %@", kit.eqSettings);
 }
 
 + (void)hydrateKit:(MDKit *)kit dynamicsSettingsFromData:(NSData *)data
 {
 	kit.dynamicsSettings = [MDSysexUtil numbersFromBytes:&((const char *)data.bytes)[0x49f] withLength:8];
-	DLog(@"dynamics settings: %@", kit.dynamicsSettings);
+	//DLog(@"dynamics settings: %@", kit.dynamicsSettings);
 }
 
 + (void)hydrateKit:(MDKit *)kit trigGroupsFromData:(NSData *)data
@@ -442,7 +457,7 @@
 	const char *trigGroupBytes = unpackedTrigGroups.bytes;
 	
 	
-	DLog(@"trig groups: \n\n");
+	//DLog(@"trig groups: \n\n");
 	for (int i = 0; i < 16; i++)
 	{
 		int8_t trigAtTrack = trigGroupBytes[i];
@@ -451,9 +466,9 @@
 		track.trigGroup = trigAtTrack;
 		track.muteGroup = muteAtTrack;
 		
-		printf("track %d trigs: %d mutes: %d\n", i, track.trigGroup, track.muteGroup);
+		//printf("track %d trigs: %d mutes: %d\n", i, track.trigGroup, track.muteGroup);
 	}
-	printf("\n\n");
+	//printf("\n\n");
 	
 }
 
@@ -462,7 +477,7 @@
 	uint8_t checksumUpperBits = ((const char *)data.bytes)[0x4cd] & 0x7f;
 	uint8_t checksumLowerBits = ((const char *)data.bytes)[0x4cc] & 0x7f;
 	uint16_t checksum = checksumUpperBits | (checksumLowerBits << 7);
-	DLog(@"checksum: %d", checksum);
+	//DLog(@"checksum: %d", checksum);
 	
 	uint16_t checksumBytesLength = (0x4a7 + 37) - 0x09;
 	uint16_t calcedChecksum = 0;
@@ -479,7 +494,7 @@
 	
 	if(calcedChecksum != checksum)
 	{
-		DLog(@"checksum incorrect (%d)! bailing.", calcedChecksum);
+		//DLog(@"checksum incorrect (%d)! bailing.", calcedChecksum);
 		return NO;
 	}
 	
@@ -496,12 +511,12 @@
 	
 	uint16_t calcedMessageLength = data.length - 10;
 	
-	DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
+	//DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
 	
 	
 	if(calcedMessageLength != messageLength)
 	{
-		DLog(@"message length incorrect! bailing.");
+		//DLog(@"message length incorrect! bailing.");
 		return NO;
 	}
 

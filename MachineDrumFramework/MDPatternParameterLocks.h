@@ -16,6 +16,7 @@
 @property (weak, nonatomic) MDPattern *pattern;
 @property (strong, nonatomic, readonly) NSMutableArray *lockRows;
 
+- (void) clearLock:(MDParameterLock *)lock;
 - (void) clearLocksAtTrack:(uint8_t)t step:(uint8_t)s;
 - (BOOL) setLock:(MDParameterLock *)lock;
 - (void) printRows;

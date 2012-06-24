@@ -29,33 +29,24 @@
 
 
 
-
 - (NSData *)sysexData
 {
 	return [MDKitParser sysexDataFromKit:self];
 }
 
-+ (id)kitWithRandomParametersAndDrumModels
++ (MDKit *)kit
+{
+	return [MDKit new];
+}
+
+
++ (MDKit *)kitWithRandomParametersAndDrumModels
 {
 	MDKit *kit = [MDKit new];
 	
 	for (MDKitTrack *track in kit.tracks)
 	{
-		uint8_t availableSynthesisMethods[] = {16,32,48,64};
-		int method = arc4random_uniform(4);
-		
-		uint8_t chosenMethod = availableSynthesisMethods[method];
-		uint8_t chosenMachineOffset = 0;
-		uint8_t maxOffset = 0;
-		
-		if(chosenMethod == 16) maxOffset = 12;
-		if(chosenMethod == 32) maxOffset =  7;
-		if(chosenMethod == 48) maxOffset = 15;
-		if(chosenMethod == 64) maxOffset =  8;
-		
-		chosenMachineOffset = arc4random_uniform(maxOffset+1);
-		
-		track.drumModel = [NSNumber numberWithInt:chosenMethod + chosenMachineOffset];
+		track.machine = [MDKitMachine machineIDForMachineName:arc4random_uniform(MDMachineNumberOfMachinesTotal)];
 		
 		for (int i = 0; i < 24; i++)
 		{
@@ -69,7 +60,7 @@
 	return kit;
 }
 
-+(id)kitWithData:(NSData *)data
++(MDKit *)kitWithData:(NSData *)data
 {
 	return [MDKitParser kitFromSysexData:data];
 }

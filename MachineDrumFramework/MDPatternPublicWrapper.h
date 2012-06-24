@@ -25,8 +25,10 @@ MDPatternScale;
 
 + (MDPatternPublicWrapper *) pattern;
 + (MDPatternPublicWrapper *) patternWithData:(NSData *)sysexData;
++ (MDPatternPublicWrapper *) patternWithPattern:(MDPatternPublicWrapper *)inPattern;
 
 
+- (void) setSavePosition:(uint8_t)slot;
 - (void) setKitNumber:(uint8_t)kit;
 - (void) setLength:(uint8_t)len;
 - (void) setScale:(MDPatternScale)scale;

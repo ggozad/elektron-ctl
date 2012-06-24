@@ -25,9 +25,8 @@ void midiInputCallback (const MIDIPacketList *list,
 @property float bpm;
 @property BOOL logMidiEvents;
 
-- (void) sendSysexData:(NSData *)data;
+- (void) enqueueSysexMessage:(NSData *)data;
 - (void) setup;
 - (void) sendTurboMidiSpeedRequest;
-
 
 @end

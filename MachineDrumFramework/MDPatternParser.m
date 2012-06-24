@@ -105,7 +105,7 @@
 {
 	//TODO: check pattern integrity
 	BOOL patternIsGood = YES;
-	if(!patternIsGood) return NO;
+	if(!patternIsGood) return nil;
 	
 	//TODO: differentiate short and long patterns
 	BOOL isLongPattern = YES;
@@ -444,37 +444,19 @@
 								   packedLockPatternData];
 	
 	const int32_t *lockPatternBytes = unpackedLockPattern.bytes;
-	
-	
-	/*
-	DLog(@"lock pattern: \n\n");
-	for (int i = 0; i < 16; i++)
-	{
-		printf("%s\n", [[MDSysexUtil getBitStringForInt:lockPatternBytes[i]] cStringUsingEncoding:NSASCIIStringEncoding]);
-	}
-	 */
-	 
-	
 
 	NSData *packedLocksData = [NSData dataWithBytes: &dataBytes[0xb7] length:2341];
 	NSData *unpackedLocksData = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:packedLocksData];
 	
 	const char *locksBytes = unpackedLocksData.bytes;
 	
-//	DLog(@"locks bytes:\n%@", [NSData dataWithBytes:locksBytes length:64*32]);
-	
 	const char *locksBytes64 = NULL;
 	if(data.length == 0x1522)
 	{
-		//DLog(@"got long message, parsing extra locks.");
-		
 		const uint8_t *packedBytes = &((const uint8_t *)data.bytes)[0xac6];
 		const char *unpackedBytes = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:[NSData dataWithBytes:packedBytes length:2647]].bytes;
 		locksBytes64 = &unpackedBytes[0x04c];
 	}
-	
-	
-	//DLog(@"unpacked locks bytes length: %ld", unpackedLocksData.length);
 	
 	NSUInteger totalReceivedLocks = 0;
 	
@@ -484,8 +466,6 @@
 		const char *row64 = NULL;
 		if(locksBytes64) row64 = &locksBytes64[i * 32];
 		
-		
-		//printf("\nvalues for pLock %02d:     ", i);
 		char firstStep = row[0];
 		BOOL rowHasLockTrigs = NO;
 		
@@ -521,19 +501,14 @@
 		}
 	}
 	
-	//printf("\n\n");
-	
-	//DLog(@"parsing lock pattern..");
-	
 	const char *bytesForCurrentRow = locksBytes;
 	const char *bytesForCurrentRow64 = locksBytes64;
 	
 	NSUInteger totalHydratedLocks = 0;
 	
-	// step through lock pattern
 	for (uint8_t track = 0; track < 16; track++)
 	{
-		if(lockPatternBytes[track]) // track has nonzero bits?
+		if(lockPatternBytes[track])
 		{
 			int32_t val = CFSwapInt32HostToBig(lockPatternBytes[track]);
 			
@@ -541,7 +516,7 @@
 			{
 				if(val & (1 << param))
 				{
-					for (int step = 0; step < 32; step++)
+					for (uint8_t step = 0; step < 32; step++)
 					{
 						int8_t value = bytesForCurrentRow[step];
 						if(value > -1)
@@ -558,7 +533,7 @@
 					}
 					if(locksBytes64)
 					{
-						for (int step = 0; step < 32; step++)
+						for (uint8_t step = 0; step < 32; step++)
 						{
 							int8_t value = bytesForCurrentRow64[step];
 							if(value > -1)
@@ -568,7 +543,6 @@
 															   param:param
 																step:step + 32
 															   value:value];
-								
 								
 								if([pattern.locks setLock:lock]);
 									totalHydratedLocks++;
@@ -582,35 +556,6 @@
 			}
 		}
 	}
-	
-	//DLog(@"total locks \nreceived: %ld \nhydrated: %ld", totalReceivedLocks, totalHydratedLocks);
-/*
-	DLog(@"locks data:\n");
-	for(int i = 0; i < 64; i++)
-	{
-		DLog(@"0-31:\n");
-		for(int j = 0; j < 32; j++)
-		{
-			printf("%4d ", locksBytes[i*32 + j]);
-		}
-		printf("\n");
-		
-		if(locksBytes64)
-		{
-			DLog(@"32-64:\n");
-			for(int j = 0; j < 32; j++)
-			{
-				printf("%4d ", locksBytes64[i*32 + j]);
-			}
-		}
-		printf("\n\n");
-	}
-	
-	
-	DLog(@"lock rows after setting lock:");
-	[pattern.locks printRows];
-	
-	*/
 }
 
 
@@ -716,7 +661,7 @@
 
 + (void)hydratePattern:(MDPattern *)pattern withOptionalExtraPatternFromData:(NSData *)data
 {
-	// ** LOCKS ** are handled in the locks parsing method
+	// ** ALL LOCKS ** are handled in the locks parsing method
 	
 	
 	const uint8_t *packedBytes = &((const uint8_t *)data.bytes)[0xac6];

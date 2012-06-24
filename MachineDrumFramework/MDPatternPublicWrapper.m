@@ -14,7 +14,11 @@
 
 @implementation MDPatternPublicWrapper
 
-
++ (MDPatternPublicWrapper *)patternWithPattern:(MDPatternPublicWrapper *)inPattern
+{
+	NSData *data = [inPattern sysexData];
+	return [MDPatternPublicWrapper patternWithData:data];
+}
 
 + (MDPatternPublicWrapper *)pattern
 {
@@ -62,7 +66,7 @@
 - (void)clearLockAtTrack:(uint8_t)t param:(uint8_t)p step:(uint8_t)s clearTrig:(BOOL) clearTrig
 {
 	MDParameterLock *lock = [MDParameterLock lockForTrack:t param:p step:s value:-1];
-	[self.pattern.locks setLock:lock];
+	[self.pattern.locks clearLock:lock];
 	if(clearTrig) [self setTrigAtTrack:t step:s toValue:0];
 }
 
@@ -107,6 +111,12 @@
 {
 	NSData *d = [self.pattern sysexData];
 	return d;
+}
+
+- (void)setSavePosition:(uint8_t)slot
+{
+	if(slot > 127) slot = 0;
+	self.pattern.originalPosition = slot;
 }
 
 
