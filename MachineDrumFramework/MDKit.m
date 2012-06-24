@@ -34,6 +34,11 @@
 	return [MDKitParser sysexDataFromKit:self];
 }
 
++ (MDKit *)kitWithKit:(MDKit *)k
+{
+	return [self kitWithData:[k sysexData]];
+}
+
 + (MDKit *)kit
 {
 	return [MDKit new];

@@ -18,5 +18,8 @@
 #import "MDPatternPublicWrapper.h"
 #import "MDPitch.h"
 #import "MDKitMachine.h"
+#import "MDKit.h"
+#import "MDProcedure.h"
+#import "MDProcessingPipeline.h"
 
 #endif

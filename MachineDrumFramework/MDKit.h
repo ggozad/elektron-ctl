@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSArray *eqSettings;
 @property (strong, nonatomic) NSArray *dynamicsSettings;
 
++ (MDKit *) kitWithKit:(MDKit *)k;
 + (MDKit *) kit;
 + (MDKit *) kitWithData:(NSData *)data;
 + (MDKit *) kitWithRandomParametersAndDrumModels;
