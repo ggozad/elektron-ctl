@@ -6,7 +6,8 @@
 //  Copyright (c) 2012 Jakob Penca. All rights reserved.
 //
 
-#import "MDProcedure.h"
+#import "MDProc.h"
+
 
 typedef enum MDProcedureTrigGeneratorMode
 {
@@ -16,7 +17,7 @@ typedef enum MDProcedureTrigGeneratorMode
 }
 MDProcedureTrigGeneratorMode;
 
-@interface MDProcedureTrigGenerator : MDProcedure
+@interface MDProcedureTrigGenerator : MDProc
 @property MDProcedureTrigGeneratorMode mode;
 @property uint8_t track;
 @property uint8_t startTrig;

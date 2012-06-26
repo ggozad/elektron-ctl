@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		362A7EDD159A15D3007478D7 /* MDProcedure.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EDC159A15D3007478D7 /* MDProcedure.m */; };
+		362A7EDD159A15D3007478D7 /* MDProc.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EDC159A15D3007478D7 /* MDProc.m */; };
 		362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */; };
 		362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
@@ -50,8 +50,8 @@
 
 /* Begin PBXFileReference section */
 		362A7ED9159A155F007478D7 /* MDProcedures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedures.h; sourceTree = "<group>"; };
-		362A7EDB159A15D3007478D7 /* MDProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedure.h; sourceTree = "<group>"; };
-		362A7EDC159A15D3007478D7 /* MDProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedure.m; sourceTree = "<group>"; };
+		362A7EDB159A15D3007478D7 /* MDProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProc.h; sourceTree = "<group>"; };
+		362A7EDC159A15D3007478D7 /* MDProc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProc.m; sourceTree = "<group>"; };
 		362A7EEA159A17B3007478D7 /* MDProcedureTrigGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureTrigGenerator.h; sourceTree = "<group>"; };
 		362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureTrigGenerator.m; sourceTree = "<group>"; };
 		362A7EEE159A18A8007478D7 /* MDProcedureCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureCondition.h; sourceTree = "<group>"; };
@@ -125,8 +125,8 @@
 			isa = PBXGroup;
 			children = (
 				362A7ED9159A155F007478D7 /* MDProcedures.h */,
-				362A7EDB159A15D3007478D7 /* MDProcedure.h */,
-				362A7EDC159A15D3007478D7 /* MDProcedure.m */,
+				362A7EDB159A15D3007478D7 /* MDProc.h */,
+				362A7EDC159A15D3007478D7 /* MDProc.m */,
 				362A7EEA159A17B3007478D7 /* MDProcedureTrigGenerator.h */,
 				362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */,
 				362A7EEE159A18A8007478D7 /* MDProcedureCondition.h */,
@@ -295,7 +295,7 @@
 				369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */,
 				36814F041594CD8700220C88 /* MDPitch.m in Sources */,
 				36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */,
-				362A7EDD159A15D3007478D7 /* MDProcedure.m in Sources */,
+				362A7EDD159A15D3007478D7 /* MDProc.m in Sources */,
 				362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */,
 				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
 			);

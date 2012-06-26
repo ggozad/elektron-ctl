@@ -36,8 +36,8 @@
 	
 	for (id p in self.procedures)
 	{
-		if([p isKindOfClass: [MDProcedure class]])
-			[(MDProcedure *)p processPattern:self.patternCopy kit:self.kitCopy];
+		if([p isKindOfClass: [MDProc class]])
+			[(MDProc *)p processPattern:self.patternCopy kit:self.kitCopy];
 	}
 }
 

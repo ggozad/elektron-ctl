@@ -10,7 +10,7 @@
 #define MachineDrumFramework_MDProcedures_h
 
 #import "MDProcedureCondition.h"
-#import "MDProcedure.h"
+#import "MDProc.h"
 
 #import "MDProcedureTrigGenerator.h"
 
