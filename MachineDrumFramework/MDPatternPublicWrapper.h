@@ -33,6 +33,7 @@ MDPatternScale;
 - (void) setLength:(uint8_t)len;
 - (void) setScale:(MDPatternScale)scale;
 - (void) setTrigAtTrack: (uint8_t) track step: (uint8_t) step toValue: (BOOL) val;
+- (void) toggleTrigAtTrack:(uint8_t) track step: (uint8_t) step;
 - (BOOL) trigAtTrack: (uint8_t) track step: (uint8_t) step;
 - (BOOL) setLock:(MDParameterLock *)lock setTrigIfNone:(BOOL)setTrig;
 - (void) clearLockAtTrack:(uint8_t)t param:(uint8_t)p step:(uint8_t)s clearTrig:(BOOL) clearTrig;

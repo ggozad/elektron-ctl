@@ -25,7 +25,6 @@
 @end
 
 @implementation MDMachineDrum
-@synthesize delegate, tempo, currentKitName;
 
 - (id) init
 {

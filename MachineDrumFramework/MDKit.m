@@ -27,7 +27,20 @@
 @implementation MDKit
 @synthesize tracks, kitName, originalPosition;
 
-
+- (void)setName:(NSString *)s
+{
+	const char *inString = [s cStringUsingEncoding:NSASCIIStringEncoding];
+	
+	NSUInteger len = s.length;
+	if(len > 8) len = 8;
+	
+	char nameBytes[16];
+	for (int i = 0; i < 16; i++) nameBytes[i] = 0;
+	for(int i = 0; i < len; i++)
+		nameBytes[i] = inString[i];
+	
+	self.kitName = [NSData dataWithBytes:&nameBytes length:16];
+}
 
 - (NSData *)sysexData
 {

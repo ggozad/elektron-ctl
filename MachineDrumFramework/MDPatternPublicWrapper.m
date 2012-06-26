@@ -91,6 +91,14 @@
 	return [track trigAtStep:s];
 }
 
+- (void)toggleTrigAtTrack:(uint8_t)track step:(uint8_t)step
+{
+	if(track >= 16) return;
+	if(step >= 64) return;
+	BOOL on = [self trigAtTrack:track step:step];
+	[self setTrigAtTrack:track step:step toValue:!on];
+}
+
 - (void)setLength:(uint8_t)len
 {
 	if(len <= 64) self.pattern.length = len;

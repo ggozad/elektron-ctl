@@ -13,7 +13,7 @@
 #import "MDMachinedrumPublic.h"
 
 #define kElektronTM1DisplayName @"Elektron TM-1"
-#define kDesiredSysexSpeed 10000
+#define kDesiredSysexSpeed 5000
 
 static void SetGetSpeed(MIDIEndpointRef ep, SInt32 speed)
 {
@@ -61,6 +61,12 @@ midiInPortRef,
 midiClientRef,
 midiSysexSendRequest, ready, tempo;
 
+
+- (NSUInteger)sysexQueueLength
+{
+	return [self.sysexSendQueueArray count];
+}
+
 - (void)dequeueAndSendData
 {
 	if(!self.ready) return;
@@ -72,7 +78,7 @@ midiSysexSendRequest, ready, tempo;
 		[self.sysexSendQueueArray removeObject:d];
 	}
 	
-	[self sendSysexData:d];
+	[self performSelectorOnMainThread:@selector(sendSysexData:) withObject:d waitUntilDone:NO];
 }
 
 - (void)enqueueSysexMessage:(NSData *)data
@@ -87,7 +93,7 @@ midiSysexSendRequest, ready, tempo;
 	if(self = [super init])
 	{
 		self.sysexSendQueueArray = [NSMutableArray array];
-		[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(dequeueAndSendData) userInfo:nil repeats:YES];
+		[NSTimer scheduledTimerWithTimeInterval:.2 target:self selector:@selector(dequeueAndSendData) userInfo:nil repeats:YES];
 	}
 	return self;
 }
@@ -388,6 +394,11 @@ void midiInputCallback (const MIDIPacketList *list,
 		for (NSUInteger currentByteIndex = 0; currentByteIndex < currentPacket->length; currentByteIndex++)
 		{
 			unsigned char byteValue = currentPacket->data[currentByteIndex];
+			
+			if(byteValue == MD_MIDI_STATUS_SYSEX_BEGIN)
+			{
+				//DLog(@"sysex receive begin...");
+			}
 			
 			// handle MIDI status bytes
 			if(byteValue & MD_MIDI_STATUS_ANY) // got status byte

@@ -19,7 +19,10 @@
 #import "MDPitch.h"
 #import "MDKitMachine.h"
 #import "MDKit.h"
-#import "MDProcedure.h"
+
 #import "MDProcessingPipeline.h"
+#import "MDProcedures.h"
+
+
 
 #endif

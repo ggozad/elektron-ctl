@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		362A7EDD159A15D3007478D7 /* MDProcedure.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EDC159A15D3007478D7 /* MDProcedure.m */; };
+		362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */; };
+		362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
-		36746CAF1597DD80007F09F2 /* MDProcedure.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAE1597DD80007F09F2 /* MDProcedure.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
 		369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 369774E6158FE95100FCC379 /* MDPatternPublicWrapper.m */; };
 		36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */; };
@@ -47,10 +49,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		362A7ED9159A155F007478D7 /* MDProcedures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedures.h; sourceTree = "<group>"; };
+		362A7EDB159A15D3007478D7 /* MDProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedure.h; sourceTree = "<group>"; };
+		362A7EDC159A15D3007478D7 /* MDProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedure.m; sourceTree = "<group>"; };
+		362A7EEA159A17B3007478D7 /* MDProcedureTrigGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureTrigGenerator.h; sourceTree = "<group>"; };
+		362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureTrigGenerator.m; sourceTree = "<group>"; };
+		362A7EEE159A18A8007478D7 /* MDProcedureCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureCondition.h; sourceTree = "<group>"; };
+		362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureCondition.m; sourceTree = "<group>"; };
 		36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcessingPipeline.h; sourceTree = "<group>"; };
 		36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcessingPipeline.m; sourceTree = "<group>"; };
-		36746CAD1597DD80007F09F2 /* MDProcedure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MDProcedure.h; path = ../MDProcedure.h; sourceTree = "<group>"; };
-		36746CAE1597DD80007F09F2 /* MDProcedure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MDProcedure.m; path = ../MDProcedure.m; sourceTree = "<group>"; };
 		36814F011594CD8700220C88 /* MDConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDConstants.h; sourceTree = "<group>"; };
 		36814F021594CD8700220C88 /* MDPitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPitch.h; sourceTree = "<group>"; };
 		36814F031594CD8700220C88 /* MDPitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPitch.m; sourceTree = "<group>"; };
@@ -114,6 +121,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		362A7EDE159A160D007478D7 /* Process */ = {
+			isa = PBXGroup;
+			children = (
+				362A7ED9159A155F007478D7 /* MDProcedures.h */,
+				362A7EDB159A15D3007478D7 /* MDProcedure.h */,
+				362A7EDC159A15D3007478D7 /* MDProcedure.m */,
+				362A7EEA159A17B3007478D7 /* MDProcedureTrigGenerator.h */,
+				362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */,
+				362A7EEE159A18A8007478D7 /* MDProcedureCondition.h */,
+				362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */,
+			);
+			name = Process;
+			sourceTree = "<group>";
+		};
 		36B920CF158F81670025F0B3 = {
 			isa = PBXGroup;
 			children = (
@@ -143,8 +164,7 @@
 		36B920DF158F81670025F0B3 /* MachineDrumFramework */ = {
 			isa = PBXGroup;
 			children = (
-				36746CAD1597DD80007F09F2 /* MDProcedure.h */,
-				36746CAE1597DD80007F09F2 /* MDProcedure.m */,
+				362A7EDE159A160D007478D7 /* Process */,
 				36814F011594CD8700220C88 /* MDConstants.h */,
 				36814F021594CD8700220C88 /* MDPitch.h */,
 				36814F031594CD8700220C88 /* MDPitch.m */,
@@ -275,7 +295,9 @@
 				369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */,
 				36814F041594CD8700220C88 /* MDPitch.m in Sources */,
 				36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */,
-				36746CAF1597DD80007F09F2 /* MDProcedure.m in Sources */,
+				362A7EDD159A15D3007478D7 /* MDProcedure.m in Sources */,
+				362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */,
+				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

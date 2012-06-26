@@ -11,7 +11,7 @@
 @interface MDParameterLockRow : NSObject
 @property uint8_t track;
 @property uint8_t param;
-@property NSData *valueStepData;
+@property (strong, nonatomic) NSData *valueStepData;
 
 + (MDParameterLockRow *)parameterLockRowForLock:(MDParameterLock *)lock;
 + (MDParameterLockRow *)parameterLockRowForTrack:(uint8_t)track param: (uint8_t) param withValueStepData:(NSData *)data;

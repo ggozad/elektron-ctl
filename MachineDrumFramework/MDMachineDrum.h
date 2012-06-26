@@ -16,7 +16,7 @@
 @end
 
 @interface MDMachineDrum : NSObject
-@property id<MDMachineDrumDelegate> delegate;
+@property (weak, nonatomic) id<MDMachineDrumDelegate> delegate;
 @property int tempo;
 @property (strong, nonatomic) NSString *currentKitName;
 

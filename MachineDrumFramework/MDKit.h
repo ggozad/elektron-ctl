@@ -23,5 +23,6 @@
 + (MDKit *) kitWithData:(NSData *)data;
 + (MDKit *) kitWithRandomParametersAndDrumModels;
 - (NSData *) sysexData;
+- (void) setName:(NSString *)s;
 
 @end
