@@ -24,6 +24,10 @@ MDProcedureConditionsMode;
 
 @interface MDProc : NSObject
 @property MDProcedureConditionsMode conditionsMode;
+@property uint8_t track;
+@property uint8_t startTrig;
+@property uint8_t endTrig;
+@property uint8_t stride;
 
 + (MDProc *) procedureWithMode:(MDProcedureConditionsMode)m;
 - (BOOL) evaluateConditions;
@@ -33,4 +37,11 @@ MDProcedureConditionsMode;
 - (void) removeFirstCondition;
 - (void) removeLastCondition;
 - (void) clearConditions;
+
++ (id) procedureForWithMode:(MDProcedureConditionsMode)m
+				   forTrack:(uint8_t)track
+			  withStartTrig:(uint8_t)startTrig
+					endTrig:(uint8_t)endTrig
+					 stride:(uint8_t)stride;
+
 @end

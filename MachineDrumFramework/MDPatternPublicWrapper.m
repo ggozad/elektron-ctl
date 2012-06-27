@@ -70,14 +70,17 @@
 	if(clearTrig) [self setTrigAtTrack:t step:s toValue:0];
 }
 
+- (MDParameterLock *)lockAtTrack:(uint8_t)track step:(uint8_t)step param:(uint8_t)param
+{
+	return [self.pattern.locks lockAtTrack:track step:step param:param];
+}
+
 - (void)setTrigAtTrack:(uint8_t)t step:(uint8_t)s toValue:(BOOL)val
 {
 	if(t >= 16) return;
 	if(s >= 64) return;
 	
-	if(!val)
-		[self.pattern.locks clearLocksAtTrack:t step:s];
-	
+	[self.pattern.locks clearLocksAtTrack:t step:s];
 	
 	MDPatternTrack *track = [self.pattern.tracks objectAtIndex:t];
 	[track setTrigAtStep:s to:val];

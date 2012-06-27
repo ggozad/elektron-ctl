@@ -13,7 +13,12 @@
 #define kMDSysexKitDumpNotification @"kMDSysexKitDumpNotification"
 #define kMIDIFoundationReadyChange @"kMIDIFoundationReadyChange"
 
-#define kMDturboMIDISpeedRequestAnswer @"kMDturboMIDISpeedRequestAnswer"
+#define kMDturboMIDISpeedRequest @"kMDturboMIDISpeedRequest"
+#define kMDturboMIDISpeedAnswer @"kMDturboMIDISpeedRequestAnswer"
+#define kMDturboMIDISpeedNegotiation @"kMDturboMIDISpeedNegotiation"
+#define kMDturboMIDISpeedAcknowledgement @"kMDturboMIDISpeedAcknowledgement"
+#define kMDturboMIDISpeedTest @"kMDturboMIDISpeedTest"
+#define kMDturboMIDISpeedTestResult @"kMDturboMIDISpeedTestResult"
 
 
 

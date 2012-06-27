@@ -26,6 +26,13 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 
 @implementation MDPitch
 
++ (uint8_t)noteClosestToPitchParamValue:(uint8_t)pitch forMachineID:(MDMachineID)mid
+{
+	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID:mid];
+	uint8_t n = roundf(map(pitch, 0, 127, r.lowest, r.highest));
+	if(n < 128) return n; return 0;
+}
+
 + (MDNoteRange)noteRangeForMachineAbsoluteRange:(MDMachineAbsoluteNoteRange)fr
 {
 	int8_t min = ceilf(fr.lowest);

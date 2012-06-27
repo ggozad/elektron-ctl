@@ -11,12 +11,3 @@
 @interface MDSysexRouter : NSObject
 + (void) routeSysexData:(NSData *)data;
 @end
-
-
-/*
-#import <Foundation/Foundation.h>
-
-@interface MDSysexRouter : NSObject
-+ (void) routeSysexData:(NSData *)data;
-@end
-*/

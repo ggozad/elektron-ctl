@@ -19,8 +19,6 @@ MDProcedureTrigGeneratorMode;
 
 @interface MDProcedureTrigGenerator : MDProc
 @property MDProcedureTrigGeneratorMode mode;
-@property uint8_t track;
-@property uint8_t startTrig;
-@property uint8_t endTrig;
-@property uint8_t stride;
+
+
 @end

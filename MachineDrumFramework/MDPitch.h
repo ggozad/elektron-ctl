@@ -71,6 +71,7 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h);
 
 + (MDNoteRange) noteRangeForMachineAbsoluteRange:(MDMachineAbsoluteNoteRange)fr;
 + (MDNoteRange) noteRangeForMachine:(MDMachineID)machineID;
++ (uint8_t) noteClosestToPitchParamValue: (uint8_t) pitch forMachineID: (MDMachineID)mid;
 + (int8_t) pitchParamValueForNote:(uint8_t)note withAbsoluteNoteRange:(MDMachineAbsoluteNoteRange)fr;
 + (int8_t) pitchParamValueForNote:(uint8_t)note forMachine:(MDMachineID)machineID;
 + (int8_t) pitchParamValueForNote:(uint8_t)note forMachineName:(NSUInteger)machineName;

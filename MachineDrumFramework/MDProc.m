@@ -16,6 +16,26 @@
 
 @implementation MDProc
 
++ (id) procedureForWithMode:(MDProcedureConditionsMode)m
+				   forTrack:(uint8_t)track
+			  withStartTrig:(uint8_t)startTrig
+					endTrig:(uint8_t)endTrig
+					 stride:(uint8_t)stride
+{
+	MDProc *proc = [self new];
+	proc.conditionsMode = m;
+	proc.track = track % 16;
+	proc.startTrig = startTrig % 64;
+	proc.endTrig = endTrig % 64;
+	proc.stride = stride % 65;
+	
+	if(proc.endTrig < proc.startTrig)
+		proc.endTrig = proc.startTrig;
+	
+	return proc;
+}
+
+
 - (id)init
 {
 	if(self = [super init])
@@ -27,7 +47,10 @@
 
 - (void)processPattern:(MDPatternPublicWrapper *)pattern kit :(MDKit *)kit
 {
-	return;
+	self.track = self.track % 16;
+	self.startTrig = self.startTrig % 64;
+	self.endTrig = self.endTrig % 64;
+	self.stride = self.stride % 65;
 }
 
 + (MDProc *)procedureWithMode:(MDProcedureConditionsMode)m

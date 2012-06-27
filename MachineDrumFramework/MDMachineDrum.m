@@ -249,8 +249,13 @@
 
 - (void)sendPattern:(MDPatternPublicWrapper *)pattern
 {
+	DLog(@"preparing to send pattern.");
 	NSData *d = [pattern sysexData];
-	if(d) [self.delegate machineDrum:self wantsToSendSysExData:d];
+	if(d)
+	{
+		DLog(@"sending.");
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
+	}
 }
 
 

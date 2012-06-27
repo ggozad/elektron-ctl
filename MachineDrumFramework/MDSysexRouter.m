@@ -80,7 +80,7 @@
 			case kTurboMIDISpeedAnswerID:
 			{
 				DLog(@"forwarding speed answer.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedRequestAnswer
+				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedAnswer
 																	object:data];
 				break;
 			}

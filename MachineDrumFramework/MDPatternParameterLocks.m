@@ -31,7 +31,9 @@
 
 - (void)clearLock:(MDParameterLock *)lock
 {
-	for(NSUInteger i = [self.lockRows count]; i > 0; i--)
+	if(![self.lockRows count]) return;
+	
+	for(NSUInteger i = [self.lockRows count]-1; i > 0; i--)
 	{
 		MDParameterLockRow *row = [_lockRows objectAtIndex:i];
 		if(row.track == lock.track && row.param == lock.param)
@@ -45,7 +47,9 @@
 
 - (void)clearLocksAtTrack:(uint8_t)t step:(uint8_t)s
 {
-	for(NSUInteger i = [self.lockRows count]; i > 0; i--)
+	if(![self.lockRows count]) return;
+	
+	for(NSUInteger i = [self.lockRows count]-1; i > 0; i--)
 	{
 		MDParameterLockRow *row = [_lockRows objectAtIndex:i];
 		if(row.track == t)
@@ -58,6 +62,23 @@
 			}
 		}
 	}
+}
+
+- (MDParameterLock *)lockAtTrack:(uint8_t)track step:(uint8_t)step param:(uint8_t)param
+{
+	if(step > 63) return nil;
+	
+	for (MDParameterLockRow *row in self.lockRows)
+	{
+		if(row.track == track && row.param == param)
+		{
+			int8_t val = [row valueForStep:step];
+			if(val >= -1)
+				return [MDParameterLock lockForTrack:track param:param step:step value:val];
+			return nil;
+		}
+	}
+	return nil;
 }
 
 - (BOOL)setLock:(MDParameterLock *)lock

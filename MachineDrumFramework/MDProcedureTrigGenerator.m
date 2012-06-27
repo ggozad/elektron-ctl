@@ -10,18 +10,25 @@
 
 @implementation MDProcedureTrigGenerator
 
+- (id)init
+{
+	if(self = [super init])
+	{
+		self.endTrig = 63;
+		self.stride = 1;
+	}
+	return self;
+}
+
 - (void)processPattern:(MDPatternPublicWrapper *)pattern kit:(MDKit *)kit
 {
-	if(self.track > 15) return;
-	if(self.stride < 1) return;
-	if(self.startTrig >= 64) return;
-	if(self.endTrig >= 64) return;
-
-	BOOL b = [self evaluateConditions];
-	if(!b) return;
+	[super processPattern:pattern kit:kit];
 	
-	for(int i = self.startTrig; i < self.endTrig; i+= self.stride)
+	for(int i = self.startTrig; i <= self.endTrig; i+= self.stride)
 	{
+		BOOL b = [self evaluateConditions];
+		if(!b) continue;
+		
 		if(self.mode == MDProcedureTrigGeneratorMode_ADD)
 		{
 			[pattern setTrigAtTrack:self.track step:i toValue:1];

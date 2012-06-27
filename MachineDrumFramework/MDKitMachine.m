@@ -22,13 +22,6 @@ const uint8_t MDMachineIDs[] =
 	112, 113, 120, 121, 122, 123,													// CTR
 };
 
-
-const MDMachineAbsoluteNoteRange machineNoteRanges[] =
-{
-	{},
-};
-
-
 @implementation MDKitMachine
 
 + (MDMachineID)machineIDForMachineName:(MDMachineName)name

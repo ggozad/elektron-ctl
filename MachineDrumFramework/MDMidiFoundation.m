@@ -13,14 +13,16 @@
 #import "MDMachinedrumPublic.h"
 
 #define kElektronTM1DisplayName @"Elektron TM-1"
-#define kDesiredSysexSpeed 5000
+#define kDesiredSysexSpeed 3125
 
 static void SetGetSpeed(MIDIEndpointRef ep, SInt32 speed)
 {
+	SInt32 oldSpeed = 0;
+	MIDIObjectGetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, &oldSpeed);
 	MIDIObjectSetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, speed);
 	SInt32 speed2 = 0;
 	MIDIObjectGetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, &speed2);
-	printf("%d -> %d\n", (int)speed, (int)speed2);
+	DLog(@"changing midi sysex send speed from %d B/s to %d B/s. Result: %d B/s", oldSpeed, speed, speed2);
 }
 
 static NSString *getDisplayName(MIDIObjectRef object)
@@ -439,7 +441,7 @@ void midiInputCallback (const MIDIPacketList *list,
 					inBytesSysexBufferIndex = 0;
 					bytesToSkip = 0;
 					inBytesSysexBuffer[inBytesSysexBufferIndex++] = byteValue;
-					DLog(@"begin sysex receive");
+					//DLog(@"begin sysex receive");
 				}
 				else if (receivingSysexData && byteValue == MD_MIDI_STATUS_SYSEX_END) // sysex end
 				{
@@ -447,7 +449,7 @@ void midiInputCallback (const MIDIPacketList *list,
 					inBytesSysexBuffer[inBytesSysexBufferIndex++] = byteValue;
 					NSUInteger sysexDataLength = inBytesSysexBufferIndex;
 					inBytesSysexBufferIndex = 0;
-					printf("\n");
+					//printf("\n");
 					DLog(@"received sysex data with length: 0x%x", sysexDataLength);
 					
 					// copy data, notify receiver

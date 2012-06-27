@@ -21,6 +21,14 @@
 	return self;
 }
 
+- (int8_t) valueForStep:(uint8_t)step
+{
+	if(step > 63) return -1;
+	
+	const char *bytes = self.valueStepData.bytes;
+	return bytes[step];
+}
+
 - (void)setStep:(uint8_t)step toValue:(int8_t)value
 {
 	char *bytes = (char *) self.valueStepData.bytes;

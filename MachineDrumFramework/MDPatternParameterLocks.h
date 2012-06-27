@@ -19,6 +19,7 @@
 - (void) clearLock:(MDParameterLock *)lock;
 - (void) clearLocksAtTrack:(uint8_t)t step:(uint8_t)s;
 - (BOOL) setLock:(MDParameterLock *)lock;
+- (MDParameterLock *)lockAtTrack:(uint8_t)track step:(uint8_t)step param:(uint8_t)param;
 - (void) printRows;
 
 @end

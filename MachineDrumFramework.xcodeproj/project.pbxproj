@@ -10,6 +10,8 @@
 		362A7EDD159A15D3007478D7 /* MDProc.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EDC159A15D3007478D7 /* MDProc.m */; };
 		362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */; };
 		362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */; };
+		362A7F06159A7B89007478D7 /* MDProcedureArpeggiator.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7F05159A7B89007478D7 /* MDProcedureArpeggiator.m */; };
+		362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7F0D159A939A007478D7 /* MDProcedureScaleFilter.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
 		369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 369774E6158FE95100FCC379 /* MDPatternPublicWrapper.m */; };
@@ -56,6 +58,10 @@
 		362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureTrigGenerator.m; sourceTree = "<group>"; };
 		362A7EEE159A18A8007478D7 /* MDProcedureCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureCondition.h; sourceTree = "<group>"; };
 		362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureCondition.m; sourceTree = "<group>"; };
+		362A7F04159A7B89007478D7 /* MDProcedureArpeggiator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureArpeggiator.h; sourceTree = "<group>"; };
+		362A7F05159A7B89007478D7 /* MDProcedureArpeggiator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureArpeggiator.m; sourceTree = "<group>"; };
+		362A7F0C159A939A007478D7 /* MDProcedureScaleFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureScaleFilter.h; sourceTree = "<group>"; };
+		362A7F0D159A939A007478D7 /* MDProcedureScaleFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureScaleFilter.m; sourceTree = "<group>"; };
 		36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcessingPipeline.h; sourceTree = "<group>"; };
 		36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcessingPipeline.m; sourceTree = "<group>"; };
 		36814F011594CD8700220C88 /* MDConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDConstants.h; sourceTree = "<group>"; };
@@ -131,6 +137,10 @@
 				362A7EEB159A17B3007478D7 /* MDProcedureTrigGenerator.m */,
 				362A7EEE159A18A8007478D7 /* MDProcedureCondition.h */,
 				362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */,
+				362A7F04159A7B89007478D7 /* MDProcedureArpeggiator.h */,
+				362A7F05159A7B89007478D7 /* MDProcedureArpeggiator.m */,
+				362A7F0C159A939A007478D7 /* MDProcedureScaleFilter.h */,
+				362A7F0D159A939A007478D7 /* MDProcedureScaleFilter.m */,
 			);
 			name = Process;
 			sourceTree = "<group>";
@@ -298,6 +308,8 @@
 				362A7EDD159A15D3007478D7 /* MDProc.m in Sources */,
 				362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */,
 				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
+				362A7F06159A7B89007478D7 /* MDProcedureArpeggiator.m in Sources */,
+				362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

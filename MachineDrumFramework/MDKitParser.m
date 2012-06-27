@@ -85,10 +85,16 @@
 
 + (MDKit *)kitFromSysexData:(NSData *)data
 {
-	if(![self kitDataIsValid:data]) return nil;
+	DLog(@"hydrating kit...");
+	
+	if(![self kitDataIsValid:data])
+	{
+		DLog(@"invalid sysex data, bailing.");
+		return nil;
+	}
 	MDKit *kit = [MDKit new];
 	
-	NSLog(@"hydrating kit:");
+	
 	
 	[self hydrateKit:kit originalPositionFromData:data];
 	[self hydrateKit:kit nameFromData:data];
@@ -101,6 +107,8 @@
 	[self hydrateKit:kit EQSettingsFromData:data];
 	[self hydrateKit:kit dynamicsSettingsFromData:data];
 	[self hydrateKit:kit trigGroupsFromData:data];
+	
+	DLog(@"done.");
 	
 	return kit;
 }
@@ -279,7 +287,7 @@
 
 + (BOOL)kitDataIsValid:(NSData *)data
 {
-	NSLog(@"sanity checking kit data...");
+	DLog(@"sanity checking kit data...");
 	const uint8_t *bytes = data.bytes;
 	
 	if(data.length < 0x4d1)
@@ -290,13 +298,15 @@
 	
 	if(bytes[0x06] != 0x52)
 	{
-		NSLog(@"not kit ID, bailing.");
+		DLog(@"not kit ID, bailing.");
 		return NO;
 	}
 	
 	if(![self messageLengthIsValid:data] ||
 	   ![self checksumIsValid:data]) return NO;
 
+	DLog(@"OK");
+	
 	return YES;
 }
 
@@ -368,7 +378,7 @@
 	
 	const char *drumModelsUnpackedBytes = drumModelsUnpacked.bytes;
 	
-	printf("\n");
+	//printf("\n");
 	
 	for (int i = 0; i < 16; i++) // loop through tracks
 	{
@@ -382,12 +392,12 @@
 		MDKitTrack *track = [kit.tracks objectAtIndex:i];			// get track at i
 		track.machine = model;								// and set its drum model
 		
-		DLog(@"track %2d machine: %d", i, track.machine);
+		//DLog(@"track %2d machine: %d", i, track.machine);
 		
 		
 	}
 	
-	printf("\n");
+	//printf("\n");
 }
 
 + (void)hydrateKit:(MDKit *)kit LFOSettingsFromData:(NSData *)data
@@ -492,9 +502,11 @@
 	calcedChecksum &= 0x3fff;
 	
 	
+	DLog(@"checksum: %d calculated: %d", checksum, calcedChecksum);
+	
 	if(calcedChecksum != checksum)
 	{
-		//DLog(@"checksum incorrect (%d)! bailing.", calcedChecksum);
+		DLog(@"checksum incorrect (%d)! bailing.", calcedChecksum);
 		return NO;
 	}
 	
@@ -511,12 +523,12 @@
 	
 	uint16_t calcedMessageLength = data.length - 10;
 	
-	//DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
+	DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
 	
 	
 	if(calcedMessageLength != messageLength)
 	{
-		//DLog(@"message length incorrect! bailing.");
+		DLog(@"message length incorrect! bailing.");
 		return NO;
 	}
 

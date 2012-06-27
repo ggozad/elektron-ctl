@@ -18,9 +18,6 @@ typedef enum MDPatternScale
 }
 MDPatternScale;
 
-
-
-
 @interface MDPatternPublicWrapper : NSObject
 
 + (MDPatternPublicWrapper *) pattern;
@@ -35,6 +32,7 @@ MDPatternScale;
 - (void) setTrigAtTrack: (uint8_t) track step: (uint8_t) step toValue: (BOOL) val;
 - (void) toggleTrigAtTrack:(uint8_t) track step: (uint8_t) step;
 - (BOOL) trigAtTrack: (uint8_t) track step: (uint8_t) step;
+- (MDParameterLock *)lockAtTrack:(uint8_t)track step:(uint8_t)step param:(uint8_t)param;
 - (BOOL) setLock:(MDParameterLock *)lock setTrigIfNone:(BOOL)setTrig;
 - (void) clearLockAtTrack:(uint8_t)t param:(uint8_t)p step:(uint8_t)s clearTrig:(BOOL) clearTrig;
 - (void) clearLock:(MDParameterLock *)lock clearTrig:(BOOL) clearTrig;
