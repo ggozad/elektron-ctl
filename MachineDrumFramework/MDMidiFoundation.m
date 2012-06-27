@@ -102,17 +102,18 @@ midiSysexSendRequest, ready, tempo;
 
 - (void)handleIncomingSysexMessageData:(NSData *)data
 {
-	DLog(@"incoming sysex raw data (%ld bytes):", data.length);
-	//data = [MDSysexUtil dataWithInvalidBytesStrippedFromData:data];
-
+	NSString *stripped = @"";
 	if(data.length <= 64)
 	{
-		NSString *stripped = [data description];
+		stripped = [data description];
 		stripped = [stripped stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:@""];
 		stripped = [stripped stringByReplacingCharactersInRange:NSMakeRange(stripped.length-1, 1) withString:@""];
 		stripped = [stripped stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
-		DLog(@"\n\n%@\n\n", stripped);
+		//DLog(@"\n\n%@\n\n", stripped);
 	}
+	
+	if(data.length <= 64)
+		DLog(@"\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\nincoming sysex raw data (%ld bytes):\n\n%@\n\n", data.length, stripped);
 		
 	[MDSysexRouter routeSysexData:data];
 

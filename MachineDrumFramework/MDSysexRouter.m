@@ -14,6 +14,10 @@
 
 #define kTurboMIDISpeedRequestID 0x10
 #define kTurboMIDISpeedAnswerID 0x11
+#define kTurboMIDISpeedNegotiationID 0x12
+#define kTurboMIDISpeedAcknowledgementID 0x13
+#define kTurboMIDISpeedTestID 0x14
+#define kTurboMIDISpeedTestResultID 0x15
 
 
 
@@ -79,8 +83,43 @@
 		{
 			case kTurboMIDISpeedAnswerID:
 			{
-				DLog(@"forwarding speed answer.");
+				DLog(@"type is speed answer.");
 				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedAnswer
+																	object:data];
+				break;
+			}
+			case kTurboMIDISpeedRequestID:
+			{
+				DLog(@"type is speed request.");
+				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedRequest
+																	object:data];
+				break;
+			}
+			case kTurboMIDISpeedNegotiationID:
+			{
+				DLog(@"type is speed negotiation.");
+				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedNegotiation
+																	object:data];
+				break;
+			}
+			case kTurboMIDISpeedAcknowledgementID:
+			{
+				DLog(@"type is speed acknowledgement.");
+				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedAcknowledgement
+																	object:data];
+				break;
+			}
+			case kTurboMIDISpeedTestID:
+			{
+				DLog(@"type is speed test.");
+				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedTest
+																	object:data];
+				break;
+			}
+			case kTurboMIDISpeedTestResultID:
+			{
+				DLog(@"type is speed test result.");
+				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedTestResult
 																	object:data];
 				break;
 			}
@@ -96,6 +135,8 @@
 	{
 		DLog(@"unknown header, ignoring.");
 	}
+	
+	DLog(@"\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\n");
 }
 
 + (BOOL)dataStartsWithAssumedTM1Header:(NSData *)data
