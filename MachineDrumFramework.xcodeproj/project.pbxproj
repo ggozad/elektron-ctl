@@ -12,6 +12,8 @@
 		362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7EEF159A18A8007478D7 /* MDProcedureCondition.m */; };
 		362A7F06159A7B89007478D7 /* MDProcedureArpeggiator.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7F05159A7B89007478D7 /* MDProcedureArpeggiator.m */; };
 		362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7F0D159A939A007478D7 /* MDProcedureScaleFilter.m */; };
+		362C5E7F159BD95B000D53CB /* MDPatternTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92123158F82CC0025F0B3 /* MDPatternTrack.m */; };
+		362C5E80159BD95B000D53CB /* MDSysexUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92127158F82CC0025F0B3 /* MDSysexUtil.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
 		369774E7158FE95100FCC379 /* MDPatternPublicWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 369774E6158FE95100FCC379 /* MDPatternPublicWrapper.m */; };
@@ -285,6 +287,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				362C5E7F159BD95B000D53CB /* MDPatternTrack.m in Sources */,
+				362C5E80159BD95B000D53CB /* MDSysexUtil.m in Sources */,
 				36B920E5158F81680025F0B3 /* MachineDrumFramework.m in Sources */,
 				36B920F3158F81AE0025F0B3 /* MDMidiFoundation.m in Sources */,
 				36B92128158F82CC0025F0B3 /* MDKit.m in Sources */,

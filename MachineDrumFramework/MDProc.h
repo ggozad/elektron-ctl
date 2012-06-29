@@ -44,4 +44,15 @@ MDProcedureConditionsMode;
 					endTrig:(uint8_t)endTrig
 					 stride:(uint8_t)stride;
 
+
+
+
+
+
+
+
+
+
+
+
 @end

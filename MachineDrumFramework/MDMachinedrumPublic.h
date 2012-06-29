@@ -10,6 +10,7 @@
 #define MachineDrumFramework_MDMachinedrumPublic_h
 
 #import "MDConstants.h"
+#import "MDSysexUtil.h"
 #import "MDMidiFoundation.h"
 #import "MDMachineDrum.h"
 #import "MDKitReceiveTester.h"

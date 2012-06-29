@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "MDPatternPublicWrapper.h"
 
+
+
 @class MDMachineDrum;
 
 @protocol MDMachineDrumDelegate <NSObject>
