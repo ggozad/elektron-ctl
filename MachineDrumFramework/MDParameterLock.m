@@ -45,4 +45,9 @@
 	return self;
 }
 
+- (id)copy
+{
+	return [MDParameterLock lockForTrack:self.track param:self.param step:self.step value:self.lockValue];
+}
+
 @end

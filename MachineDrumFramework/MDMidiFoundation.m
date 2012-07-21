@@ -13,7 +13,7 @@
 #import "MDMachinedrumPublic.h"
 
 #define kElektronTM1DisplayName @"Elektron TM-1"
-#define kDesiredSysexSpeed 3125
+#define kDesiredSysexSpeed (3125*5)
 
 static void SetGetSpeed(MIDIEndpointRef ep, SInt32 speed)
 {

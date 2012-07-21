@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @interface MDParameterLock : NSObject
-@property (readonly) NSUInteger track;
-@property (readonly) NSUInteger param;
-@property (readonly) NSUInteger step;
-@property (readonly) NSInteger lockValue;
+@property NSUInteger track;
+@property NSUInteger param;
+@property NSUInteger step;
+@property NSInteger lockValue;
 
 + (MDParameterLock*) lockForTrack:(NSUInteger)track param:(NSUInteger)p step:(NSUInteger)s value: (NSInteger) v;
+- (id)copy;
 
 @end
