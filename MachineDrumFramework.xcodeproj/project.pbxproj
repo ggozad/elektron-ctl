@@ -37,6 +37,10 @@
 		36B92133158F82CC0025F0B3 /* MDPatternParameterLocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9211D158F82CC0025F0B3 /* MDPatternParameterLocks.m */; };
 		36B92134158F82CC0025F0B3 /* MDPatternParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9211F158F82CC0025F0B3 /* MDPatternParser.m */; };
 		36B92135158F82CC0025F0B3 /* MDPatternReceiveTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92121158F82CC0025F0B3 /* MDPatternReceiveTester.m */; };
+		36D4193215BD9EC200DCFBCF /* MDPatternSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D4192B15BD9EC200DCFBCF /* MDPatternSelection.m */; };
+		36D4193315BD9EC200DCFBCF /* MDPatternSelectionNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D4192D15BD9EC200DCFBCF /* MDPatternSelectionNode.m */; };
+		36D4193415BD9EC200DCFBCF /* MDPatternSelectionNodePosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D4192F15BD9EC200DCFBCF /* MDPatternSelectionNodePosition.m */; };
+		36D4193515BD9EC200DCFBCF /* MDPatternSelectionRectangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 36D4193115BD9EC200DCFBCF /* MDPatternSelectionRectangle.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -114,6 +118,14 @@
 		36B92123158F82CC0025F0B3 /* MDPatternTrack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrack.m; sourceTree = "<group>"; };
 		36B92126158F82CC0025F0B3 /* MDSysexUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDSysexUtil.h; sourceTree = "<group>"; };
 		36B92127158F82CC0025F0B3 /* MDSysexUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDSysexUtil.m; sourceTree = "<group>"; };
+		36D4192A15BD9EC200DCFBCF /* MDPatternSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternSelection.h; sourceTree = "<group>"; };
+		36D4192B15BD9EC200DCFBCF /* MDPatternSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternSelection.m; sourceTree = "<group>"; };
+		36D4192C15BD9EC200DCFBCF /* MDPatternSelectionNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternSelectionNode.h; sourceTree = "<group>"; };
+		36D4192D15BD9EC200DCFBCF /* MDPatternSelectionNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternSelectionNode.m; sourceTree = "<group>"; };
+		36D4192E15BD9EC200DCFBCF /* MDPatternSelectionNodePosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternSelectionNodePosition.h; sourceTree = "<group>"; };
+		36D4192F15BD9EC200DCFBCF /* MDPatternSelectionNodePosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternSelectionNodePosition.m; sourceTree = "<group>"; };
+		36D4193015BD9EC200DCFBCF /* MDPatternSelectionRectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternSelectionRectangle.h; sourceTree = "<group>"; };
+		36D4193115BD9EC200DCFBCF /* MDPatternSelectionRectangle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternSelectionRectangle.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +188,7 @@
 		36B920DF158F81670025F0B3 /* MachineDrumFramework */ = {
 			isa = PBXGroup;
 			children = (
+				36D4192815BD9EB100DCFBCF /* PatternSelection */,
 				362A7EDE159A160D007478D7 /* Process */,
 				36814F011594CD8700220C88 /* MDConstants.h */,
 				36814F021594CD8700220C88 /* MDPitch.h */,
@@ -234,6 +247,21 @@
 				36B920E1158F81670025F0B3 /* MachineDrumFramework-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		36D4192815BD9EB100DCFBCF /* PatternSelection */ = {
+			isa = PBXGroup;
+			children = (
+				36D4192A15BD9EC200DCFBCF /* MDPatternSelection.h */,
+				36D4192B15BD9EC200DCFBCF /* MDPatternSelection.m */,
+				36D4192C15BD9EC200DCFBCF /* MDPatternSelectionNode.h */,
+				36D4192D15BD9EC200DCFBCF /* MDPatternSelectionNode.m */,
+				36D4192E15BD9EC200DCFBCF /* MDPatternSelectionNodePosition.h */,
+				36D4192F15BD9EC200DCFBCF /* MDPatternSelectionNodePosition.m */,
+				36D4193015BD9EC200DCFBCF /* MDPatternSelectionRectangle.h */,
+				36D4193115BD9EC200DCFBCF /* MDPatternSelectionRectangle.m */,
+			);
+			name = PatternSelection;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,6 +342,10 @@
 				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
 				362A7F06159A7B89007478D7 /* MDProcedureArpeggiator.m in Sources */,
 				362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */,
+				36D4193215BD9EC200DCFBCF /* MDPatternSelection.m in Sources */,
+				36D4193315BD9EC200DCFBCF /* MDPatternSelectionNode.m in Sources */,
+				36D4193415BD9EC200DCFBCF /* MDPatternSelectionNodePosition.m in Sources */,
+				36D4193515BD9EC200DCFBCF /* MDPatternSelectionRectangle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
