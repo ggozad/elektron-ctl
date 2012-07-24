@@ -8,13 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <MDMachinedrumPublic.h>
-#import "MDPatternSelectionRectangle.h"
+#import "MDPatternRegion.h"
 
 @interface MDPatternSelection : NSObject
 @property  (weak, nonatomic) MDPatternPublicWrapper *sourcePattern, *targetPattern;
-@property  (strong, nonatomic) MDPatternSelectionRectangle *sourceSelectionRectangle, *targetSelectionRectangle;
+@property  (strong, nonatomic) MDPatternRegion *sourceRegion, *targetRegion;
 
-- (void) reMapCopyPaste;
-- (void) reMapMove;
+- (void) remapCopySourceToTarget;
+- (void) remapMoveSourceToTarget;
+- (void) remapSwapSourceWithTarget;
+- (void) clearTargetRegion;
 
 @end

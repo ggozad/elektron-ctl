@@ -24,7 +24,6 @@ MDPatternScale;
 + (MDPatternPublicWrapper *) patternWithData:(NSData *)sysexData;
 + (MDPatternPublicWrapper *) patternWithPattern:(MDPatternPublicWrapper *)inPattern;
 
-
 - (void) setSavePosition:(uint8_t)slot;
 - (void) setKitNumber:(uint8_t)kit;
 - (void) setLength:(uint8_t)len;
@@ -37,6 +36,7 @@ MDPatternScale;
 - (void) clearLockAtTrack:(uint8_t)t param:(uint8_t)p step:(uint8_t)s clearTrig:(BOOL) clearTrig;
 - (void) clearLock:(MDParameterLock *)lock clearTrig:(BOOL) clearTrig;
 - (uint8_t) numberOfUniqueLocks;
+
 
 - (NSData *)sysexData;
 

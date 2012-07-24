@@ -50,4 +50,9 @@
 	return [MDParameterLock lockForTrack:self.track param:self.param step:self.step value:self.lockValue];
 }
 
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"%@ | t: %ld s: %ld p: %ld v: %ld", [super description], self.track, self.step, self.param, self.lockValue];
+}
+
 @end

@@ -23,6 +23,8 @@
 + (MDPatternPublicWrapper *)pattern
 {
 	MDPatternPublicWrapper *p = [MDPatternPublicWrapper new];
+	[p setLength:16];
+	[p setScale:MDPatternScale_16];
 	return p;
 }
 
@@ -128,6 +130,11 @@
 {
 	if(slot > 127) slot = 0;
 	self.pattern.originalPosition = slot;
+}
+
+- (id)copy
+{
+	return [[self class] patternWithPattern:self];
 }
 
 
