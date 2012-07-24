@@ -14,8 +14,12 @@
 @property  (weak, nonatomic) MDPatternPublicWrapper *sourcePattern, *targetPattern;
 @property  (strong, nonatomic) MDPatternRegion *sourceRegion, *targetRegion;
 
-- (void) remapCopySourceToTarget;
-- (void) remapMoveSourceToTarget;
+- (void) remapCopySourceToTarget_Transparent;
+- (void) remapCopySourceToTarget_Opaque;
+
+- (void) remapMoveSourceToTarget_Transparent;
+- (void) remapMoveSourceToTarget_Opaque;
+
 - (void) remapSwapSourceWithTarget;
 - (void) clearTargetRegion;
 

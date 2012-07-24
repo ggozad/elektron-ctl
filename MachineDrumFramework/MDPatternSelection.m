@@ -30,7 +30,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 @interface MDPatternSelection()
 - (NSMutableArray *) sourceNodes;
 - (void) removeNodesFromSourcePattern:(NSArray *)nodes;
-- (void) applyToTargetPattern:(NSArray *)nodes;
+- (void) writeToTargetPattern:(NSArray *)nodes;
 @end
 
 
@@ -115,7 +115,6 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		int step = n.position.step;
 		
 		int newTrack = Wrap(map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks), 0, 15);
-		
 		int newStep = Wrap(map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps), 0, 63);
 		
 		DLog(@"moving node\nt: %d -> %d\ns: %d -> %d", track, newTrack, step, newStep);
@@ -124,25 +123,26 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	}
 }
 
-- (void)applyToTargetPattern:(NSArray *)nodes
+- (void)writeToTargetPattern:(NSArray *)nodes
 {
 	MDPatternPublicWrapper *pattern = self.targetPattern;
-	[self applyNodes:nodes ToPattern:pattern];
+	[self writeNodes:nodes ToPattern:pattern];
 }
 
-- (void)applyToSourcePattern:(NSArray *)nodes
+- (void)writeToSourcePattern:(NSArray *)nodes
 {
 	MDPatternPublicWrapper *pattern = self.sourcePattern;
-	[self applyNodes:nodes ToPattern:pattern];
+	[self writeNodes:nodes ToPattern:pattern];
 }
 
-- (void) applyNodes:(NSArray *)nodes ToPattern:(MDPatternPublicWrapper *)pattern
+- (void) writeNodes:(NSArray *)nodes ToPattern:(MDPatternPublicWrapper *)pattern
 {
 	for (MDPatternSelectionNode *n in nodes)
 	{
 		if(![n.locks count])
 		{
-			[pattern setTrigAtTrack:n.position.track step:n.position.step toValue:YES];
+			if(![pattern trigAtTrack:n.position.track step:n.position.step])
+				[pattern setTrigAtTrack:n.position.track step:n.position.step toValue:YES];
 		}
 		else
 		{
@@ -179,7 +179,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 }
 
 
-- (void)remapMoveSourceToTarget
+- (void)remapMoveSourceToTarget_Transparent
 {
 	if(!self.sourcePattern ||
 	   !self.targetPattern ||
@@ -193,10 +193,28 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	NSMutableArray *sourceNodes = [self sourceNodes];
 	[self removeNodesFromSourcePattern:sourceNodes];
 	[self remapNodes:sourceNodes fromRegion:self.sourceRegion intoRegion:self.targetRegion];
-	[self applyToTargetPattern: sourceNodes];
+	[self writeToTargetPattern: sourceNodes];
 }
 
-- (void)remapCopySourceToTarget
+- (void)remapMoveSourceToTarget_Opaque
+{
+	if(!self.sourcePattern ||
+	   !self.targetPattern ||
+	   !self.sourceRegion ||
+	   !self.targetRegion)
+	{
+		DLog(@":(");
+		return;
+	}
+	
+	NSMutableArray *sourceNodes = [self sourceNodes];
+	[self removeNodesFromSourcePattern:sourceNodes];
+	[self clearTargetRegion];
+	[self remapNodes:sourceNodes fromRegion:self.sourceRegion intoRegion:self.targetRegion];
+	[self writeToTargetPattern: sourceNodes];
+}
+
+- (void)remapCopySourceToTarget_Transparent
 {
 	if(!self.sourcePattern ||
 	   !self.targetPattern ||
@@ -209,7 +227,24 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	
 	NSMutableArray *sourceNodes = [self sourceNodes];
 	[self remapNodes:sourceNodes fromRegion:self.sourceRegion intoRegion:self.targetRegion];
-	[self applyToTargetPattern: sourceNodes];
+	[self writeToTargetPattern: sourceNodes];
+}
+
+- (void)remapCopySourceToTarget_Opaque
+{
+	if(!self.sourcePattern ||
+	   !self.targetPattern ||
+	   !self.sourceRegion ||
+	   !self.targetRegion)
+	{
+		DLog(@":(");
+		return;
+	}
+	
+	NSMutableArray *sourceNodes = [self sourceNodes];
+	[self clearTargetRegion];
+	[self remapNodes:sourceNodes fromRegion:self.sourceRegion intoRegion:self.targetRegion];
+	[self writeToTargetPattern: sourceNodes];
 }
 
 - (void)remapSwapSourceWithTarget
@@ -232,8 +267,8 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	[self remapNodes:sourceNodes fromRegion:self.sourceRegion intoRegion:self.targetRegion];
 	[self remapNodes:targetNodes fromRegion:self.targetRegion intoRegion:self.sourceRegion];
 	
-	[self applyToTargetPattern:sourceNodes];
-	[self applyToSourcePattern:targetNodes];
+	[self writeToTargetPattern:sourceNodes];
+	[self writeToSourcePattern:targetNodes];
 }
 
 - (void)clearTargetRegion
