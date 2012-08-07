@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MDPattern.h"
+#import "MDPatternPrivate.h"
 
 @interface MDPatternParser : NSObject
 
-+ (MDPattern *)patternFromSysexData:(NSData *)data;
-+ (NSData *) sysexDataFromPattern:(MDPattern *) pattern;
++ (MDPatternPrivate *)patternFromSysexData:(NSData *)data;
++ (NSData *) sysexDataFromPattern:(MDPatternPrivate *) pattern;
 
 @end

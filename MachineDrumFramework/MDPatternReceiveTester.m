@@ -7,7 +7,7 @@
 //
 
 #import "MDPatternReceiveTester.h"
-#import "MDPattern.h"
+#import "MDPatternPrivate.h"
 #import "MDSysexUtil.h"
 #import "MDMachinedrumPublic.h"
 
@@ -34,7 +34,7 @@
 	DLog(@"pattern dump received.");
 	NSData *data = notification.object;
 	
-	MDPattern *p = [MDPattern patternWithData:data];
+	MDPatternPrivate *p = [MDPatternPrivate patternWithData:data];
 	NSData *repack = [p sysexData];
 	
 	BOOL same = [MDSysexUtil compareData:data withData:repack];

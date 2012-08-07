@@ -45,7 +45,7 @@
 	return self;
 }
 
-- (void)processPattern:(MDPatternPublicWrapper *)pattern kit :(MDKit *)kit
+- (void)processPattern:(MDPattern *)pattern kit :(MDKit *)kit
 {
 	self.track = self.track % 16;
 	self.startTrig = self.startTrig % 64;

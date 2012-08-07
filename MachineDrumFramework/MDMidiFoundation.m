@@ -22,7 +22,7 @@ static void SetGetSpeed(MIDIEndpointRef ep, SInt32 speed)
 	MIDIObjectSetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, speed);
 	SInt32 speed2 = 0;
 	MIDIObjectGetIntegerProperty(ep, kMIDIPropertyMaxSysExSpeed, &speed2);
-	DLog(@"changing midi sysex send speed from %d B/s to %d B/s. Result: %d B/s", oldSpeed, speed, speed2);
+	DLog(@"changing midi sysex send speed from %ld B/s to %ld B/s. Result: %ld B/s", oldSpeed, speed, speed2);
 }
 
 static NSString *getDisplayName(MIDIObjectRef object)
@@ -113,7 +113,7 @@ midiSysexSendRequest, ready, tempo;
 	}
 	
 	if(data.length <= 64)
-		DLog(@"\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\nincoming sysex raw data (%ld bytes):\n\n%@\n\n", data.length, stripped);
+		DLog(@"\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\nincoming sysex raw data (%d bytes):\n\n%@\n\n", data.length, stripped);
 		
 	[MDSysexRouter routeSysexData:data];
 

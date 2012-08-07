@@ -16,13 +16,15 @@
 #import "MDKitReceiveTester.h"
 #import "MDPatternReceiveTester.h"
 #import "MDSysexRouter.h"
-#import "MDPatternPublicWrapper.h"
+#import "MDPattern.h"
 #import "MDPitch.h"
 #import "MDKitMachine.h"
 #import "MDKit.h"
 
 #import "MDProcessingPipeline.h"
 #import "MDProcedures.h"
+
+#import "MDPatternCopiPasta.h"
 
 
 #endif

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 //#import "MDMachinedrumPublic.h"
-#import "MDPatternPublicWrapper.h"
+#import "MDPattern.h"
 #import "MDKit.h"
 
 @class MDProcedureCondition;
@@ -31,7 +31,7 @@ MDProcedureConditionsMode;
 
 + (MDProc *) procedureWithMode:(MDProcedureConditionsMode)m;
 - (BOOL) evaluateConditions;
-- (void) processPattern:(MDPatternPublicWrapper *) pattern kit: (MDKit *)kit;
+- (void) processPattern:(MDPattern *) pattern kit: (MDKit *)kit;
 - (void) addCondition:(MDProcedureCondition *)c;
 - (void) removeConditionAtIndex:(NSUInteger)i;
 - (void) removeFirstCondition;

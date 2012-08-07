@@ -24,7 +24,14 @@
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"%@ | t: %d s: %d numLocks: %ld", [super description], self.position.track, self.position.step, [self.locks count]];
+	return [NSString stringWithFormat:@"%@ | t: %d s: %d numLocks: %d", [super description], self.position.track, self.position.step, [self.locks count]];
+}
+
++ (id)nodeAtTrack:(uint8_t)track step:(uint8_t)step
+{
+	MDPatternNode *n = [self new];
+	n.position = [MDPatternNodePosition nodePositionAtTrack:track step:step];
+	return n;
 }
 
 + (id)nodeWithPosition:(MDPatternNodePosition *)position
@@ -68,6 +75,20 @@
 	
 	[_locks addObject:newLock];
 	[self updateLocks];
+}
+
+- (void)removeLockForParam:(uint8_t)param
+{
+	NSMutableArray *bin = [NSMutableArray array];
+	
+	for (MDParameterLock *l in self.locks)
+	{
+		if(l.param == param)
+			[bin addObject:l];
+	}
+	
+	for (id i in bin)
+		[self.locks removeObject:i];
 }
 
 - (void)updateLocks

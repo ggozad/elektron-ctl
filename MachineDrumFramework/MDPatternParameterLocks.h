@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "MDParameterLock.h"
-@class MDPattern;
+@class MDPatternPrivate;
 
 @interface MDPatternParameterLocks : NSObject
 @property (readonly) uint8_t rowCount;
 @property (readonly) uint8_t totalCount;
-@property (weak, nonatomic) MDPattern *pattern;
+@property (weak, nonatomic) MDPatternPrivate *pattern;
 @property (strong, nonatomic, readonly) NSMutableArray *lockRows;
 
 - (void) clearLock:(MDParameterLock *)lock;

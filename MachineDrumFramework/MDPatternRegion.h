@@ -15,6 +15,7 @@
 @property int8_t numTracks;
 
 + (id) regionAtTrack:(uint8_t)t step:(uint8_t)s numberOfTracks:(int8_t)nt numberOfSteps:(int8_t)ns;
-
+- (void) translateStep: (int8_t)s track: (int8_t)t;
+- (void) changeNumSteps: (int8_t)s numTracks: (int8_t)t;
 
 @end

@@ -17,7 +17,9 @@
 
 
 + (id) nodeWithPosition:(MDPatternNodePosition *)position;
++ (id) nodeAtTrack:(uint8_t)track step:(uint8_t)step;
 - (void) addLock:(MDParameterLock *)lock;
+- (void)removeLockForParam:(uint8_t)param;
 - (void) clear;
 
 @end

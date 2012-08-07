@@ -194,7 +194,7 @@
 
 + (NSString *)getBitStringForInt:(int)value
 {
-	value = CFSwapInt32HostToBig(value);
+	//value = CFSwapInt32HostToBig(value);
     NSString *bits = @"";
 	
     for(int i = 0; i < 32; i ++) {

@@ -7,20 +7,49 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MDMachinedrumPublic.h>
+#import "MDMachinedrumPublic.h"
 #import "MDPatternRegion.h"
 
+
+
+typedef enum MDPatternCopiPastaShiftDirection
+{
+	MDPatternCopiPastaShiftDirectionRight,
+	MDPatternCopiPastaShiftDirectionDown,
+	MDPatternCopiPastaShiftDirectionLeft,
+	MDPatternCopiPastaShiftDirectionUp
+}
+MDPatternCopiPastaShiftDirection;
+
+
+typedef enum MDPatternCopiPastaRemapMode
+{
+	MDPatternCopiPastaRemapModeScale
+}
+MDPatternCopiPastaRemapMode;
+
+
+
+
 @interface MDPatternCopiPasta : NSObject
-@property  (weak, nonatomic) MDPatternPublicWrapper *sourcePattern, *targetPattern;
+@property  (weak, nonatomic) MDPattern *sourcePattern, *targetPattern;
 @property  (strong, nonatomic) MDPatternRegion *sourceRegion, *targetRegion;
 
-- (void) remapCopySourceToTarget_Transparent;
-- (void) remapCopySourceToTarget_Opaque;
 
-- (void) remapMoveSourceToTarget_Transparent;
-- (void) remapMoveSourceToTarget_Opaque;
 
-- (void) remapSwapSourceWithTarget;
+
+- (void) swapRegions;
+- (void) shiftSourceInDirection:(MDPatternCopiPastaShiftDirection)dir;
+
+- (void) remapCopySourceToTarget_Transparent_WithMode: (MDPatternCopiPastaRemapMode)mode;
+- (void) remapCopySourceToTarget_Opaque_WithMode: (MDPatternCopiPastaRemapMode)mode;
+
+- (void) remapMoveSourceToTarget_Transparent_WithMode: (MDPatternCopiPastaRemapMode)mode;
+- (void) remapMoveSourceToTarget_Opaque_WithMode: (MDPatternCopiPastaRemapMode)mode;
+
+- (void) remapSwapSourceWithTarget_WithMode: (MDPatternCopiPastaRemapMode)mode;
+
 - (void) clearTargetRegion;
+- (void) clearSourceRegion;
 
 @end

@@ -20,7 +20,7 @@
 	return self;
 }
 
-- (void)processPattern:(MDPatternPublicWrapper *)pattern kit:(MDKit *)kit
+- (void)processPattern:(MDPattern *)pattern kit:(MDKit *)kit
 {
 	[super processPattern:pattern kit:kit];
 	

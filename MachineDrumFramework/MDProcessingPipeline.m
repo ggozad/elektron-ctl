@@ -9,7 +9,7 @@
 #import "MDProcessingPipeline.h"
 
 @interface MDProcessingPipeline()
-@property (nonatomic, strong) MDPatternPublicWrapper *patternCopy;
+@property (nonatomic, strong) MDPattern *patternCopy;
 @property (nonatomic, strong) MDKit *kitCopy;
 @end
 
@@ -31,7 +31,7 @@
 		DLog(@"no kit!");
 		return;
 	}
-	self.patternCopy = [MDPatternPublicWrapper patternWithPattern:self.pattern];
+	self.patternCopy = [MDPattern patternWithPattern:self.pattern];
 	self.kitCopy = [MDKit kitWithKit:self.kit];
 	
 	for (id p in self.procedures)
@@ -46,7 +46,7 @@
 	return self.kitCopy;
 }
 
-- (MDPatternPublicWrapper *)resultPattern
+- (MDPattern *)resultPattern
 {
 	return self.patternCopy;
 }

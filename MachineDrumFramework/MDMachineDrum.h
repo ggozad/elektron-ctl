@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MDPatternPublicWrapper.h"
+#import "MDPattern.h"
 
 
 
@@ -32,6 +32,6 @@
 - (void) requestCurrentKitNumber;
 
 - (void) sendRandomPatternToSlot:(NSUInteger) slot;
-- (void) sendPattern:(MDPatternPublicWrapper *)pattern;
+- (void) sendPattern:(MDPattern *)pattern;
 
 @end

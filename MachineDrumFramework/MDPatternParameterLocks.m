@@ -7,7 +7,7 @@
 //
 
 #import "MDPatternParameterLocks.h"
-#import "MDPattern.h"
+#import "MDPatternPrivate.h"
 #import "MDParameterLockRow.h"
 
 @interface MDPatternParameterLocks()
@@ -67,13 +67,14 @@
 - (MDParameterLock *)lockAtTrack:(uint8_t)track step:(uint8_t)step param:(uint8_t)param
 {
 	if(step > 63) return nil;
+	if(track > 15) return nil;
 	
 	for (MDParameterLockRow *row in self.lockRows)
 	{
 		if(row.track == track && row.param == param)
 		{
 			int8_t val = [row valueForStep:step];
-			if(val >= -1)
+			if(val > -1)
 				return [MDParameterLock lockForTrack:track param:param step:step value:val];
 			return nil;
 		}
@@ -83,6 +84,7 @@
 
 - (BOOL)setLock:(MDParameterLock *)lock
 {
+	
 	//DLog(@"track %2ld param %2ld step %2ld -> %3ld", lock.track, lock.param, lock.step, lock.lockValue);
 	if( ! [[self.pattern.tracks objectAtIndex:lock.track] trigAtStep:lock.step])
 	{
@@ -115,7 +117,10 @@
 			[self.lockRows addObject:row];
 		}
 		else
+		{
 			DLog(@"trying to add row when full. fuck this!");
+			return NO;
+		}
 		
 		
 		[self.lockRows sortUsingComparator:^NSComparisonResult(id obj1, id obj2)

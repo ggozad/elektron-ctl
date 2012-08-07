@@ -21,7 +21,13 @@
 #define kMDturboMIDISpeedTestResult @"kMDturboMIDISpeedTestResult"
 
 
-
+typedef enum MDPatternTrigState
+{
+	trigStateOff,
+	trigStateOn,
+	trigStateLocked
+}
+MDPatternTrigState;
 
 
 #endif

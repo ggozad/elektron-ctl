@@ -10,12 +10,12 @@
 #import "MDMachinedrumPublic.h"
 
 @interface MDProcessingPipeline : NSObject
-@property (nonatomic, strong) MDPatternPublicWrapper *pattern;
+@property (nonatomic, strong) MDPattern *pattern;
 @property (nonatomic, strong) MDKit *kit;
 @property (nonatomic, strong) NSMutableArray *procedures;
 
 - (void) process;
-- (MDPatternPublicWrapper *)resultPattern;
+- (MDPattern *)resultPattern;
 - (MDKit *) resultKit;
 
 @end

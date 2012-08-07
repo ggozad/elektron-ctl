@@ -25,34 +25,34 @@
 
 // BUILDING A PATTERN
 
-+ (void) hydratePattern:(MDPattern *)pattern withOriginalPositionFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withTrigPatternFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withAccentPatternFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withAccentAmountFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withPatternLengthFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withTempoMultiplierFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withScaleFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withKitNumberFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withNumberOfLockedRowsFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withLocksFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withExtraPatternFromData:(NSData *)data;
-+ (void) hydratePattern:(MDPattern *)pattern withOptionalExtraPatternFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withOriginalPositionFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withTrigPatternFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withAccentPatternFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withAccentAmountFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withPatternLengthFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withTempoMultiplierFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withScaleFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withKitNumberFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withNumberOfLockedRowsFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withLocksFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withExtraPatternFromData:(NSData *)data;
++ (void) hydratePattern:(MDPatternPrivate *)pattern withOptionalExtraPatternFromData:(NSData *)data;
 
 // BUILDING DATA
 
-+ (NSData *)dataForOriginalPositionInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForTrigPatternInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForLockPatternInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForAccentPatternInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForAccentAmountInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForPatternLengthInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForTempoMultiplierInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForScaleInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForKitInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForNumberOfLockedRowsInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForLocksInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForExtraPatternInPattern: (MDPattern *)pattern;
-+ (NSData *)dataForOptionalExtraPatternInPattern: (MDPattern *)pattern;
++ (NSData *)dataForOriginalPositionInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForTrigPatternInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForLockPatternInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForAccentPatternInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForAccentAmountInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForPatternLengthInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForTempoMultiplierInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForScaleInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForKitInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForNumberOfLockedRowsInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForLocksInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForExtraPatternInPattern: (MDPatternPrivate *)pattern;
++ (NSData *)dataForOptionalExtraPatternInPattern: (MDPatternPrivate *)pattern;
 
 + (NSData *)dataForEndOfMessageData:(NSData *)data;
 
@@ -62,7 +62,7 @@
 
 #pragma mark - public class methods
 
-+ (MDPattern *)patternFromSysexData:(NSData *)data
++ (MDPatternPrivate *)patternFromSysexData:(NSData *)data
 {	
 	if(![self patternDataIsValid:data])
 		return nil;
@@ -70,7 +70,7 @@
 	
 	NSUInteger messageLength = [self messageLengthForData: data];
 	
-	MDPattern *pattern = [MDPattern new];
+	MDPatternPrivate *pattern = [MDPatternPrivate new];
 	
 	DLog(@"hydrating pattern:");
 	
@@ -101,7 +101,7 @@
 
 
 
-+ (NSData *)sysexDataFromPattern:(MDPattern *)pattern
++ (NSData *)sysexDataFromPattern:(MDPatternPrivate *)pattern
 {
 	//TODO: check pattern integrity
 	BOOL patternIsGood = YES;
@@ -140,24 +140,25 @@
 
 #pragma mark - data building
 
-+ (NSData *)dataForOriginalPositionInPattern:(MDPattern *)pattern
++ (NSData *)dataForOriginalPositionInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t posByte = pattern.originalPosition;
 	return [NSData dataWithBytes:&posByte length:1];
 }
 
-+ (NSData *)dataForTrigPatternInPattern:(MDPattern *)pattern
++ (NSData *)dataForTrigPatternInPattern:(MDPatternPrivate *)pattern
 {
 	int32_t unpackedBytes[16];
 	for (int i = 0; i < 16; i++)
 	{
-		unpackedBytes[i] = [[pattern.tracks objectAtIndex:i] trigPattern_00_31];
+		MDPatternTrack *t = [pattern.tracks objectAtIndex:i];
+		unpackedBytes[i] = CFSwapInt32HostToBig(t->trigPattern_00_31);
 	}
 	
 	return [MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:&unpackedBytes length:16*4]];
 }
 
-+ (NSData *)dataForLockPatternInPattern:(MDPattern *)pattern
++ (NSData *)dataForLockPatternInPattern:(MDPatternPrivate *)pattern
 {
 	int32_t bytes[16];
 	for (int i = 0; i < 16; i++)
@@ -187,57 +188,57 @@
 	return [MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:&bytes length:16 * 4]];
 }
 
-+ (NSData *)dataForAccentPatternInPattern:(MDPattern *)pattern
++ (NSData *)dataForAccentPatternInPattern:(MDPatternPrivate *)pattern
 {
 	int32_t bytes[4];
 	for (int i = 0; i < 4; i++)
 		bytes[i] = 0;
 	
-	bytes[0x00] = pattern.accentPattern_00_31;
-	bytes[0x01] = pattern.slidePattern_00_31;
-	bytes[0x02] = pattern.swingPattern_00_31;
+	bytes[0x00] = CFSwapInt32HostToBig(pattern->accentPattern_00_31);
+	bytes[0x01] = CFSwapInt32HostToBig(pattern->slidePattern_00_31);
+	bytes[0x02] = CFSwapInt32HostToBig(pattern->swingPattern_00_31);
 	bytes[0x03] = CFSwapInt32HostToBig(pattern.swingAmount);
 	
 	return [MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:&bytes length:4*4]];
 }
 
-+ (NSData *)dataForAccentAmountInPattern:(MDPattern *)pattern
++ (NSData *)dataForAccentAmountInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t byte = pattern.accentAmount;
 	return [NSData dataWithBytes:&byte length:1];
 }
 
-+ (NSData *)dataForPatternLengthInPattern:(MDPattern *)pattern
++ (NSData *)dataForPatternLengthInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t byte = pattern.length;
 	return [NSData dataWithBytes:&byte length:1];
 }
 
-+ (NSData *)dataForTempoMultiplierInPattern:(MDPattern *)pattern
++ (NSData *)dataForTempoMultiplierInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t byte = pattern.tempoMultiplier;
 	return [NSData dataWithBytes:&byte length:1];
 }
 
-+ (NSData *)dataForScaleInPattern:(MDPattern *)pattern
++ (NSData *)dataForScaleInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t byte = pattern.scale;
 	return [NSData dataWithBytes:&byte length:1];
 }
 
-+ (NSData *)dataForKitInPattern:(MDPattern *)pattern
++ (NSData *)dataForKitInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t byte = pattern.kitNumber;
 	return [NSData dataWithBytes:&byte length:1];
 }
 
-+ (NSData *)dataForNumberOfLockedRowsInPattern:(MDPattern *)pattern
++ (NSData *)dataForNumberOfLockedRowsInPattern:(MDPatternPrivate *)pattern
 {
 	uint8_t byte = pattern.numberOfLockedRows_UNUSED;
 	return [NSData dataWithBytes:&byte length:1];
 }
 
-+ (NSData *)dataForLocksInPattern:(MDPattern *)pattern
++ (NSData *)dataForLocksInPattern:(MDPatternPrivate *)pattern
 {
 	signed char bytes[64 * 32];
 	for (int i = 0; i < 64*32; i++)
@@ -261,7 +262,7 @@
 	return [MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:&bytes length:32*64]];
 }
 
-+ (NSData *)dataForExtraPatternInPattern:(MDPattern *)pattern
++ (NSData *)dataForExtraPatternInPattern:(MDPatternPrivate *)pattern
 {
 	char bytes[51*4];
 	for (int i = 0; i < 51*4; i++)
@@ -276,16 +277,16 @@
 	int32_t *patternsBytes = (int32_t *) &bytes[0x0c];
 	for (MDPatternTrack *track in pattern.tracks)
 	{
-		patternsBytes[     i] = track.accentPattern_00_31;
-		patternsBytes[i + 16] = track.slidePattern_00_31;
-		patternsBytes[i + 32] = track.swingPattern_00_31;
+		patternsBytes[     i] = CFSwapInt32HostToBig(track->accentPattern_00_31);
+		patternsBytes[i + 16] = CFSwapInt32HostToBig(track->slidePattern_00_31);
+		patternsBytes[i + 32] = CFSwapInt32HostToBig(track->swingPattern_00_31);
 		i++;
 	}
 	
 	return [MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:&bytes length:51*4]];
 }
 
-+ (NSData *)dataForOptionalExtraPatternInPattern:(MDPattern *)pattern
++ (NSData *)dataForOptionalExtraPatternInPattern:(MDPatternPrivate *)pattern
 {
 	char bytes[2316];
 	for (int i = 0; i < 2316; i++)
@@ -300,10 +301,10 @@
 	for (int i = 0; i < 16; i++)
 	{
 		MDPatternTrack *track = [pattern.tracks objectAtIndex:i];
-		trigTracks[i] = track.trigPattern_32_63;
-		accentPatternPerTrack[i] = track.accentPattern_32_63;
-		slidePatternPerTrack[i] = track.slidePattern_32_63;
-		swingPatternPerTrack[i] = track.swingPattern_32_63;
+		trigTracks[i] = CFSwapInt32HostToBig(track->trigPattern_32_63);
+		accentPatternPerTrack[i] = CFSwapInt32HostToBig(track->accentPattern_32_63);
+		slidePatternPerTrack[i] = CFSwapInt32HostToBig(track->slidePattern_32_63);
+		swingPatternPerTrack[i] = CFSwapInt32HostToBig(track->swingPattern_32_63);
 	}
 	
 	signed char *locksBytes = (signed char *) &bytes[0x04c];
@@ -328,9 +329,9 @@
 
 		
 	int32_t *accentPattern = (int32_t *) &bytes[0x040];
-	accentPattern[0x00] = pattern.accentPattern_32_63;
-	accentPattern[0x01] = pattern.slidePattern_32_63;
-	accentPattern[0x02] = pattern.swingPattern_32_63;
+	accentPattern[0x00] = CFSwapInt32HostToBig(pattern->accentPattern_32_63);
+	accentPattern[0x01] = CFSwapInt32HostToBig(pattern->slidePattern_32_63);
+	accentPattern[0x02] = CFSwapInt32HostToBig(pattern->swingPattern_32_63);
 	
 	return [MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:&bytes length:2316]];
 }
@@ -410,12 +411,12 @@
 	return YES;
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withOriginalPositionFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withOriginalPositionFromData:(NSData *)data
 {
 	pattern.originalPosition = ((const char *)data.bytes)[0x09];
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withTrigPatternFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withTrigPatternFromData:(NSData *)data
 {
 	const char *dataBytes = data.bytes;
 	NSData *packedTrigPatternData = [NSData dataWithBytes:&dataBytes[0x0a] length:74];
@@ -427,7 +428,7 @@
 	for (int i = 0; i < 16; i++)
 	{
 		MDPatternTrack *track = [pattern.tracks objectAtIndex:i];
-		track.trigPattern_00_31 = trigTracks[i];
+		track->trigPattern_00_31 = CFSwapInt32BigToHost(trigTracks[i]);
 		
 		//NSString *binString = @"";
 		//binString = [binString stringByAppendingString:[MDSysexUtil getBitStringForInt:track.trigs]];
@@ -435,7 +436,7 @@
 	}
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withLocksFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withLocksFromData:(NSData *)data
 {
 	const char *dataBytes = data.bytes;
 	
@@ -559,42 +560,42 @@
 }
 
 
-+ (void)hydratePattern:(MDPattern *)pattern withAccentAmountFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withAccentAmountFromData:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
 	pattern.accentAmount = bytes[0xb1];
 	//DLog(@"accent amount: %d", pattern.accentAmount);
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withPatternLengthFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withPatternLengthFromData:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
 	pattern.length = bytes[0xb2];
 	//DLog(@"length: %d", pattern.length);
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withTempoMultiplierFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withTempoMultiplierFromData:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
 	pattern.tempoMultiplier = bytes[0xb3];
 	//DLog(@"tempo multiplier: %d", pattern.tempoMultiplier);
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withScaleFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withScaleFromData:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
 	pattern.scale = bytes[0xb4];
 	//DLog(@"scale: %d", pattern.scale);
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withKitNumberFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withKitNumberFromData:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
 	pattern.kitNumber = bytes[0xb5];
 	//DLog(@"kit number: %d", pattern.kitNumber);
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withNumberOfLockedRowsFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withNumberOfLockedRowsFromData:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
 	pattern.numberOfLockedRows_UNUSED = bytes[0xb6];
@@ -602,14 +603,14 @@
 }
 
 
-+ (void)hydratePattern:(MDPattern *)pattern withAccentPatternFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withAccentPatternFromData:(NSData *)data
 {
 	const uint8_t *packedBytes = &((const uint8_t *)data.bytes)[0x9e];
 	const int32_t *unpackedBytes = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:[NSData dataWithBytes:packedBytes length:19]].bytes;
 	
-	pattern.accentPattern_00_31 = unpackedBytes[0x00];
-	pattern.slidePattern_00_31 = unpackedBytes[0x01];
-	pattern.swingPattern_00_31 = unpackedBytes[0x02];
+	pattern->accentPattern_00_31 = CFSwapInt32BigToHost(unpackedBytes[0x00]);
+	pattern->slidePattern_00_31 = CFSwapInt32BigToHost(unpackedBytes[0x01]);
+	pattern->swingPattern_00_31 = CFSwapInt32BigToHost(unpackedBytes[0x02]);
 	pattern.swingAmount = CFSwapInt32BigToHost(unpackedBytes[0x03]); //TODO: map this!
 	
 	/*
@@ -621,7 +622,7 @@
 }
 
 
-+ (void)hydratePattern:(MDPattern *)pattern withExtraPatternFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withExtraPatternFromData:(NSData *)data
 {
 	const uint8_t *packedBytes = &((const uint8_t *)data.bytes)[0x9dc];
 	const char *unpackedBytes = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:[NSData dataWithBytes:packedBytes length:234]].bytes;
@@ -647,9 +648,9 @@
 	for(int i = 0; i < 16; i++)
 	{
 		MDPatternTrack *track = [pattern.tracks objectAtIndex:i];
-		track.accentPattern_00_31 = unpackedBytesAsInts[i];
-		track.slidePattern_00_31 = unpackedBytesAsInts[i + 16];
-		track.swingPattern_00_31 = unpackedBytesAsInts[i + 32];
+		track->accentPattern_00_31 = CFSwapInt32BigToHost(unpackedBytesAsInts[i]);
+		track->slidePattern_00_31 = CFSwapInt32BigToHost(unpackedBytesAsInts[i + 16]);
+		track->swingPattern_00_31 = CFSwapInt32BigToHost(unpackedBytesAsInts[i + 32]);
 		
 		/*
 		DLog(@"track %2d accentPattern: %@", i, [MDSysexUtil getBitStringForInt:track.accentPattern]);
@@ -659,7 +660,7 @@
 	}
 }
 
-+ (void)hydratePattern:(MDPattern *)pattern withOptionalExtraPatternFromData:(NSData *)data
++ (void)hydratePattern:(MDPatternPrivate *)pattern withOptionalExtraPatternFromData:(NSData *)data
 {
 	// ** ALL LOCKS ** are handled in the locks parsing method
 	
@@ -674,11 +675,11 @@
 	for (int i = 0; i < 16; i++)
 	{
 		MDPatternTrack *track = [pattern.tracks objectAtIndex:i];
-		track.trigPattern_32_63 = trigTracks[i];
+		track->trigPattern_32_63 = CFSwapInt32BigToHost(trigTracks[i]);
 		
-		track.accentPattern_32_63 = accentPatternPerTrack[i];
-		track.slidePattern_32_63 = accentPatternPerTrack[i + 16];
-		track.swingPattern_32_63 = accentPatternPerTrack[i + 32];
+		track->accentPattern_32_63 = CFSwapInt32BigToHost(accentPatternPerTrack[i]);
+		track->slidePattern_32_63 = CFSwapInt32BigToHost(accentPatternPerTrack[i + 16]);
+		track->swingPattern_32_63 = CFSwapInt32BigToHost(accentPatternPerTrack[i + 32]);
 		
 		
 		/*
@@ -696,9 +697,9 @@
 	}
 	
 	const int32_t *accentPattern =  (int32_t *) &unpackedBytes[0x040];
-	pattern.accentPattern_32_63 = accentPattern[0x00];
-	pattern.slidePattern_32_63 = accentPattern[0x01];
-	pattern.swingPattern_32_63 = accentPattern[0x02];
+	pattern->accentPattern_32_63 = CFSwapInt32BigToHost(accentPattern[0x00]);
+	pattern->slidePattern_32_63 = CFSwapInt32BigToHost(accentPattern[0x01]);
+	pattern->swingPattern_32_63 = CFSwapInt32BigToHost(accentPattern[0x02]);
 	
 	
 	
