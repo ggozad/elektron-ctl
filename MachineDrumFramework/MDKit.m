@@ -7,7 +7,6 @@
 //
 
 #import "MDKit.h"
-#import "MDMidiFoundation.h"
 #import "MDSysexUtil.h"
 #import "MDKitParser.h"
 

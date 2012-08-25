@@ -9,6 +9,7 @@
 #import "MDSysexRouter.h"
 #import "MDMachinedrumPublic.h"
 
+#define kStatusResponseID 0x72
 #define kKitDumpMessageID 0x52
 #define kPatternDumpMessageID 0x67
 
@@ -18,10 +19,6 @@
 #define kTurboMIDISpeedAcknowledgementID 0x13
 #define kTurboMIDISpeedTestID 0x14
 #define kTurboMIDISpeedTestResultID 0x15
-
-
-
-
 
 @interface MDSysexRouter()
 + (BOOL) dataStartsWithMachineDrumHeader:(NSData *)data;
@@ -39,30 +36,28 @@
 		return;
 	}
 	
+	NSString *notificationName;
+	
 	if([self dataStartsWithMachineDrumHeader:data])
 	{
 		const uint8_t *bytes = data.bytes;
 		uint8_t messageID = bytes[0x06];
 		
-		 
-		
 		switch (messageID)
 		{
 			case kKitDumpMessageID:
 			{
-				[[NSNotificationCenter defaultCenter]
-				 postNotificationName:kMDSysexKitDumpNotification
-				 object:data];
-				
+				notificationName = kMDSysexKitDumpNotification;
 				break;
 			}
 			case kPatternDumpMessageID:
 			{
-				DLog(@"forwarding pattern version 0x%x revision 0x%x", bytes[0x07], bytes[0x08]);
-				[[NSNotificationCenter defaultCenter]
-				 postNotificationName:kMDSysexPatternDumpNotification
-				 object:data];
-				
+				notificationName = kMDSysexPatternDumpNotification;
+				break;
+			}
+			case kStatusResponseID:
+			{
+				notificationName = kMDSysexStatusResponseNotification;
 				break;
 			}
 			default:
@@ -74,7 +69,7 @@
 	}
 	else if([self dataStartsWithTurboMIDIHeader:data])
 	{
-		DLog(@"got turboMIDI message");
+		//DLog(@"got turboMIDI message");
 		
 		const uint8_t *bytes = data.bytes;
 		uint8_t messageID = bytes[0x06];
@@ -83,44 +78,32 @@
 		{
 			case kTurboMIDISpeedAnswerID:
 			{
-				DLog(@"type is speed answer.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedAnswer
-																	object:data];
+				notificationName = kMDturboMIDISpeedAnswer;
 				break;
 			}
 			case kTurboMIDISpeedRequestID:
 			{
-				DLog(@"type is speed request.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedRequest
-																	object:data];
+				notificationName = kMDturboMIDISpeedRequest;
 				break;
 			}
 			case kTurboMIDISpeedNegotiationID:
 			{
-				DLog(@"type is speed negotiation.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedNegotiation
-																	object:data];
+				notificationName = kMDturboMIDISpeedNegotiation;
 				break;
 			}
 			case kTurboMIDISpeedAcknowledgementID:
 			{
-				DLog(@"type is speed acknowledgement.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedAcknowledgement
-																	object:data];
+				notificationName = kMDturboMIDISpeedAcknowledgement;
 				break;
 			}
 			case kTurboMIDISpeedTestID:
 			{
-				DLog(@"type is speed test.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedTest
-																	object:data];
+				notificationName = kMDturboMIDISpeedTest;
 				break;
 			}
 			case kTurboMIDISpeedTestResultID:
 			{
-				DLog(@"type is speed test result.");
-				[[NSNotificationCenter defaultCenter] postNotificationName:kMDturboMIDISpeedTestResult
-																	object:data];
+				notificationName = kMDturboMIDISpeedTestResult;
 				break;
 			}
 			default:
@@ -129,41 +112,45 @@
 	}
 	else if([self dataStartsWithAssumedTM1Header:data])
 	{
-		DLog(@"got message from TM-1(?), ignoring.");
+		DLog(@"got message from TM-1, ignoring.");
 	}
 	else
 	{
 		DLog(@"unknown header, ignoring.");
 	}
 	
-	DLog(@"\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\n");
+	if(notificationName)
+	{
+		NSNotification *n = [NSNotification notificationWithName:notificationName object:data];
+		[[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
+	}
 }
 
+const uint8_t tm1header[] = {0xf0, 0x00, 0x20, 0x3c, 0x04, 0x00};
 + (BOOL)dataStartsWithAssumedTM1Header:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
-	const uint8_t header[] = {0xf0, 0x00, 0x20, 0x3c, 0x04, 0x00};
+	
 	for (int i = 0; i < 6; i++)
-		if(bytes[i] != header[i]) return NO;
+		if(bytes[i] != tm1header[i]) return NO;
 	
 	return YES;
 }
 
+const uint8_t tmheader[] = {0xf0, 0x00, 0x20, 0x3c, 0x00, 0x00};
 + (BOOL)dataStartsWithTurboMIDIHeader:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
-	const uint8_t header[] = {0xf0, 0x00, 0x20, 0x3c, 0x00, 0x00};
 	for (int i = 0; i < 6; i++)
-		if(bytes[i] != header[i]) return NO;
+		if(bytes[i] != tmheader[i]) return NO;
 	
 	return YES;
 }
 
-
+const uint8_t mdHeader[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00};
 + (BOOL)dataStartsWithMachineDrumHeader:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
-	const uint8_t mdHeader[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00};
 	for (int i = 0; i < 6; i++)
 		if(bytes[i] != mdHeader[i]) return NO;
 	

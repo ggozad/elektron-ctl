@@ -9,6 +9,7 @@
 #ifndef MachineDrumFrameworkOSX_MDConstants_h
 #define MachineDrumFrameworkOSX_MDConstants_h
 
+#define kMDSysexStatusResponseNotification @"kMDSysexStatusResponseNotification"
 #define kMDSysexPatternDumpNotification @"kMDSysexPatternDumpNotification"
 #define kMDSysexKitDumpNotification @"kMDSysexKitDumpNotification"
 #define kMIDIFoundationReadyChange @"kMIDIFoundationReadyChange"
@@ -19,7 +20,6 @@
 #define kMDturboMIDISpeedAcknowledgement @"kMDturboMIDISpeedAcknowledgement"
 #define kMDturboMIDISpeedTest @"kMDturboMIDISpeedTest"
 #define kMDturboMIDISpeedTestResult @"kMDturboMIDISpeedTestResult"
-
 
 typedef enum MDPatternTrigState
 {

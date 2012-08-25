@@ -23,7 +23,6 @@
 		36B920E3158F81680025F0B3 /* MachineDrumFramework.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B920E2158F81680025F0B3 /* MachineDrumFramework.h */; };
 		36B920E5158F81680025F0B3 /* MachineDrumFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B920E4158F81680025F0B3 /* MachineDrumFramework.m */; };
 		36B920EC158F81760025F0B3 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920EB158F81760025F0B3 /* CoreMIDI.framework */; };
-		36B920F3158F81AE0025F0B3 /* MDMidiFoundation.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B920F2158F81AE0025F0B3 /* MDMidiFoundation.m */; };
 		36B92128158F82CC0025F0B3 /* MDKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92107158F82CC0025F0B3 /* MDKit.m */; };
 		36B92129158F82CC0025F0B3 /* MDKitLFOSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92109158F82CC0025F0B3 /* MDKitLFOSettings.m */; };
 		36B9212A158F82CC0025F0B3 /* MDKitMachine.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B9210B158F82CC0025F0B3 /* MDKitMachine.m */; };
@@ -89,8 +88,6 @@
 		36B920E2158F81680025F0B3 /* MachineDrumFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MachineDrumFramework.h; sourceTree = "<group>"; };
 		36B920E4158F81680025F0B3 /* MachineDrumFramework.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MachineDrumFramework.m; sourceTree = "<group>"; };
 		36B920EB158F81760025F0B3 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
-		36B920F1158F81AE0025F0B3 /* MDMidiFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMidiFoundation.h; sourceTree = "<group>"; };
-		36B920F2158F81AE0025F0B3 /* MDMidiFoundation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMidiFoundation.m; sourceTree = "<group>"; };
 		36B92106158F82CC0025F0B3 /* MDKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKit.h; sourceTree = "<group>"; };
 		36B92107158F82CC0025F0B3 /* MDKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKit.m; sourceTree = "<group>"; };
 		36B92108158F82CC0025F0B3 /* MDKitLFOSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitLFOSettings.h; sourceTree = "<group>"; };
@@ -238,8 +235,6 @@
 				36B92123158F82CC0025F0B3 /* MDPatternTrack.m */,
 				36B92126158F82CC0025F0B3 /* MDSysexUtil.h */,
 				36B92127158F82CC0025F0B3 /* MDSysexUtil.m */,
-				36B920F1158F81AE0025F0B3 /* MDMidiFoundation.h */,
-				36B920F2158F81AE0025F0B3 /* MDMidiFoundation.m */,
 				36B920E2158F81680025F0B3 /* MachineDrumFramework.h */,
 				36B920E4158F81680025F0B3 /* MachineDrumFramework.m */,
 				36B920E0158F81670025F0B3 /* Supporting Files */,
@@ -341,7 +336,6 @@
 				362C5E7F159BD95B000D53CB /* MDPatternTrack.m in Sources */,
 				362C5E80159BD95B000D53CB /* MDSysexUtil.m in Sources */,
 				36B920E5158F81680025F0B3 /* MachineDrumFramework.m in Sources */,
-				36B920F3158F81AE0025F0B3 /* MDMidiFoundation.m in Sources */,
 				36B92128158F82CC0025F0B3 /* MDKit.m in Sources */,
 				36B92129158F82CC0025F0B3 /* MDKitLFOSettings.m in Sources */,
 				36B9212A158F82CC0025F0B3 /* MDKitMachine.m in Sources */,
@@ -382,7 +376,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -399,7 +393,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				SDKROOT = iphoneos;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -407,7 +402,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -417,7 +412,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				SDKROOT = iphoneos;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.7;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

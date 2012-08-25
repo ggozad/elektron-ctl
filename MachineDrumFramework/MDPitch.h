@@ -47,6 +47,14 @@ typedef enum MDPitchNotes
 }
 MDPitchNotes;
 
+typedef enum MDPitchRangeMode
+{
+	MDPitchRangeMode_IGNORE,
+	MDPitchRangeMode_WRAP,
+	MDPitchRangeMode_CLAMP
+}
+MDPitchRangeMode;
+
 
 typedef struct MDNoteRange
 {
@@ -69,12 +77,14 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h);
 
 @interface MDPitch : NSObject
 
++ (BOOL) machineIsPitchable:(MDMachineID)mid;
 + (MDNoteRange) noteRangeForMachineAbsoluteRange:(MDMachineAbsoluteNoteRange)fr;
 + (MDNoteRange) noteRangeForMachine:(MDMachineID)machineID;
+
 + (uint8_t) noteClosestToPitchParamValue: (uint8_t) pitch forMachineID: (MDMachineID)mid;
-+ (int8_t) pitchParamValueForNote:(uint8_t)note withAbsoluteNoteRange:(MDMachineAbsoluteNoteRange)fr;
-+ (int8_t) pitchParamValueForNote:(uint8_t)note forMachine:(MDMachineID)machineID;
-+ (int8_t) pitchParamValueForNote:(uint8_t)note forMachineName:(NSUInteger)machineName;
++ (int8_t) pitchParamValueForNote:(uint8_t)note withAbsoluteNoteRange:(MDMachineAbsoluteNoteRange)fr rangeMode:(MDPitchRangeMode)rangeMode;
++ (int8_t) pitchParamValueForNote:(uint8_t)note forMachine:(MDMachineID)machineID rangeMode:(MDPitchRangeMode)rangeMode;
++ (int8_t) pitchParamValueForNote:(uint8_t)note forMachineName:(NSUInteger)machineName rangeMode:(MDPitchRangeMode)rangeMode;
 + (MDMachineAbsoluteNoteRange)absoluteNoteRangeForMachineID:(MDMachineID)mid;
 
 @end

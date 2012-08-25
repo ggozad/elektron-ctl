@@ -7,7 +7,6 @@
 //
 
 #import "MDKitLFOSettings.h"
-#import "MDMidiFoundation.h"
 #import "MDSysexUtil.h"
 
 @implementation MDKitLFOSettings

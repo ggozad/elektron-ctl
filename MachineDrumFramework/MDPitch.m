@@ -27,6 +27,13 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 
 @implementation MDPitch
 
++ (BOOL)machineIsPitchable:(MDMachineID)mid
+{
+	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID:mid];
+	if(r.lowest > 0 || r.highest > 0) return YES;
+	return NO;
+}
+
 + (uint8_t)noteClosestToPitchParamValue:(uint8_t)pitch forMachineID:(MDMachineID)mid
 {
 	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID:mid];
@@ -44,36 +51,58 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 	return r;
 }
 
-+ (int8_t)pitchParamValueForNote:(uint8_t)note withAbsoluteNoteRange:(MDMachineAbsoluteNoteRange)fr
++ (int8_t)pitchParamValueForNote:(uint8_t)note withAbsoluteNoteRange:(MDMachineAbsoluteNoteRange)fr rangeMode:(MDPitchRangeMode)rangeMode
 {
 	if(fr.lowest == 0 && fr.highest == 0) return -1;
-	MDNoteRange nr = [self noteRangeForMachineAbsoluteRange:fr];
-	if(nr.minNote == 0 && nr.maxNote == 0) return -1;
-	if(note < nr.minNote || note > nr.maxNote) return -1;
-	int8_t pitchVal = (int8_t)roundf(map(note, nr.minNote, nr.maxNote, 0, 127));
-	return pitchVal;
+	
+	// old version differs from Processing pitchplot implementation:
+	
+	//MDNoteRange nr = [self noteRangeForMachineAbsoluteRange:fr];
+	//if(nr.minNote == 0 && nr.maxNote == 0) return -1;
+	//if(note < nr.minNote || note > nr.maxNote) return -1;
+	//NSInteger pitchVal = (NSInteger)roundf(map(note, nr.minNote, nr.maxNote, 0, 127));
+	
+	
+	int pitchVal = roundf(map(note, fr.lowest, fr.highest, 0, 127));
+	if(pitchVal >= 0 && pitchVal <= 127) return (int8_t)pitchVal;
+	
+	if(rangeMode == MDPitchRangeMode_CLAMP)
+	{
+		if(note < fr.lowest)
+			return roundf(map(ceilf(fr.lowest), fr.lowest, fr.highest, 0, 127));
+		return roundf(map(floorf(fr.highest), fr.lowest, fr.highest, 0, 127));
+	}
+	if(rangeMode == MDPitchRangeMode_WRAP)
+	{
+		int octaveShifts = 0;
+		int maxOctaves = 12;
+		int wrappedNote = note;
+		
+		while (octaveShifts++ < maxOctaves)
+		{
+			if(note < fr.lowest)
+				wrappedNote += 12;
+			else
+				wrappedNote -= 12;
+			
+			pitchVal = roundf(map(wrappedNote, fr.lowest, fr.highest, 0, 127));
+			if(pitchVal >= 0 && pitchVal <= 127) return (int8_t)pitchVal;
+		}
+	}
 	return -1;
 }
 
-+ (int8_t)pitchParamValueForNote:(uint8_t)note forMachine:(MDMachineID)machineID
++ (int8_t)pitchParamValueForNote:(uint8_t)note forMachine:(MDMachineID)machineID rangeMode:(MDPitchRangeMode)rangeMode
 {
 	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID: machineID];
-	MDNoteRange nr = [self noteRangeForMachine:machineID];
-	if(note < nr.minNote || note > nr.maxNote) return -1;
-	int8_t pitchVal = [self pitchParamValueForNote:note withAbsoluteNoteRange:r];
-	return pitchVal;
-	return -1;
+	return [self pitchParamValueForNote:note withAbsoluteNoteRange:r rangeMode:rangeMode];
 }
 
-+ (int8_t)pitchParamValueForNote:(uint8_t)note forMachineName:(NSUInteger)machineName
++ (int8_t)pitchParamValueForNote:(uint8_t)note forMachineName:(NSUInteger)machineName rangeMode:(MDPitchRangeMode)rangeMode
 {
 	MDMachineID mid = [MDKitMachine machineIDForMachineName:machineName];
 	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID: mid];
-	MDNoteRange nr = [self noteRangeForMachineAbsoluteRange:r];
-	if(note < nr.minNote || note > nr.maxNote) return -1;
-	int8_t pitchVal = [self pitchParamValueForNote:note withAbsoluteNoteRange:r];
-	return pitchVal;
-	return -1;
+	return [self pitchParamValueForNote:note withAbsoluteNoteRange:r rangeMode:rangeMode];
 }
 
 + (MDNoteRange)noteRangeForMachine:(MDMachineID)machineID
@@ -85,7 +114,7 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 {
 	MDMachineName name = [MDKitMachine machineNameFromMachineID:mid];
 	
-	if(name == MDMachineName_TRX_B2) return MDMachineAbsoluteNoteRangeMake(6.6, 44.5);
+	if(name == MDMachineName_TRX_B2) return MDMachineAbsoluteNoteRangeMake(6.6, 44.4);
 	if(name == MDMachineName_TRX_BD) return MDMachineAbsoluteNoteRangeMake(23.1, 46.6);
 	if(name == MDMachineName_TRX_CB) return MDMachineAbsoluteNoteRangeMake(76.0, 79.2);
 	if(name == MDMachineName_TRX_CL) return MDMachineAbsoluteNoteRangeMake(82.2, 103.0);
@@ -100,7 +129,7 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 	if(name == MDMachineName_EFM_HH) return MDMachineAbsoluteNoteRangeMake(58.8, 88.5);
 	if(name == MDMachineName_EFM_RS) return MDMachineAbsoluteNoteRangeMake(58.8, 106.4);
 	if(name == MDMachineName_EFM_SD) return MDMachineAbsoluteNoteRangeMake(46.8, 76.5);
-	if(name == MDMachineName_EFM_XT) return MDMachineAbsoluteNoteRangeMake(29.1, 52.2);
+	if(name == MDMachineName_EFM_XT) return MDMachineAbsoluteNoteRangeMake(29.1, 52.6);
 	
 	return MDMachineAbsoluteNoteRangeMake(0, 0);
 }

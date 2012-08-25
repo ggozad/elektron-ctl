@@ -66,7 +66,7 @@ uint8_t scaleLength = 7;
 			newNote += octave * 12;
 			//DLog(@"old note: %d, octave: %d, strippedNote: %d, new note: %d", oldNote, octave, oldNoteStrippedFromOctave, newNote);
 			
-			int8_t newPitch = [MDPitch pitchParamValueForNote:newNote forMachine:mid];
+			int8_t newPitch = [MDPitch pitchParamValueForNote:newNote forMachine:mid rangeMode:MDPitchRangeMode_WRAP];
 			
 			//DLog(@"old pitch: %d new pitch: %d", oldPitch, newPitch);
 			

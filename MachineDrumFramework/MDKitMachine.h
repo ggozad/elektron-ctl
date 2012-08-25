@@ -104,6 +104,7 @@ typedef const enum MDMachineNames
 MDMachineNames;
 
 @interface MDKitMachine : NSObject
++ (NSString *) machineNameStringFromMachineID:(MDMachineID)mid;
 + (MDMachineID) machineIDForMachineName:(MDMachineName)name;
 + (MDMachineName)machineNameFromMachineID:(MDMachineID)mid;
 @end

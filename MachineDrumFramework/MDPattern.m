@@ -9,7 +9,7 @@
 #import "MDPattern.h"
 
 @interface MDPattern()
-@property (strong, nonatomic) MDPatternPrivate *pattern;
+@property (strong, nonatomic) MDPatternPrivate *privatePattern;
 @end
 
 @implementation MDPattern
@@ -31,7 +31,7 @@
 + (MDPattern *)patternWithData:(NSData *)sysexData
 {
 	MDPattern *p = [MDPattern new];
-	p.pattern = [MDPatternPrivate patternWithData:sysexData];
+	p.privatePattern = [MDPatternPrivate patternWithData:sysexData];
 	return p;
 }
 
@@ -39,14 +39,14 @@
 {
 	if(self = [super init])
 	{
-		self.pattern = [MDPatternPrivate new];
+		self.privatePattern = [MDPatternPrivate new];
 	}
 	return self;
 }
 
 - (uint8_t)numberOfUniqueLocks
 {
-	return self.pattern.locks.lockRows.count;
+	return self.privatePattern.locks.lockRows.count;
 }
 
 - (void)clearLock:(MDParameterLock *)lock clearTrig:(BOOL)clearTrig
@@ -57,12 +57,12 @@
 - (BOOL)setLock:(MDParameterLock *)lock setTrigIfNone:(BOOL)setTrig
 {
 	//DLog(@"***\nsetting lock..");
-	BOOL success = [self.pattern.locks setLock:lock];
+	BOOL success = [self.privatePattern.locks setLock:lock];
 	if(!success && setTrig)
 	{
 		//DLog(@"failed, setting trig...");
 		[self setTrigAtTrack:lock.track step:lock.step toValue:YES];
-		success = [self.pattern.locks setLock:lock];
+		success = [self.privatePattern.locks setLock:lock];
 		if(!success)
 		{
 			//DLog(@"setting lock after setting trig failed..");
@@ -79,13 +79,13 @@
 - (void)clearLockAtTrack:(uint8_t)t param:(uint8_t)p step:(uint8_t)s clearTrig:(BOOL) clearTrig
 {
 	MDParameterLock *lock = [MDParameterLock lockForTrack:t param:p step:s value:-1];
-	[self.pattern.locks clearLock:lock];
+	[self.privatePattern.locks clearLock:lock];
 	if(clearTrig) [self setTrigAtTrack:t step:s toValue:0];
 }
 
 - (MDParameterLock *)lockAtTrack:(uint8_t)track step:(uint8_t)step param:(uint8_t)param
 {
-	return [self.pattern.locks lockAtTrack:track step:step param:param];
+	return [self.privatePattern.locks lockAtTrack:track step:step param:param];
 }
 
 - (void)setTrigAtTrack:(uint8_t)t step:(uint8_t)s toValue:(BOOL)val
@@ -94,9 +94,9 @@
 	if(s >= 64) return;
 	
 	if(!val)
-		[self.pattern.locks clearLocksAtTrack:t step:s];
+		[self.privatePattern.locks clearLocksAtTrack:t step:s];
 	
-	MDPatternTrack *track = [self.pattern.tracks objectAtIndex:t];
+	MDPatternTrack *track = [self.privatePattern.tracks objectAtIndex:t];
 	//DLog(@"setting trig at track: %d step: %d", t, s);
 	[track setTrigAtStep:s to:val];
 }
@@ -105,7 +105,7 @@
 {
 	if(t >= 16) return NO;
 	if(s >= 64) return NO;
-	MDPatternTrack *track = [self.pattern.tracks objectAtIndex:t];
+	MDPatternTrack *track = [self.privatePattern.tracks objectAtIndex:t];
 	return [track trigAtStep:s];
 }
 
@@ -119,30 +119,30 @@
 
 - (void)setLength:(uint8_t)len
 {
-	if(len <= 64) self.pattern.length = len;
+	if(len <= 64) self.privatePattern.length = len;
 }
 
 - (void)setScale:(MDPatternScale)scale
 {
 	if(scale > 0 && scale < 4)
-		self.pattern.scale = scale;
+		self.privatePattern.scale = scale;
 }
 
 - (void)setKitNumber:(uint8_t)kit
 {
-	if(kit < 64) self.pattern.kitNumber = kit;
+	if(kit < 64) self.privatePattern.kitNumber = kit;
 }
 
 - (NSData *)sysexData
 {
-	NSData *d = [self.pattern sysexData];
+	NSData *d = [self.privatePattern sysexData];
 	return d;
 }
 
 - (void)setSavePosition:(uint8_t)slot
 {
 	if(slot > 127) slot = 0;
-	self.pattern.originalPosition = slot;
+	self.privatePattern.originalPosition = slot;
 }
 
 - (id)copy

@@ -7,7 +7,6 @@
 //
 
 #import "MDMachineDrum.h"
-#import "MDMIDIFoundation.h"
 #import "MDSysexUtil.h"
 #import "MDKit.h"
 
