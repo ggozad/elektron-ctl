@@ -24,5 +24,6 @@
 + (MDKit *) kitWithRandomParametersAndDrumModels;
 - (NSData *) sysexData;
 - (void) setName:(NSString *)s;
+- (NSString *)name;
 
 @end

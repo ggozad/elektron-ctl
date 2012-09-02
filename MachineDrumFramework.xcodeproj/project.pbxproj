@@ -14,10 +14,17 @@
 		362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 362A7F0D159A939A007478D7 /* MDProcedureScaleFilter.m */; };
 		362C5E7F159BD95B000D53CB /* MDPatternTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92123158F82CC0025F0B3 /* MDPatternTrack.m */; };
 		362C5E80159BD95B000D53CB /* MDSysexUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92127158F82CC0025F0B3 /* MDSysexUtil.m */; };
+		362FE68715EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */; };
 		364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
 		369774E7158FE95100FCC379 /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 369774E6158FE95100FCC379 /* MDPattern.m */; };
+		3699DF8D15F38DDF004C9D83 /* MDMIDI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8815F38DDF004C9D83 /* MDMIDI.m */; };
+		3699DF8E15F38DDF004C9D83 /* MDSysexTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8A15F38DDF004C9D83 /* MDSysexTransaction.m */; };
+		3699DF8F15F38DDF004C9D83 /* MDSysexTransactionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8C15F38DDF004C9D83 /* MDSysexTransactionController.m */; };
+		3699DF9715F38E76004C9D83 /* PGMidi.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF9215F38E76004C9D83 /* PGMidi.m */; };
+		3699DF9815F38E76004C9D83 /* PGMidiFind.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF9415F38E76004C9D83 /* PGMidiFind.m */; };
+		3699DF9915F38E76004C9D83 /* MidiInputParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF9615F38E76004C9D83 /* MidiInputParser.m */; };
 		36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */; };
 		36B920DE158F81670025F0B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920DD158F81670025F0B3 /* Foundation.framework */; };
 		36B920E3158F81680025F0B3 /* MachineDrumFramework.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 36B920E2158F81680025F0B3 /* MachineDrumFramework.h */; };
@@ -70,6 +77,8 @@
 		362A7F05159A7B89007478D7 /* MDProcedureArpeggiator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureArpeggiator.m; sourceTree = "<group>"; };
 		362A7F0C159A939A007478D7 /* MDProcedureScaleFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcedureScaleFilter.h; sourceTree = "<group>"; };
 		362A7F0D159A939A007478D7 /* MDProcedureScaleFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcedureScaleFilter.m; sourceTree = "<group>"; };
+		362FE68515EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumGlobalSettings.h; sourceTree = "<group>"; };
+		362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMachinedrumGlobalSettings.m; sourceTree = "<group>"; };
 		364752F015D1AD63002DCA22 /* MDPatternTrigGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternTrigGenerator.h; sourceTree = "<group>"; };
 		364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrigGenerator.m; sourceTree = "<group>"; };
 		36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcessingPipeline.h; sourceTree = "<group>"; };
@@ -79,6 +88,18 @@
 		36814F031594CD8700220C88 /* MDPitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPitch.m; sourceTree = "<group>"; };
 		369774E5158FE95100FCC379 /* MDPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPattern.h; sourceTree = "<group>"; };
 		369774E6158FE95100FCC379 /* MDPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPattern.m; sourceTree = "<group>"; };
+		3699DF8715F38DDF004C9D83 /* MDMIDI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMIDI.h; sourceTree = "<group>"; };
+		3699DF8815F38DDF004C9D83 /* MDMIDI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMIDI.m; sourceTree = "<group>"; };
+		3699DF8915F38DDF004C9D83 /* MDSysexTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSysexTransaction.h; sourceTree = "<group>"; };
+		3699DF8A15F38DDF004C9D83 /* MDSysexTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSysexTransaction.m; sourceTree = "<group>"; };
+		3699DF8B15F38DDF004C9D83 /* MDSysexTransactionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSysexTransactionController.h; sourceTree = "<group>"; };
+		3699DF8C15F38DDF004C9D83 /* MDSysexTransactionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSysexTransactionController.m; sourceTree = "<group>"; };
+		3699DF9115F38E76004C9D83 /* PGMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGMidi.h; sourceTree = "<group>"; };
+		3699DF9215F38E76004C9D83 /* PGMidi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGMidi.m; sourceTree = "<group>"; };
+		3699DF9315F38E76004C9D83 /* PGMidiFind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGMidiFind.h; sourceTree = "<group>"; };
+		3699DF9415F38E76004C9D83 /* PGMidiFind.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGMidiFind.m; sourceTree = "<group>"; };
+		3699DF9515F38E76004C9D83 /* MidiInputParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiInputParser.h; sourceTree = "<group>"; };
+		3699DF9615F38E76004C9D83 /* MidiInputParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiInputParser.m; sourceTree = "<group>"; };
 		36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumPublic.h; sourceTree = "<group>"; };
 		36B4B0B5158F9263009CFC0A /* MDSysexRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSysexRouter.h; sourceTree = "<group>"; };
 		36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSysexRouter.m; sourceTree = "<group>"; };
@@ -242,6 +263,20 @@
 				369774E6158FE95100FCC379 /* MDPattern.m */,
 				36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */,
 				36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */,
+				362FE68515EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.h */,
+				362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */,
+				3699DF8715F38DDF004C9D83 /* MDMIDI.h */,
+				3699DF8815F38DDF004C9D83 /* MDMIDI.m */,
+				3699DF8915F38DDF004C9D83 /* MDSysexTransaction.h */,
+				3699DF8A15F38DDF004C9D83 /* MDSysexTransaction.m */,
+				3699DF8B15F38DDF004C9D83 /* MDSysexTransactionController.h */,
+				3699DF8C15F38DDF004C9D83 /* MDSysexTransactionController.m */,
+				3699DF9115F38E76004C9D83 /* PGMidi.h */,
+				3699DF9215F38E76004C9D83 /* PGMidi.m */,
+				3699DF9315F38E76004C9D83 /* PGMidiFind.h */,
+				3699DF9415F38E76004C9D83 /* PGMidiFind.m */,
+				3699DF9515F38E76004C9D83 /* MidiInputParser.h */,
+				3699DF9615F38E76004C9D83 /* MidiInputParser.m */,
 			);
 			path = MachineDrumFramework;
 			sourceTree = "<group>";
@@ -366,6 +401,13 @@
 				36FE349715CEB55100695E38 /* MDUserParameterValue.m in Sources */,
 				36FE349A15CEB57200695E38 /* MDUserParameterLimit.m in Sources */,
 				364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */,
+				362FE68715EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m in Sources */,
+				3699DF8D15F38DDF004C9D83 /* MDMIDI.m in Sources */,
+				3699DF8E15F38DDF004C9D83 /* MDSysexTransaction.m in Sources */,
+				3699DF8F15F38DDF004C9D83 /* MDSysexTransactionController.m in Sources */,
+				3699DF9715F38E76004C9D83 /* PGMidi.m in Sources */,
+				3699DF9815F38E76004C9D83 /* PGMidiFind.m in Sources */,
+				3699DF9915F38E76004C9D83 /* MidiInputParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,9 +434,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -411,9 +453,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -421,12 +463,16 @@
 		36B920E9158F81680025F0B3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DSTROOT = /tmp/MachineDrumFramework.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MachineDrumFramework/MachineDrumFramework-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -434,12 +480,16 @@
 		36B920EA158F81680025F0B3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DSTROOT = /tmp/MachineDrumFramework.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MachineDrumFramework/MachineDrumFramework-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

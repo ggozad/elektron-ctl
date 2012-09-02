@@ -41,6 +41,13 @@
 	self.kitName = [NSData dataWithBytes:&nameBytes length:16];
 }
 
+- (NSString *)name
+{
+	const char *bytes = self.kitName.bytes;
+	NSString *name = [NSString stringWithCString:bytes encoding:NSASCIIStringEncoding];
+	return name;
+}
+
 - (NSData *)sysexData
 {
 	return [MDKitParser sysexDataFromKit:self];

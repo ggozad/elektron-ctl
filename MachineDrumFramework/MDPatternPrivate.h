@@ -29,11 +29,7 @@
 @property uint8_t scale;
 @property uint8_t kitNumber;
 @property uint8_t numberOfLockedRows_UNUSED;
-
-
-
 @property int32_t swingAmount;
-
 @property BOOL accentEditAllFlag;
 @property BOOL slideEditAllFlag;
 @property BOOL swingEditAllFlag;

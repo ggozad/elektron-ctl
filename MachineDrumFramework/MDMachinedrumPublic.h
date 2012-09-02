@@ -26,5 +26,7 @@
 #import "MDPatternCopiPasta.h"
 #import "MDPatternTrigGenerator.h"
 
+#import "MDMIDI.h"
+#import "MDSysexTransactionController.h"
 
 #endif

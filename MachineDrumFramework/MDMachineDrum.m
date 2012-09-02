@@ -31,10 +31,6 @@
 	{
 		[self addObserver:self forKeyPath:@"tempo" options:0 context:kTempoChanged];
 		[self addObserver:self forKeyPath:@"currentKitName" options:0 context:kSetCurrentKitName];
-		
-		
-		
-		
 	}
 	return self;
 }
