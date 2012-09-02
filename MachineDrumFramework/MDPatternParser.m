@@ -72,7 +72,7 @@
 	
 	MDPatternPrivate *pattern = [MDPatternPrivate new];
 	
-	DLog(@"hydrating pattern:");
+	//DLog(@"hydrating pattern:");
 	
 	[self hydratePattern:pattern withOriginalPositionFromData:data];
 	[self hydratePattern:pattern withTrigPatternFromData:data];
@@ -378,10 +378,10 @@
 
 + (BOOL)patternDataIsValid:(NSData *)data
 {
-	DLog(@"sanity checking data...");
+	//DLog(@"sanity checking data...");
 	const char *bytes = data.bytes;
 	
-	
+	/*
 	for(int i = 0; i < data.length-1; i++)
 	{
 		if(bytes[i] == 0xf7)
@@ -389,7 +389,7 @@
 			DLog(@"message end where it shouldn't be: 0x%x", i);
 		}
 	}
-	
+	*/
 	
 	if(data.length != 0xacb && data.length != 0x1522)
 	{
@@ -406,7 +406,7 @@
 	if(![self messageLengthIsValid:data] ||
 	   ![self checksumIsValid:data]) return NO;
 	
-	DLog(@"OK\n\n");
+	DLog(@"OK");
 	
 	return YES;
 }
@@ -716,7 +716,7 @@
 	
 	uint16_t calcedMessageLength = dataLength - 10;
 	
-	DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
+	//DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
 	
 	
 	if(calcedMessageLength != messageLength)
@@ -762,7 +762,7 @@
 	
 	calcedChecksum &= 0x3fff;
 	
-	DLog(@"checksum: %d calculated: %d", checksum, calcedChecksum);
+	//DLog(@"checksum: %d calculated: %d", checksum, calcedChecksum);
 	
 	if(calcedChecksum != checksum)
 	{

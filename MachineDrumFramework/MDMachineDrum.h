@@ -27,11 +27,13 @@
 - (void) loadKit:(NSUInteger) num;
 
 - (void) requestKitDumpForSlot:(uint8_t) num;
+- (void) requestGlobalSettingsDumpForSlot:(uint8_t) num;
 - (void) requestPatternDumpForSlot:(uint8_t)num;
 
 - (void) requestCurrentKitNumber;
+- (void) requestCurrentPatternNumber;
+- (void) requestCurrentGlobalSettingsSlot;
 
-- (void) sendRandomPatternToSlot:(NSUInteger) slot;
 - (void) sendPattern:(MDPattern *)pattern;
 
 @end

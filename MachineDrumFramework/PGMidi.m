@@ -199,13 +199,13 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
 static
 void sysexSendCompletionProc(MIDISysexSendRequest *request)
 {
-	DLog(@"sysex send %@", request->complete ? @"succeeded" : @"failed");
+	//DLog(@"sysex send %@", request->complete ? @"succeeded" : @"failed");
 	free(request);
 }
 
 - (void) sendSysexBytes:(const UInt8*)bytes size:(UInt32)size
 {
-	DLog(@"sending %ld sysex bytes to %@", size, self.name);
+	//DLog(@"sending %ld sysex bytes to %@", size, self.name);
 	assert(size < 65536);
 	
 	MIDISysexSendRequest *r = (MIDISysexSendRequest *) malloc(sizeof(MIDISysexSendRequest) + size);

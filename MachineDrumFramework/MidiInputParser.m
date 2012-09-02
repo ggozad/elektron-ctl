@@ -84,7 +84,7 @@ receiveState _receiveState = receiveState_None;
 					}
 					else if(byteValue == MD_MIDI_STATUS_SYSEX_BEGIN)
 					{
-						DLog(@"sysex receive begin");
+						//DLog(@"sysex receive begin");
 						_receiveState = receiveState_Sysex;
 						// discard sysex buffer
 						sysexBufferIndex = 0;

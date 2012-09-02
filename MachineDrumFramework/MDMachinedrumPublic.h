@@ -19,6 +19,7 @@
 #import "MDPitch.h"
 #import "MDKitMachine.h"
 #import "MDKit.h"
+#import "MDMachinedrumGlobalSettings.h"
 
 #import "MDProcessingPipeline.h"
 #import "MDProcedures.h"

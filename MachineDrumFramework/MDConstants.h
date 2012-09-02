@@ -12,6 +12,7 @@
 #define kMDSysexStatusResponseNotification @"kMDSysexStatusResponseNotification"
 #define kMDSysexPatternDumpNotification @"kMDSysexPatternDumpNotification"
 #define kMDSysexKitDumpNotification @"kMDSysexKitDumpNotification"
+#define kMDSysexGlobalSettingsDumpNotification @"kMDSysexGlobalSettingsDumpNotification"
 #define kMIDIFoundationReadyChange @"kMIDIFoundationReadyChange"
 
 #define kMDturboMIDISpeedRequest @"kMDturboMIDISpeedRequest"

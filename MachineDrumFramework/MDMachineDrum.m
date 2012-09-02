@@ -29,32 +29,10 @@
 {
 	if(self = [super init])
 	{
-		[self addObserver:self forKeyPath:@"tempo" options:0 context:kTempoChanged];
-		[self addObserver:self forKeyPath:@"currentKitName" options:0 context:kSetCurrentKitName];
+		
 	}
 	return self;
 }
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-	if([keyPath isEqualToString:@"tempo"] && [(__bridge NSString *)context isEqualToString:kTempoChanged])
-	{
-		NSLog(@"midi tempo changed to %d", self.tempo);
-		if (self.delegate)
-		{
-			[self.delegate machineDrum:self wantsToSendSysExData: [self tempoMessageData]];
-		}
-	}
-	else if([keyPath isEqualToString:@"currentKitName"] && [(__bridge NSString *)context isEqualToString:kSetCurrentKitName])
-	{
-		NSLog(@"kit name changed to %@", self.currentKitName);
-		if (self.delegate)
-		{
-			[self.delegate machineDrum:self wantsToSendSysExData: [self currentKitMessageData]];
-		}
-	}
-}
-
 
 - (NSData *)currentKitMessageData
 {
@@ -186,41 +164,37 @@
 
 - (void)requestKitDumpForSlot:(uint8_t)num
 {
-	if(num > 63) num = 63;
-	
-	char slotByte = num & 0x6f;
-	NSData *slotData = [NSData dataWithBytes:&slotByte length:1];
-	NSMutableData *data = [NSMutableData new];
-	
-	[data appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
-	[data appendData:[MDSysexUtil dataFromHexString:@"53"]];
-	[data appendData:slotData];
-	[data appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
-	
-	if(self.delegate)
-		[self.delegate machineDrum:self wantsToSendSysExData:data];
+	[self requestDumpOfType:0x53 slot:num];
 }
 
 - (void)requestPatternDumpForSlot:(uint8_t)num
 {
-	if(num > 127) num = 127;
-	
-	char slotByte = num & 0x7f;
-	NSData *slotData = [NSData dataWithBytes:&slotByte length:1];
-	NSMutableData *data = [NSMutableData new];
-	
-	[data appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
-	[data appendData:[MDSysexUtil dataFromHexString:@"68"]];
-	[data appendData:slotData];
-	[data appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
-	
-	if(self.delegate)
-		[self.delegate machineDrum:self wantsToSendSysExData:data];
+	[self requestDumpOfType:0x68 slot:num];
+}
+
+- (void)requestGlobalSettingsDumpForSlot:(uint8_t)num
+{
+	[self requestDumpOfType:0x51 slot:num];
 }
 
 - (void)requestCurrentKitNumber
 {
-	char slotByte = 0x02;
+	[self requestStatus:0x02];
+}
+
+- (void)requestCurrentGlobalSettingsSlot
+{
+	[self requestStatus:0x01];
+}
+
+- (void)requestCurrentPatternNumber
+{
+	[self requestStatus:0x04];
+}
+
+- (void) requestStatus:(uint8_t) statusID
+{
+	char slotByte = statusID;
 	NSData *slotData = [NSData dataWithBytes:&slotByte length:1];
 	NSMutableData *data = [NSMutableData new];
 	
@@ -233,14 +207,22 @@
 		[self.delegate machineDrum:self wantsToSendSysExData:data];
 }
 
-- (void)sendRandomPatternToSlot:(NSUInteger)slot
+- (void) requestDumpOfType:(uint8_t)dumpType slot:(uint8_t)slot
 {
-	MDKit *kit = [MDKit kitWithRandomParametersAndDrumModels];
-	kit.originalPosition = slot;
-	NSData *sysexData = [kit sysexData];
+	char typeByte = dumpType & 0x7f;
+	char slotByte = slot & 0x7f;
+	
+	NSMutableData *d = [NSMutableData data];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
+	[d appendBytes:&typeByte length:1];
+	[d appendBytes:&slotByte length:1];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	
 	if(self.delegate)
-		[self.delegate machineDrum:self wantsToSendSysExData:sysexData];
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
 }
+
+
 
 - (void)sendPattern:(MDPattern *)pattern
 {

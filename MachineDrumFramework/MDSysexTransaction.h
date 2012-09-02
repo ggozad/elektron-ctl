@@ -38,5 +38,5 @@ MDSysexTransactionError;
 @property MDSysexTransactionType type;
 @property MDSysexTransactionError error;
 @property (strong, nonatomic) NSData *sentData;
-@property (strong, nonatomic) NSData *returnedData;
+@property (strong, nonatomic) id returnedObject;
 @end

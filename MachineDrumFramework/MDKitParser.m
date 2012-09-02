@@ -85,7 +85,7 @@
 
 + (MDKit *)kitFromSysexData:(NSData *)data
 {
-	DLog(@"hydrating kit...");
+	//DLog(@"hydrating kit...");
 	
 	if(![self kitDataIsValid:data])
 	{
@@ -108,7 +108,7 @@
 	[self hydrateKit:kit dynamicsSettingsFromData:data];
 	[self hydrateKit:kit trigGroupsFromData:data];
 	
-	DLog(@"done.");
+	//DLog(@"done.");
 	
 	return kit;
 }
@@ -287,7 +287,7 @@
 
 + (BOOL)kitDataIsValid:(NSData *)data
 {
-	DLog(@"sanity checking kit data...");
+	//DLog(@"sanity checking kit data...");
 	const uint8_t *bytes = data.bytes;
 	
 	if(data.length < 0x4d1)
@@ -502,7 +502,7 @@
 	calcedChecksum &= 0x3fff;
 	
 	
-	DLog(@"checksum: %d calculated: %d", checksum, calcedChecksum);
+	//DLog(@"checksum: %d calculated: %d", checksum, calcedChecksum);
 	
 	if(calcedChecksum != checksum)
 	{
@@ -523,7 +523,7 @@
 	
 	uint16_t calcedMessageLength = data.length - 10;
 	
-	DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
+	//DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
 	
 	
 	if(calcedMessageLength != messageLength)

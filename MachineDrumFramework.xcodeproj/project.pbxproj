@@ -17,6 +17,7 @@
 		362FE68715EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */; };
 		364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
+		367C3B4A15F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 367C3B4915F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
 		369774E7158FE95100FCC379 /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 369774E6158FE95100FCC379 /* MDPattern.m */; };
 		3699DF8D15F38DDF004C9D83 /* MDMIDI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8815F38DDF004C9D83 /* MDMIDI.m */; };
@@ -83,6 +84,8 @@
 		364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrigGenerator.m; sourceTree = "<group>"; };
 		36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcessingPipeline.h; sourceTree = "<group>"; };
 		36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcessingPipeline.m; sourceTree = "<group>"; };
+		367C3B4815F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumGlobalSettingsParser.h; sourceTree = "<group>"; };
+		367C3B4915F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMachinedrumGlobalSettingsParser.m; sourceTree = "<group>"; };
 		36814F011594CD8700220C88 /* MDConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDConstants.h; sourceTree = "<group>"; };
 		36814F021594CD8700220C88 /* MDPitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPitch.h; sourceTree = "<group>"; };
 		36814F031594CD8700220C88 /* MDPitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPitch.m; sourceTree = "<group>"; };
@@ -265,6 +268,8 @@
 				36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */,
 				362FE68515EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.h */,
 				362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */,
+				367C3B4815F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.h */,
+				367C3B4915F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m */,
 				3699DF8715F38DDF004C9D83 /* MDMIDI.h */,
 				3699DF8815F38DDF004C9D83 /* MDMIDI.m */,
 				3699DF8915F38DDF004C9D83 /* MDSysexTransaction.h */,
@@ -408,6 +413,7 @@
 				3699DF9715F38E76004C9D83 /* PGMidi.m in Sources */,
 				3699DF9815F38E76004C9D83 /* PGMidiFind.m in Sources */,
 				3699DF9915F38E76004C9D83 /* MidiInputParser.m in Sources */,
+				367C3B4A15F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,7 +442,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -455,7 +461,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -472,7 +478,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -489,7 +495,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

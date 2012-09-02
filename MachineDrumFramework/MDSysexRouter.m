@@ -12,6 +12,7 @@
 #define kStatusResponseID 0x72
 #define kKitDumpMessageID 0x52
 #define kPatternDumpMessageID 0x67
+#define kGlobalSettingsDumpMessageID 0x50
 
 #define kTurboMIDISpeedRequestID 0x10
 #define kTurboMIDISpeedAnswerID 0x11
@@ -58,6 +59,11 @@
 			case kStatusResponseID:
 			{
 				notificationName = kMDSysexStatusResponseNotification;
+				break;
+			}
+			case kGlobalSettingsDumpMessageID:
+			{
+				notificationName = kMDSysexGlobalSettingsDumpNotification;
 				break;
 			}
 			default:

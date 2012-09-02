@@ -28,12 +28,59 @@ typedef enum MDMachinedrumGlobalSettings_MechanicalSettings
 }
 MDMachinedrumGlobalSettings_MechanicalSettings;
 
+typedef enum MDMachinedrumGlobalSettings_ExtendedMode
+{
+	MDMachinedrumGlobalSettings_ExtendedMode_Off,
+	MDMachinedrumGlobalSettings_ExtendedMode_On
+}
+MDMachinedrumGlobalSettings_ExtendedMode;
+
+typedef struct ExternalTrigSettings
+{
+	uint8_t track;
+	uint8_t gate;
+	uint8_t sense;
+	uint8_t minLevel;
+	uint8_t maxLevel;
+}
+ExternalTrigSettings;
+
+typedef enum MDMachinedrumGlobalSettings_ProgramChangeSettings
+{
+	MDMachinedrumGlobalSettings_ProgramChangeSettings_In,
+	MDMachinedrumGlobalSettings_ProgramChangeSettings_Out,
+	MDMachinedrumGlobalSettings_ProgramChangeSettings_InOut
+}
+MDMachinedrumGlobalSettings_ProgramChangeSettings;
+
+typedef enum MDMachinedrumGlobalSettings_TrigMode
+{
+	MDMachinedrumGlobalSettings_TrigMode_Gate,
+	MDMachinedrumGlobalSettings_TrigMode_Start,
+	MDMachinedrumGlobalSettings_TrigMode_Queue
+}
+MDMachinedrumGlobalSettings_TrigMode;
+
 @interface MDMachinedrumGlobalSettings : NSObject
 @property uint8_t originalPosition;
 @property uint8_t midiBaseChannel;
 @property MDMachinedrumGlobalSettings_MechanicalSettings mechanicalSettings;
 @property MDMachinedrumGlobalSettings_RoutingOutput routing;
 @property float tempo;
+@property MDMachinedrumGlobalSettings_ExtendedMode extendedMode;
+@property uint8_t *keyMapStructure;
+@property BOOL clockIn;
+@property BOOL clockOut;
+@property BOOL transportIn;
+@property BOOL transportOut;
+@property BOOL localControl;
+@property ExternalTrigSettings trigSettingsLeft;
+@property ExternalTrigSettings trigSettingsRight;
+@property MDMachinedrumGlobalSettings_ProgramChangeSettings programChangeSettings;
+@property MDMachinedrumGlobalSettings_TrigMode programChangeTrigMode;
+
++ (id) globalSettingsWithData:(NSData *)d;
+- (id) sysexData;
 - (void) setTempoFromLowByte:(uint8_t)low highByte:(uint8_t)hi;
 - (NSData *) tempoBytes;
 @end

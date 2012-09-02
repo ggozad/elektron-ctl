@@ -19,6 +19,9 @@
 - (void) requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate;
 - (void) requestCurrentSequencerMode:(id<MDSysexTransactionDelegate>)delegate;
 - (void) requestCurrentLockMode:(id<MDSysexTransactionDelegate>)delegate;
+
 - (void) requestCurrentKit:(id<MDSysexTransactionDelegate>)delegate;
 - (void) requestCurrentPattern:(id<MDSysexTransactionDelegate>)delegate;
+- (void) requestCurrentGlobalSettings:(id<MDSysexTransactionDelegate>)delegate;
+
 @end
