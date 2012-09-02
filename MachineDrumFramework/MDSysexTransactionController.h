@@ -13,15 +13,15 @@
 @interface MDSysexTransactionController : NSObject
 @property (readonly) BOOL canProcessTransaction;
 
-- (void) requestCurrentGlobalSlot:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentKitNumber:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentPatternNumber:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentSequencerMode:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentLockMode:(id<MDSysexTransactionDelegate>)delegate;
+- (void) requestCurrentGlobalSlot:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentKitNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentPatternNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentSequencerMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentLockMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 
-- (void) requestCurrentKit:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentPattern:(id<MDSysexTransactionDelegate>)delegate;
-- (void) requestCurrentGlobalSettings:(id<MDSysexTransactionDelegate>)delegate;
+- (void) requestCurrentKit:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentPattern:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+- (void) requestCurrentGlobalSettings:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 
 @end

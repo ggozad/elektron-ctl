@@ -39,4 +39,5 @@ MDSysexTransactionError;
 @property MDSysexTransactionError error;
 @property (strong, nonatomic) NSData *sentData;
 @property (strong, nonatomic) id returnedObject;
+@property (strong, nonatomic) NSString *tag;
 @end
