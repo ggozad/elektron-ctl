@@ -16,9 +16,9 @@
 - (void) requestCurrentGlobalSlot:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 - (void) requestCurrentKitNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 - (void) requestCurrentPatternNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentSequencerMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentLockMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+//- (void) requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+//- (void) requestCurrentSequencerMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+//- (void) requestCurrentLockMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 
 - (void) requestCurrentKit:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 - (void) requestCurrentPattern:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;

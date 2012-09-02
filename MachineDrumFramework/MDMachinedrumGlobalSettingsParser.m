@@ -52,7 +52,7 @@
 	s.transportOut = sync & 0x40;
 	s.localControl = bytes[0xB3] & 0x01;
 	
-	ExternalTrigSettings tLeft, tRight;
+	MDMachinedrumGlobalSettings_ExternalTrigSettings tLeft, tRight;
 	tLeft.track = bytes[0xB4];
 	tRight.track = bytes[0xB5];
 	tLeft.gate = bytes[0xB6];
@@ -63,6 +63,9 @@
 	tRight.minLevel = bytes[0xBB];
 	tLeft.maxLevel = bytes[0xBC];
 	tRight.maxLevel = bytes[0xBD];
+	
+	s.trigSettingsLeft = tLeft;
+	s.trigSettingsRight = tRight;
 	
 	s.programChangeSettings = bytes[0xBE];
 	s.programChangeTrigMode = bytes[0xBF];
@@ -118,24 +121,18 @@
 + (NSUInteger)messageLengthForData:(NSData *)data
 {
 	NSUInteger dataLength = data.length;
-	
 	uint8_t messageLengthLowerBits = ((const char *)data.bytes)[dataLength - 2] & 0x7f;
 	uint8_t messageLengthUpperBits = ((const char *)data.bytes)[dataLength - 3] & 0x7f;
 	uint16_t messageLength = (messageLengthUpperBits << 7) | messageLengthLowerBits;
-	
 	return messageLength & 0x3fff;
 }
 
 + (BOOL)checksumIsValid:(NSData *)data
 {
 	NSUInteger dataLength = data.length;
-	
-	
 	uint8_t checksumLowerBits = ((const char *)data.bytes)[dataLength - 4] & 0x7f;
 	uint8_t checksumUpperBits = ((const char *)data.bytes)[dataLength - 5] & 0x7f;
 	uint16_t checksum = checksumLowerBits | (checksumUpperBits << 7);
-	
-	
 	uint16_t checksumBytesLength = dataLength - 5 - 0x09;
 	uint16_t calcedChecksum = 0;
 	
@@ -155,8 +152,6 @@
 		DLog(@"checksum incorrect (%d)! bailing.", calcedChecksum);
 		return NO;
 	}
-	
-	
 	return YES;
 }
 
@@ -169,10 +164,7 @@
 	uint16_t messageLength = (messageLengthUpperBits << 7) | messageLengthLowerBits;
 	
 	uint16_t calcedMessageLength = dataLength - 10;
-	
 	//DLog(@"message length from data: %d calculated: %d", messageLength, calcedMessageLength);
-	
-	
 	if(calcedMessageLength != messageLength)
 	{
 		DLog(@"message length incorrect! bailing.");

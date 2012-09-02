@@ -35,7 +35,7 @@ typedef enum MDMachinedrumGlobalSettings_ExtendedMode
 }
 MDMachinedrumGlobalSettings_ExtendedMode;
 
-typedef struct ExternalTrigSettings
+typedef struct MDMachinedrumGlobalSettings_ExternalTrigSettings
 {
 	uint8_t track;
 	uint8_t gate;
@@ -43,7 +43,7 @@ typedef struct ExternalTrigSettings
 	uint8_t minLevel;
 	uint8_t maxLevel;
 }
-ExternalTrigSettings;
+MDMachinedrumGlobalSettings_ExternalTrigSettings;
 
 typedef enum MDMachinedrumGlobalSettings_ProgramChangeSettings
 {
@@ -74,8 +74,8 @@ MDMachinedrumGlobalSettings_TrigMode;
 @property BOOL transportIn;
 @property BOOL transportOut;
 @property BOOL localControl;
-@property ExternalTrigSettings trigSettingsLeft;
-@property ExternalTrigSettings trigSettingsRight;
+@property MDMachinedrumGlobalSettings_ExternalTrigSettings trigSettingsLeft;
+@property MDMachinedrumGlobalSettings_ExternalTrigSettings trigSettingsRight;
 @property MDMachinedrumGlobalSettings_ProgramChangeSettings programChangeSettings;
 @property MDMachinedrumGlobalSettings_TrigMode programChangeTrigMode;
 
