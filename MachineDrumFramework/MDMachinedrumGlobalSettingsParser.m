@@ -170,8 +170,6 @@
 		DLog(@"message length incorrect! bailing.");
 		return NO;
 	}
-	
-	
 	return YES;
 }
 

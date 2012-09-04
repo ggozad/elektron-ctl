@@ -16,6 +16,9 @@
 		362C5E80159BD95B000D53CB /* MDSysexUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B92127158F82CC0025F0B3 /* MDSysexUtil.m */; };
 		362FE68715EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */; };
 		364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */; };
+		364CD2C015F5157200CA49A9 /* MDSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2BF15F5157200CA49A9 /* MDSong.m */; };
+		364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2C315F515BF00CA49A9 /* MDValueMap.m */; };
+		364CD2C715F5169F00CA49A9 /* MDValuePair.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2C615F5169F00CA49A9 /* MDValuePair.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
 		367C3B4A15F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 367C3B4915F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
@@ -82,6 +85,12 @@
 		362FE68615EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMachinedrumGlobalSettings.m; sourceTree = "<group>"; };
 		364752F015D1AD63002DCA22 /* MDPatternTrigGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternTrigGenerator.h; sourceTree = "<group>"; };
 		364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrigGenerator.m; sourceTree = "<group>"; };
+		364CD2BE15F5157200CA49A9 /* MDSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSong.h; sourceTree = "<group>"; };
+		364CD2BF15F5157200CA49A9 /* MDSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSong.m; sourceTree = "<group>"; };
+		364CD2C215F515BE00CA49A9 /* MDValueMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDValueMap.h; sourceTree = "<group>"; };
+		364CD2C315F515BF00CA49A9 /* MDValueMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDValueMap.m; sourceTree = "<group>"; };
+		364CD2C515F5169F00CA49A9 /* MDValuePair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDValuePair.h; sourceTree = "<group>"; };
+		364CD2C615F5169F00CA49A9 /* MDValuePair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDValuePair.m; sourceTree = "<group>"; };
 		36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcessingPipeline.h; sourceTree = "<group>"; };
 		36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcessingPipeline.m; sourceTree = "<group>"; };
 		367C3B4815F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumGlobalSettingsParser.h; sourceTree = "<group>"; };
@@ -282,6 +291,12 @@
 				3699DF9415F38E76004C9D83 /* PGMidiFind.m */,
 				3699DF9515F38E76004C9D83 /* MidiInputParser.h */,
 				3699DF9615F38E76004C9D83 /* MidiInputParser.m */,
+				364CD2BE15F5157200CA49A9 /* MDSong.h */,
+				364CD2BF15F5157200CA49A9 /* MDSong.m */,
+				364CD2C215F515BE00CA49A9 /* MDValueMap.h */,
+				364CD2C315F515BF00CA49A9 /* MDValueMap.m */,
+				364CD2C515F5169F00CA49A9 /* MDValuePair.h */,
+				364CD2C615F5169F00CA49A9 /* MDValuePair.m */,
 			);
 			path = MachineDrumFramework;
 			sourceTree = "<group>";
@@ -414,6 +429,9 @@
 				3699DF9815F38E76004C9D83 /* PGMidiFind.m in Sources */,
 				3699DF9915F38E76004C9D83 /* MidiInputParser.m in Sources */,
 				367C3B4A15F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m in Sources */,
+				364CD2C015F5157200CA49A9 /* MDSong.m in Sources */,
+				364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */,
+				364CD2C715F5169F00CA49A9 /* MDValuePair.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

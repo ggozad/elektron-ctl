@@ -30,4 +30,7 @@
 #import "MDMIDI.h"
 #import "MDSysexTransactionController.h"
 
+#import "MDSong.h"
+#import "MDValueMap.h"
+#import "MDValuePair.h"
 #endif
