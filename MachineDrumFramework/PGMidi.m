@@ -185,7 +185,6 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
     MIDIPacketList *packetList = (MIDIPacketList*)packetBuffer;
     MIDIPacket     *packet     = MIDIPacketListInit(packetList);
     packet = MIDIPacketListAdd(packetList, sizeof(packetBuffer), packet, 0, size, bytes);
-
     [self sendPacketList:packetList];
 }
 
