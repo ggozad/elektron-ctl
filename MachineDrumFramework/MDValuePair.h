@@ -10,4 +10,5 @@
 
 @interface MDValuePair : NSObject
 @property float x, y;
++ (id) valuePairWithX:(float)x y:(float)y;
 @end
