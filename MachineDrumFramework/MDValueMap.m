@@ -65,13 +65,11 @@ static inline float map(float value,
 		
 		float deltaBetweenPoints = b.x - a.x;
 		float biasOfFX = map(b.x - fx, 0, deltaBetweenPoints, 0, 1);
-		float y = (a.y*127*biasOfFX + b.y*127*(1.0-biasOfFX));
-		
-		//diff.x = a.x + biasOfFX*deltaBetweenPoints;
-		//diff.y = map(y, 0, 127, 0, 1);
-		uint8_t x = roundf(y);
-		if(x > 127) x = 127;
-		self.mapping[x] = x;
+		uint8_t y = roundf(a.y*127.0*biasOfFX + b.y*127.0*(1.0-biasOfFX));
+		//DLog(@"%d - %d", );
+		//uint8_t x = y;
+		//if(x > 127) x = 127;
+		self.mapping[x] = y;
     }
 }
 
@@ -81,7 +79,6 @@ static inline float map(float value,
 	{
 		self.mapping = malloc(128);
 		memset(self.mapping, 0, 128);
-		
 		self.valuePairs = [NSMutableArray array];
 		MDValuePair *v0 = [MDValuePair new];
 		MDValuePair *v1 = [MDValuePair new];
@@ -97,6 +94,7 @@ static inline float map(float value,
 - (uint8_t)valueAtIndex:(uint8_t)index
 {
 	if(index > 127) index = 127;
+	DLog(@"returning mapping at %d: %d", index, self.mapping[index]);
 	return self.mapping[index];
 }
 
