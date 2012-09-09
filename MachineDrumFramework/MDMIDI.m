@@ -12,11 +12,24 @@
 
 @interface MDMIDI()
 @property (nonatomic, strong) NSMutableArray *midiConnectionObservers;
+@property (nonatomic, strong) NSMutableArray *midiInputObservers;
 @end
 
 
 @implementation MDMIDI
 
+- (void) addObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer
+{
+	DLog(@"adding observer..");
+	if(![self.midiInputObservers containsObject:observer])
+		[self.midiInputObservers addObject:observer];
+}
+
+- (void) removeObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer
+{
+	if([self.midiInputObservers containsObject:observer])
+		[self.midiInputObservers removeObject:observer];
+}
 
 - (void)addObserverForMidiConnectionEvents:(id<PGMidiDelegate>)observer
 {
@@ -56,7 +69,13 @@
 
 - (void)midiReceivedNoteOn:(MidiNoteOn *)noteOn fromSource:(PGMidiSource *)source
 {
-	DLog(@"note on from %@, channel: %d, note: %d, velocity: %d", source.name, noteOn.channel, noteOn.note, noteOn.velocity);
+	for (id<MidiInputDelegate> i in self.midiInputObservers)
+	{
+		if([i respondsToSelector:@selector(midiReceivedNoteOn:fromSource:)])
+			[i midiReceivedNoteOn:noteOn fromSource:source];
+	}
+	
+	//DLog(@"note on from %@, channel: %d, note: %d, velocity: %d", source.name, noteOn.channel, noteOn.note, noteOn.velocity);
 }
 
 - (void)midiReceivedSysexData:(NSData *)sysexdata fromSource:(PGMidiSource *)source
@@ -105,6 +124,7 @@
 }
 
 static MDMIDI *_default = nil;
+
 + (MDMIDI *)sharedInstance
 {
 	if(_default != nil) return _default;	
@@ -126,6 +146,7 @@ static MDMIDI *_default = nil;
 	if(self = [super init])
 	{
 		self.midiConnectionObservers = [NSMutableArray array];
+		self.midiInputObservers = [NSMutableArray array];
 		self.machinedrum = [MDMachineDrum new];
 		self.machinedrum.delegate = self;
 		self.sysex = [MDSysexTransactionController new];

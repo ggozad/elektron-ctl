@@ -22,6 +22,10 @@
 @property (strong, nonatomic) MDSysexTransactionController *sysex;
 + (MDMIDI *) sharedInstance;
 + (MDSysexTransactionController *) sysex;
+
 - (void) addObserverForMidiConnectionEvents:(id<PGMidiDelegate>)observer;
 - (void) removeObserverForMidiConnectionEvents:(id<PGMidiDelegate>)observer;
+- (void) addObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer;
+- (void) removeObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer;
+
 @end
