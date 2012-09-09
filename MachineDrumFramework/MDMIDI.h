@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+
+@class MDSysexTransactionController;
 #import "PGMidi.h"
 #import "MidiInputParser.h"
 #import "MDMachineDrum.h"
-
-@class MDSysexTransactionController;
-@class MDMachineDrum;
 
 @interface MDMIDI : NSObject <PGMidiDelegate, MidiInputDelegate, MDMachineDrumDelegate>
 @property (strong, nonatomic) MDMachineDrum *machinedrum;
@@ -27,5 +26,7 @@
 - (void) removeObserverForMidiConnectionEvents:(id<PGMidiDelegate>)observer;
 - (void) addObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer;
 - (void) removeObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer;
+
+- (void) foo;
 
 @end

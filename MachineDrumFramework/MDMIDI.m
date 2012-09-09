@@ -15,8 +15,12 @@
 @property (nonatomic, strong) NSMutableArray *midiInputObservers;
 @end
 
-
 @implementation MDMIDI
+
+- (void)foo
+{
+	DLog(@"lol");
+}
 
 - (void) addObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer
 {
@@ -33,6 +37,7 @@
 
 - (void)addObserverForMidiConnectionEvents:(id<PGMidiDelegate>)observer
 {
+	DLog(@"adding observer..");
 	if(![self.midiConnectionObservers containsObject:observer])
 		[self.midiConnectionObservers addObject:observer];
 }
