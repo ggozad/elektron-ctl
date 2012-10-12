@@ -8,8 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import "MDPattern.h"
+#import "MDMachinedrumGlobalSettings.h"
 
-
+typedef enum MDOutput
+{
+	MDOutput_A,
+	MDOutput_B,
+	MDOutput_C,
+	MDOutput_D,
+	MDOutput_E,
+	MDOutput_F,
+	MDOutput_Main,
+}
+MDOutput;
 
 @class MDMachineDrum;
 
@@ -35,5 +46,8 @@
 - (void) requestCurrentGlobalSettingsSlot;
 
 - (void) sendPattern:(MDPattern *)pattern;
+- (void) sendGlobalSettings:(MDMachinedrumGlobalSettings *)settings;
+- (void) setSampleName:(NSString *)name atSlot:(NSUInteger)slot;
+- (void) routeTrack:(uint8_t)channel toOutput:(MDOutput)output;
 
 @end

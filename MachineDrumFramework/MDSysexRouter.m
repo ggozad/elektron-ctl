@@ -13,6 +13,7 @@
 #define kKitDumpMessageID 0x52
 #define kPatternDumpMessageID 0x67
 #define kGlobalSettingsDumpMessageID 0x50
+#define kSetSampleNameMessageID 0x73
 
 #define kTurboMIDISpeedRequestID 0x10
 #define kTurboMIDISpeedAnswerID 0x11
@@ -31,7 +32,7 @@
 
 + (void)routeSysexData:(NSData *)data
 {
-	if(data.length < 8)
+	if(data.length < 4)
 	{
 		DLog(@"data too short. ignoring.");
 		return;
@@ -64,6 +65,11 @@
 			case kGlobalSettingsDumpMessageID:
 			{
 				notificationName = kMDSysexGlobalSettingsDumpNotification;
+				break;
+			}
+			case kSetSampleNameMessageID:
+			{
+				notificationName = kMDSysexSetSampleNameNotification;
 				break;
 			}
 			default:
@@ -120,6 +126,51 @@
 	{
 		DLog(@"got message from TM-1, ignoring.");
 	}
+	else if([self messageIsUniversalRealtimeMessage:data])
+	{
+		const uint8_t *bytes = data.bytes;
+		const uint8_t subID = bytes[3];
+		switch (subID)
+		{
+			case 0x01:
+			{
+				notificationName = kMDSysexSDSdumpHeaderNotification;
+				break;
+			}
+			case 0x02:
+			{
+				notificationName = kMDSysexSDSdumpPacketNotification;
+				break;
+			}
+			case 0x03:
+			{
+				notificationName = kMDSysexSDSdumpRequestNotification;
+				break;
+			}
+			case 0x7F:
+			{
+				notificationName = kMDSysexSDSdumpACKNotification;
+				break;
+			}
+			case 0x7E:
+			{
+				notificationName = kMDSysexSDSdumpNAKNotification;
+				break;
+			}
+			case 0x7D:
+			{
+				notificationName = kMDSysexSDSdumpCANCELNotification;
+				break;
+			}
+			case 0x7C:
+			{
+				notificationName = kMDSysexSDSdumpWAITNotification;
+				break;
+			}
+			default:
+				break;
+		}
+	}
 	else
 	{
 		DLog(@"unknown header, ignoring.");
@@ -130,6 +181,13 @@
 		NSNotification *n = [NSNotification notificationWithName:notificationName object:data];
 		[[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 	}
+}
+
++ (BOOL) messageIsUniversalRealtimeMessage:(NSData *)data
+{
+	const uint8_t *bytes = data.bytes;
+	if(bytes[1] == 0x7E) return YES;
+	return NO;
 }
 
 const uint8_t tm1header[] = {0xf0, 0x00, 0x20, 0x3c, 0x04, 0x00};

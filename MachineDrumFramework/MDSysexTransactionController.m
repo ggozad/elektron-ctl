@@ -21,6 +21,8 @@ typedef enum TransactionReturnType
 TransactionReturnType;
 
 
+
+
 @interface MDSysexTransactionController()
 @property (strong, nonatomic) MDSysexTransaction *currentTransaction;
 @property (strong, nonatomic) NSTimer *timeoutTimer;
@@ -275,6 +277,7 @@ TransactionReturnType;
 	}
 	return self;
 }
+
 
 
 @end

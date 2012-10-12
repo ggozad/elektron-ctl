@@ -7,6 +7,7 @@
 //
 
 #import "MDMachineDrum.h"
+#import "MDMachinedrumGlobalSettings.h"
 #import "MDSysexUtil.h"
 #import "MDKit.h"
 
@@ -233,6 +234,48 @@
 		DLog(@"sending.");
 		[self.delegate machineDrum:self wantsToSendSysExData:d];
 	}
+}
+
+- (void)sendGlobalSettings:(MDMachinedrumGlobalSettings *)settings
+{
+	NSData *d = [settings sysexData];
+	if(d) [self.delegate machineDrum:self wantsToSendSysExData:d];
+}
+
+- (void)setSampleName:(NSString *)name atSlot:(NSUInteger)slot
+{
+	char sampleRenameID = 0x73;
+	char slotByte = slot & 0x7f;
+	
+	const char *nameChars = [[name substringToIndex:4] cStringUsingEncoding:NSASCIIStringEncoding];
+	
+	NSMutableData *d = [NSMutableData data];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
+	[d appendBytes:&sampleRenameID length:1];
+	[d appendBytes:&slotByte length:1];
+	[d appendBytes:nameChars length:4];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	
+	if(self.delegate)
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
+
+}
+
+- (void)routeTrack:(uint8_t)channel toOutput:(MDOutput)output
+{
+	if(channel > 15) return;
+	channel &= 0x0F;
+	const char messageID = 0x5C;
+	const char outputByte = output;
+	
+	NSMutableData *d = [NSMutableData data];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
+	[d appendBytes:&messageID length:1];
+	[d appendBytes:&channel length:1];
+	[d appendBytes:&outputByte length:1];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	if(self.delegate)
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
 }
 
 

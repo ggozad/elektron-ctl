@@ -109,7 +109,7 @@ receiveState _receiveState = receiveState_None;
 					{
 						;
 					}
-					else if (hiNib == MD_MIDI_STATUS_NOTE_ON) // begin parsing note on
+					else if (hiNib == MD_MIDI_STATUS_NOTE_ON)
 					{
 						_receiveState = receiveState_NoteOn;
 						noteOnBufferIndex = 0;
@@ -121,19 +121,19 @@ receiveState _receiveState = receiveState_None;
 						noteOffBufferIndex = 0;
 						noteOffBuffer[noteOffBufferIndex++] = byteValue;
 					}
-					else if (hiNib == MD_MIDI_STATUS_CONTROL_CHANGE) // begin parsing note on
+					else if (hiNib == MD_MIDI_STATUS_CONTROL_CHANGE)
 					{
 						_receiveState = receiveState_ControlChange;
 						ccBufferIndex = 0;
 						ccBuffer[ccBufferIndex++] = byteValue;
 					}
-					else if (hiNib == MD_MIDI_STATUS_PROGRAM_CHANGE) // begin parsing note on
+					else if (hiNib == MD_MIDI_STATUS_PROGRAM_CHANGE)
 					{
 						_receiveState = receiveState_ProgramChange;
 						programChangeBufferIndex = 0;
 						programChangeBuffer[programChangeBufferIndex++] = byteValue;
 					}
-					else if (hiNib == MD_MIDI_STATUS_AFTERTOUCH) // begin parsing aftertouch
+					else if (hiNib == MD_MIDI_STATUS_AFTERTOUCH)
 					{
 						_receiveState = receiveState_Aftertouch;
 						aftertouchBufferIndex = 0;

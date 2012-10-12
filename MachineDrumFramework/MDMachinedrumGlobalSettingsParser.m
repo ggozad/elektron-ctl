@@ -64,8 +64,8 @@
 	tLeft.maxLevel = bytes[0xBC];
 	tRight.maxLevel = bytes[0xBD];
 	
-	s.trigSettingsLeft = tLeft;
-	s.trigSettingsRight = tRight;
+	s.trigSettingsA = tLeft;
+	s.trigSettingsB = tRight;
 	
 	s.programChangeSettings = bytes[0xBE];
 	s.programChangeTrigMode = bytes[0xBF];

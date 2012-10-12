@@ -25,7 +25,11 @@ MDPatternScale;
 + (MDPattern *) patternWithPattern:(MDPattern *)inPattern;
 
 - (void) setSavePosition:(uint8_t)slot;
+- (uint8_t)savePosition;
+
+
 - (void) setKitNumber:(uint8_t)kit;
+- (uint8_t)kitNumber;
 - (void) setLength:(uint8_t)len;
 - (void) setScale:(MDPatternScale)scale;
 - (void) setTrigAtTrack: (uint8_t) track step: (uint8_t) step toValue: (BOOL) val;

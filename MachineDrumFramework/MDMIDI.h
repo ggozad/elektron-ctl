@@ -27,6 +27,4 @@
 - (void) addObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer;
 - (void) removeObserverForMidiInputParserEvents:(id<MidiInputDelegate>)observer;
 
-- (void) foo;
-
 @end

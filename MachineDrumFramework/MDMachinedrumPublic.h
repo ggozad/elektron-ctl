@@ -33,4 +33,8 @@
 #import "MDSong.h"
 #import "MDValueMap.h"
 #import "MDValuePair.h"
+
+#import "MDSDS.h"
+#import "MDDataDump.h"
+
 #endif

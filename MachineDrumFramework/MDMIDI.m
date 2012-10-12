@@ -150,6 +150,8 @@ static MDMIDI *_default = nil;
 {
 	if(self = [super init])
 	{
+		[MDDataDump sharedInstance];
+		[MDSDS sharedInstance];
 		self.midiConnectionObservers = [NSMutableArray array];
 		self.midiInputObservers = [NSMutableArray array];
 		self.machinedrum = [MDMachineDrum new];

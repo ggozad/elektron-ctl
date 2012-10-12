@@ -133,6 +133,11 @@
 	if(kit < 64) self.privatePattern.kitNumber = kit;
 }
 
+- (uint8_t)kitNumber
+{
+	return self.privatePattern.kitNumber;
+}
+
 - (NSData *)sysexData
 {
 	NSData *d = [self.privatePattern sysexData];
@@ -143,6 +148,11 @@
 {
 	if(slot > 127) slot = 0;
 	self.privatePattern.originalPosition = slot;
+}
+
+- (uint8_t)savePosition
+{
+	return self.privatePattern.originalPosition;
 }
 
 - (id)copy

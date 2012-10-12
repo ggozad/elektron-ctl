@@ -74,8 +74,8 @@ MDMachinedrumGlobalSettings_TrigMode;
 @property BOOL transportIn;
 @property BOOL transportOut;
 @property BOOL localControl;
-@property MDMachinedrumGlobalSettings_ExternalTrigSettings trigSettingsLeft;
-@property MDMachinedrumGlobalSettings_ExternalTrigSettings trigSettingsRight;
+@property MDMachinedrumGlobalSettings_ExternalTrigSettings trigSettingsA;
+@property MDMachinedrumGlobalSettings_ExternalTrigSettings trigSettingsB;
 @property MDMachinedrumGlobalSettings_ProgramChangeSettings programChangeSettings;
 @property MDMachinedrumGlobalSettings_TrigMode programChangeTrigMode;
 

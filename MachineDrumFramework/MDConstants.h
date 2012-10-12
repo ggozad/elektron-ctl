@@ -22,6 +22,16 @@
 #define kMDturboMIDISpeedTest @"kMDturboMIDISpeedTest"
 #define kMDturboMIDISpeedTestResult @"kMDturboMIDISpeedTestResult"
 
+#define kMDSysexSDSdumpHeaderNotification @"kMDSysexSDSdumpHeaderNotification"
+#define kMDSysexSDSdumpRequestNotification @"kMDSysexSDSdumpRequestNotification"
+#define kMDSysexSDSdumpPacketNotification @"kMDSysexSDSdumpPacketNotification"
+#define kMDSysexSDSdumpACKNotification @"kMDSysexSDSdumpACKNotification"
+#define kMDSysexSDSdumpNAKNotification @"kMDSysexSDSdumpNAKNotification"
+#define kMDSysexSDSdumpCANCELNotification @"kMDSysexSDSdumpCANCELNotification"
+#define kMDSysexSDSdumpWAITNotification @"kMDSysexSDSdumpWAITNotification"
+
+#define kMDSysexSetSampleNameNotification @"kMDSysexSetSampleNameNotification"
+
 typedef enum MDPatternTrigState
 {
 	trigStateOff,

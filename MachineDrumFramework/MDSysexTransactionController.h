@@ -10,6 +10,8 @@
 #import "MDSysexTransaction.h"
 
 
+
+
 @interface MDSysexTransactionController : NSObject
 @property (readonly) BOOL canProcessTransaction;
 
@@ -23,5 +25,8 @@
 - (void) requestCurrentKit:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 - (void) requestCurrentPattern:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
 - (void) requestCurrentGlobalSettings:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
+
+
+
 
 @end
