@@ -391,10 +391,8 @@ static MDSDS *_default = nil;
 	
 	[audioData setLength:self.numberOfSamplesForReceive * self.bytesPerSampleForReceive];
 	
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
-	NSURL *url = [NSURL URLWithString:documentsDirectory];
-	url = [url URLByAppendingPathComponent:@"dump2"];
+	NSURL *url = [[MDDataDump sharedInstance] currentSnapshotDirectory];
+	url = [url URLByAppendingPathComponent:@"samples"];
 	url = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"%02ld_%@", self.sampleSlotForReceive, self.sampleNameForReceive]];
 	
 	DLog(@"writing files to url: %@", url);

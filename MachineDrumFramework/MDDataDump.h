@@ -10,6 +10,15 @@
 
 @interface MDDataDump : NSObject
 
+@property NSUInteger currentSnapshot;
+
 + (id) sharedInstance;
+- (void) arm;
+- (void) disarm;
+- (NSURL *)currentSnapshotDirectory;
+- (NSUInteger) numberOfSnapshots;
+- (NSString *) snapshotDirectoryNameForSnapshotWithIndex:(NSUInteger)i;
+- (NSString *) createNewSnapshotDirectory;
+- (void) deleteSnapShotWithIndex:(NSUInteger)i;
 
 @end

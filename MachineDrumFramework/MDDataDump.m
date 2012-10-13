@@ -9,7 +9,23 @@
 #import "MDDataDump.h"
 #import "MDMachinedrumPublic.h"
 
+@interface MDDataDump()
+@property BOOL armed;
+@end
+
 @implementation MDDataDump
+
+- (void)arm
+{
+	if(self.armed) return;
+	[self registerForNotifications];
+}
+
+- (void)disarm
+{
+	if(!self.armed)return;
+	[self unRegisterForNotifications];
+}
 
 static MDDataDump *_default = nil;
 + (id)sharedInstance
@@ -28,14 +44,14 @@ static MDDataDump *_default = nil;
 	if(_default)return _default;
 	if(self = [super init])
 	{
-		[self registerForNotifications];
+		//[self registerForNotifications];
 	}
 	return self;
 }
 
 - (void)dealloc
 {
-	[self unRegisterForNotifications];
+	//[self unRegisterForNotifications];
 }
 
 - (void)registerForNotifications
@@ -80,22 +96,156 @@ static MDDataDump *_default = nil;
 	if(settings)
 	{
 		NSString *fileName = [NSString stringWithFormat:@"%02d_globalSettings.syx", settings.originalPosition];
-		[self writeSyxData:d toFolderNamed:@"settings" fileNamed:fileName];
+		[self writeSyxData:d toFolderNamed:@"globals" fileNamed:fileName];
 	}
+}
+
+- (NSURL *)currentSnapshotDirectory
+{
+	return [[self sortedSnapshots] objectAtIndex:self.currentSnapshot];
 }
 
 - (void) writeSyxData:(NSData *)syx toFolderNamed:(NSString *)folder fileNamed:(NSString *)fileName
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
-	NSURL *url = [NSURL URLWithString:documentsDirectory];
-	url = [url URLByAppendingPathComponent:@"dump2"];
+	NSArray *urls = [self sortedSnapshots];
+	if(self.currentSnapshot >= [urls count])
+	{
+		DLog(@"memememehh");
+		return;
+	}
+	NSURL *url = [[self sortedSnapshots] objectAtIndex:self.currentSnapshot];
 	url = [url URLByAppendingPathComponent:folder];
 	url = [url URLByAppendingPathComponent:fileName];
 	
 	NSError *err = nil;
 	[syx writeToFile:[url path] options:NSDataWritingAtomic error:&err];
+	DLog(@"current snsapshot: %d", self.currentSnapshot);
+	DLog(@"%@", [url path]);
 	if(err)DLog(@"error: %@", [err localizedDescription]);
+}
+
+- (NSUInteger)numberOfSnapshots
+{
+	NSURL *snapshotsDirectory = [self snapshotsDirectory];
+	if(snapshotsDirectory)
+	{
+		NSError *err = nil;
+		NSArray *items = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:snapshotsDirectory
+													   includingPropertiesForKeys:nil
+																		  options:0
+																			error:&err];
+		
+		if(err)
+		{
+			DLog(@"can't do shit");
+			return 0;
+		}
+		DLog(@"%d", [items count]);
+		return [items count];
+	}
+	return 0;
+}
+
+- (NSURL *) snapshotsDirectory
+{
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSURL *url = [NSURL fileURLWithPath:documentsDirectory];
+	url = [url URLByAppendingPathComponent:@"snapshots"];
+	
+	NSError * error = nil;
+	[[NSFileManager defaultManager] createDirectoryAtURL:url
+							  withIntermediateDirectories:YES
+											   attributes:nil
+													error:&error];
+	if(error)
+	{
+		DLog(@"error creating directory: %@", error);
+		return nil;
+	}
+	
+	return url;
+}
+
+- (NSString *)createNewSnapshotDirectory
+{
+	NSURL *snapshotDirectory = [self snapshotsDirectory];
+	NSString *dirName = [NSString stringWithFormat:@"%03ld", [self numberOfSnapshots]];
+	snapshotDirectory = [self createDirectoryNamed: dirName atURL:snapshotDirectory];
+	if(snapshotDirectory)
+	{
+		[self createDirectoryNamed:@"kits" atURL:snapshotDirectory];
+		[self createDirectoryNamed:@"patterns" atURL:snapshotDirectory];
+		[self createDirectoryNamed:@"songs" atURL:snapshotDirectory];
+		[self createDirectoryNamed:@"globals" atURL:snapshotDirectory];
+		[self createDirectoryNamed:@"samples" atURL:snapshotDirectory];
+		return dirName;
+	}
+	return nil;
+}
+
+- (void) deleteSnapShotWithIndex:(NSUInteger)i
+{
+	NSArray *snapshots = [self sortedSnapshots];
+	if(i >= [snapshots count]) return;
+	
+	NSError *err = nil;
+	[[NSFileManager defaultManager] removeItemAtURL:[snapshots objectAtIndex:i] error:&err];
+	if(err)
+	{
+		DLog(@"error deleting snapshot: %@", err);
+	}
+}
+
+- (NSURL *) createDirectoryNamed:(NSString *)dir atURL:(NSURL *)url
+{
+	url = [url URLByAppendingPathComponent:dir];
+	NSError * error = nil;
+	[[NSFileManager defaultManager] createDirectoryAtURL:url
+							 withIntermediateDirectories:YES
+											  attributes:nil
+												   error:&error];
+	if(error)
+	{
+		DLog(@"error creating directory named %@: %@", dir, error);
+		return nil;
+	}
+	DLog(@"created: %@", url);
+	return url;
+}
+
+- (NSString *)snapshotDirectoryNameForSnapshotWithIndex:(NSUInteger)i
+{
+	NSArray *items = [self sortedSnapshots];
+	if(i >= [items count]) return nil;
+	return [[items objectAtIndex:i] lastPathComponent];
+}
+
+- (NSArray *) sortedSnapshots
+{
+	NSError *err = nil;
+	NSArray *items = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[self snapshotsDirectory]
+												   includingPropertiesForKeys:nil
+																	  options:NSDirectoryEnumerationSkipsHiddenFiles
+																		error:&err];
+	
+	if(err)
+	{
+		DLog(@"can't do shit");
+		return nil;
+	}
+	
+	items = [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+			 {
+				 NSString *s1 = [obj1 lastPathComponent];
+				 NSString *s2 = [obj2 lastPathComponent];
+				 
+				 if([s1 integerValue] < [s2 integerValue]) return NSOrderedDescending;
+				 if([s1 integerValue] > [s2 integerValue]) return NSOrderedAscending;
+				 return NSOrderedSame;
+			 }];
+	
+	return items;
 }
 
 
