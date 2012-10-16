@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface MDDataDump : NSObject
-
 @property NSUInteger currentSnapshot;
 
 + (id) sharedInstance;
@@ -20,5 +19,5 @@
 - (NSString *) snapshotDirectoryNameForSnapshotWithIndex:(NSUInteger)i;
 - (NSString *) createNewSnapshotDirectory;
 - (void) deleteSnapShotWithIndex:(NSUInteger)i;
-
+- (NSArray *)filesInCurrentSnapshotForKey:(NSString *)s;
 @end

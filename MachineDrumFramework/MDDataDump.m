@@ -19,12 +19,16 @@
 {
 	if(self.armed) return;
 	[self registerForNotifications];
+	self.armed = YES;
+	DLog(@"armed");
 }
 
 - (void)disarm
 {
 	if(!self.armed)return;
+	self.armed = NO;
 	[self unRegisterForNotifications];
+	DLog(@"disarmed");
 }
 
 static MDDataDump *_default = nil;
@@ -121,7 +125,16 @@ static MDDataDump *_default = nil;
 	[syx writeToFile:[url path] options:NSDataWritingAtomic error:&err];
 	DLog(@"current snsapshot: %d", self.currentSnapshot);
 	DLog(@"%@", [url path]);
-	if(err)DLog(@"error: %@", [err localizedDescription]);
+	
+	if(err)
+	{
+		DLog(@"error: %@", [err localizedDescription]);
+	}
+	else
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName:kMDDataDumpDidWriteFileNotification object:url];
+	}
+		
 }
 
 - (NSUInteger)numberOfSnapshots
@@ -244,6 +257,31 @@ static MDDataDump *_default = nil;
 				 if([s1 integerValue] > [s2 integerValue]) return NSOrderedAscending;
 				 return NSOrderedSame;
 			 }];
+	
+	return items;
+}
+
+- (NSArray *)filesInCurrentSnapshotForKey:(NSString *)s
+{
+	NSArray *items = [self sortedSnapshots];
+	if(self.currentSnapshot >= [items count]) return nil;
+	
+	NSURL *snapshot = [items objectAtIndex:self.currentSnapshot];
+	snapshot = [snapshot URLByAppendingPathComponent:s];
+	
+	DLog(@"%@", snapshot);
+	
+	NSError *err = nil;
+	items = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:snapshot
+												   includingPropertiesForKeys:nil
+																	  options:NSDirectoryEnumerationSkipsHiddenFiles
+																		error:&err];
+	
+	if(err)
+	{
+		DLog(@"can't do shit.. %@", snapshot);
+		return nil;
+	}
 	
 	return items;
 }

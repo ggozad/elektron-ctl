@@ -86,6 +86,9 @@ static MDSDS *_default = nil;
 
 - (BOOL)armForReceiving
 {
+	
+#warning improve this
+	
 	if(self.transmissionState == MDSDStransmissionState_IDLE)
 	{
 		self.transmissionState = MDSDStransmissionState_ARMED_FOR_RECEIVE;
@@ -98,7 +101,7 @@ static MDSDS *_default = nil;
 	}
 	else
 	{
-		DLog(@"don't do arm when not idle!");
+		DLog(@"don't arm when not idle!");
 		return NO;
 	}
 	return NO;
@@ -300,8 +303,7 @@ static MDSDS *_default = nil;
 	
 	DLog(@"loop mode: %@", loopMode);
 	
-	NSData *ackMessage = [self handShakeMessageWithID:SDSHandshakeMessageID_ACK packetNumber:0 channel:bytes[2]];
-	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:ackMessage.bytes size:ackMessage.length];
+	
 	
 	NSUInteger bitsPerSample = bytes[6];
 	NSUInteger packetBytesPerSample = 1;
@@ -315,7 +317,7 @@ static MDSDS *_default = nil;
 	
 	self.headerForReceive = n.object;
 	
-	self.transmissionState = MDSDStransmissionState_RECEIVING_GOT_HEADER_WAITING_FOR_PACKETS;
+	
 	self.packetsForReceive = [NSMutableArray array];
 	
 	self.sampleRateForReceive = sampleRate;
@@ -331,6 +333,12 @@ static MDSDS *_default = nil;
 	self.numberOfSamplesPerPacketForReceive = samplesPerPacket;
 	self.numberOfSamplesForReceive = numSamples;
 	self.totalSamplesWritten = 0;
+	
+#warning todo: check format
+	
+	NSData *ackMessage = [self handShakeMessageWithID:SDSHandshakeMessageID_ACK packetNumber:0 channel:bytes[2]];
+	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:ackMessage.bytes size:ackMessage.length];
+	self.transmissionState = MDSDStransmissionState_RECEIVING_GOT_HEADER_WAITING_FOR_PACKETS;
 }
 
 - (void) handleDumpPacket:(NSNotification *)n
@@ -375,6 +383,10 @@ static MDSDS *_default = nil;
 			[self parsePackets];
 		}
 	}
+	else
+	{
+#warning checksum error unimplemented
+	}
 }
 
 - (void)parsePackets
@@ -413,7 +425,14 @@ static MDSDS *_default = nil;
 	
 	NSError *err = nil;
 	[syx writeToFile:[url path] options:NSDataWritingAtomic error:&err];
-	if(err)DLog(@"error: %@", [err localizedDescription]);
+	if(err)
+	{
+		DLog(@"error: %@", [err localizedDescription]);
+	}
+	else
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName:kMDSDSDidWriteSyxFileNotification object: url];
+	}
 }
 
 - (void) writeAudioData:(NSData *)data toURL:(NSURL *)url
@@ -454,21 +473,14 @@ static MDSDS *_default = nil;
 		DLog(@"failed to close file..");
 		return;
 	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMDSDSDidWriteAudioFileNotification object: url];
 }
 
 int16_t unpack3(const uint8_t *ptr)
 {
-    int16_t num;
-	
-    /* Unpack 3 bytes into an unsigned short */
-    num = ((uint16_t)(*ptr) << 9) |
-	((uint16_t)(*(ptr+1)) << 2) |
-	(*(ptr+2) >> 5);
-	
-    /* Change unsigned range to signed range */
-    num -= 0x8000;
-	
-    return num;
+    int16_t num = ((uint16_t)(*ptr) << 9) | ((uint16_t)(*(ptr+1)) << 2) | (*(ptr+2) >> 5);
+    return num - 0x8000;
 }
 
 - (NSData *)parseDumpPacket:(NSData *)packetData
@@ -495,6 +507,7 @@ int16_t unpack3(const uint8_t *ptr)
 - (void) handleDumpRequest:(NSNotification *)n
 {
 	DLog(@"got dump request..");
+#warning unimplemented
 }
 
 - (void) startTimer:(float)seconds info:(NSString *)str

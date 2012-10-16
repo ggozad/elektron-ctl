@@ -32,6 +32,10 @@
 
 #define kMDSysexSetSampleNameNotification @"kMDSysexSetSampleNameNotification"
 
+#define kMDDataDumpDidWriteFileNotification @"kMDDataDumpDidWriteFileNotification"
+#define kMDSDSDidWriteAudioFileNotification @"kMDSDSDidWriteAudioFileNotification"
+#define kMDSDSDidWriteSyxFileNotification @"kMDSDSDidWriteSyxFileNotification"
+
 typedef enum MDPatternTrigState
 {
 	trigStateOff,
