@@ -80,6 +80,10 @@
 		3631A88A1646C3E3008DB7E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920DD158F81670025F0B3 /* Foundation.framework */; };
 		3631A9361646CC59008DB7E5 /* MDStorageModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3631A9341646CC59008DB7E5 /* MDStorageModel.xcdatamodeld */; };
 		3631A9371646CC59008DB7E5 /* MDStorageModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3631A9341646CC59008DB7E5 /* MDStorageModel.xcdatamodeld */; };
+		363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C82175A3C7D00DC1ADF /* MDPattern.m */; };
+		363D9C86175A3C7E00DC1ADF /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C82175A3C7D00DC1ADF /* MDPattern.m */; };
+		363D9C87175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */; };
+		363D9C88175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */; };
 		364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */; };
 		364CD2C015F5157200CA49A9 /* MDSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2BF15F5157200CA49A9 /* MDSong.m */; };
 		364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2C315F515BF00CA49A9 /* MDValueMap.m */; };
@@ -213,6 +217,10 @@
 		3631499816F722BE00FAF523 /* NPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NPair.m; sourceTree = "<group>"; };
 		3631A8901646C3E4008DB7E5 /* libMachineDrumFramework-Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMachineDrumFramework-Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3631A9351646CC59008DB7E5 /* MDStorageModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MDStorageModel.xcdatamodel; sourceTree = "<group>"; };
+		363D9C81175A3C7D00DC1ADF /* MDPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPattern.h; sourceTree = "<group>"; };
+		363D9C82175A3C7D00DC1ADF /* MDPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPattern.m; sourceTree = "<group>"; };
+		363D9C83175A3C7D00DC1ADF /* MDPatternPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternPrivate.h; sourceTree = "<group>"; };
+		363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternPrivate.m; sourceTree = "<group>"; };
 		364752F015D1AD63002DCA22 /* MDPatternTrigGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternTrigGenerator.h; sourceTree = "<group>"; };
 		364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrigGenerator.m; sourceTree = "<group>"; };
 		364CD2BE15F5157200CA49A9 /* MDSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSong.h; sourceTree = "<group>"; };
@@ -576,6 +584,10 @@
 		36BAC90816414E1100F29993 /* Pattern */ = {
 			isa = PBXGroup;
 			children = (
+				363D9C81175A3C7D00DC1ADF /* MDPattern.h */,
+				363D9C82175A3C7D00DC1ADF /* MDPattern.m */,
+				363D9C83175A3C7D00DC1ADF /* MDPatternPrivate.h */,
+				363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */,
 				36B92122158F82CC0025F0B3 /* MDPatternTrack.h */,
 				36B92123158F82CC0025F0B3 /* MDPatternTrack.m */,
 				36B92116158F82CC0025F0B3 /* MDParameterLock.h */,
@@ -821,6 +833,8 @@
 				36B61E24170C402500C2EC42 /* A4Sound.m in Sources */,
 				36B61E26170C402500C2EC42 /* A4SysexMessage.m in Sources */,
 				36AE3F58173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */,
+				363D9C86175A3C7E00DC1ADF /* MDPattern.m in Sources */,
+				363D9C88175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,6 +902,8 @@
 				36B61E23170C402500C2EC42 /* A4Sound.m in Sources */,
 				36B61E25170C402500C2EC42 /* A4SysexMessage.m in Sources */,
 				36AE3F57173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */,
+				363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */,
+				363D9C87175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
