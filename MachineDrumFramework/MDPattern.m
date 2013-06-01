@@ -8,6 +8,8 @@
 
 #import "MDPattern.h"
 #import "MDPatternPrivate.h"
+#import "MDPatternTrack.h"
+#import "MDPatternParameterLocks.h"
 
 @interface MDPattern()
 @property (strong, nonatomic) MDPatternPrivate *privatePattern;

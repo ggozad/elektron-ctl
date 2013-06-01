@@ -7,9 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MDPatternTrack.h"
-#import "MDPatternParameterLocks.h"
-#import "MDPatternPrivate.h"
+
 
 @interface MDPatternPrivate : NSObject
 {
