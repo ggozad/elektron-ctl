@@ -12,7 +12,7 @@
 
 @interface MDPatternNode : NSObject
 @property (strong, readonly) NSMutableArray *locks;
-@property BOOL trig;
+@property BOOL trig, accent, slide, swing;
 @property MDPatternNodePosition *position;
 
 

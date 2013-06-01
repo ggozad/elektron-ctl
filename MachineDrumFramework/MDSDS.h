@@ -10,6 +10,8 @@
 #import "MDMachinedrumPublic.h"
 #import <AudioToolbox/AudioToolbox.h>
 
+@class MDSDS;
+
 typedef enum SDSLoopMode
 {
 	SDSLoopModeForward = 0x00,
@@ -27,15 +29,34 @@ typedef enum SDSHandshakeMessageID
 }
 SDSHandshakeMessageID;
 
+@protocol MDSDSDelegate <NSObject>
+- (void) sdsDidCancelSendingFile:(MDSDS *)sds;
+- (void) sdsDidCancelReceivingFile:(MDSDS *)sds;
+- (void) sdsDidFinishSendingFile:(MDSDS *)sds;
+- (void) sdsDidFinishReceivingFile:(MDSDS *)sds;
+- (void) sdsDidBeginReceiving:(MDSDS *)sds;
+- (void) sdsReceiveFileProgressUpdated:(float)progress;
+- (void) sdsSendFileProgressUpdated:(float)progress;
+- (void) sdsDidReceiveSampleName:(MDSDS *)sds;
+@end
+
 
 @interface MDSDS : NSObject
+
+@property (nonatomic, assign) id<MDSDSDelegate>delegate;
+@property (nonatomic, strong) NSString *pathForReceivedAudio;
+@property (nonatomic, strong) NSString *sampleNameForReceive;
+@property NSUInteger sampleSlotForReceive;
+
+
 + (id) sharedInstance;
 - (BOOL) armForReceiving;
 - (BOOL) disarmForReceiving;
 
-- (void) sendWavData:(NSData *)wavData toSlot:(NSUInteger)slot name:(NSString *)name;
+- (void) sendWavFileAtPath:(NSString *)path toSlot:(NSUInteger)slot name:(NSString *)name;
+- (void) cancelSend;
+- (void) cancelReceive;
 - (NSData *)dumpRequestForSampleSlot:(NSUInteger)i sysexChannel:(uint8_t)channel;
-- (NSData *)rawAudioDataFor16BitMonoWavFileData:(NSData *)d;
 - (NSMutableArray *) dataPacketsForAudioData16BitMono:(NSData *)audioData sampleRate:(NSUInteger)sampleRate sysexChannel: (uint8_t)channel;
 - (NSData *)dumpHeaderWithBitRate:(uint8_t)bitsPerSample
 				   numberOfFrames:(NSUInteger)numSamples

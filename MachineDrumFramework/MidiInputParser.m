@@ -11,6 +11,10 @@
 #define MD_MIDI_STATUS_SYSEX_BEGIN (0xF0)
 #define MD_MIDI_STATUS_SYSEX_END (0xF7)
 #define MD_MIDI_STATUS_CLOCK (0xF8)
+#define MD_MIDI_STATUS_TICK (0xF9)
+#define MD_MIDI_STATUS_START (0xFA)
+#define MD_MIDI_STATUS_CONTINUE (0xFB)
+#define MD_MIDI_STATUS_STOP (0xFC)
 #define MD_MIDI_STATUS_ACTIVESENSE (0xFE)
 #define MD_MIDI_STATUS_NOTE_ON (0x90)
 #define MD_MIDI_STATUS_NOTE_OFF (0x80)
@@ -58,7 +62,7 @@ receiveState _receiveState = receiveState_None;
 @implementation MidiInputParser
 
 - (void)midiSource:(PGMidiSource *)input midiReceived:(const MIDIPacketList *)list
-{
+{	
 	//DLog(@"midi received..");
 	const MIDIPacket *currentPacket = &list->packet[0];
 	
@@ -76,7 +80,45 @@ receiveState _receiveState = receiveState_None;
 					
 					if(byteValue == MD_MIDI_STATUS_CLOCK) // check for realtime messages
 					{
-						// handle clock
+						//DLog(@"%@ got clock", self.source.name);
+						if(self.softThruPassClock && self.softThruDestination)
+						{
+							//DLog(@"%@ passing clock", self.source.name);
+							unsigned char byte = byteValue;
+							[self.softThruDestination sendBytes:&byte size:1];
+						}
+					}
+					else if(byteValue == MD_MIDI_STATUS_START) // check for realtime messages
+					{
+						//DLog(@"%@ got start", self.source.name);
+						
+						
+						if(self.softThruPassStartStop && self.softThruDestination)
+						{
+							//DLog(@"%@ passing start", self.source.name);
+							unsigned char byte = byteValue;
+							[self.softThruDestination sendBytes:&byte size:1];
+						}
+					}
+					else if(byteValue == MD_MIDI_STATUS_STOP) // check for realtime messages
+					{
+						//DLog(@"%@ got stop", self.source.name);
+						if(self.softThruPassStartStop && self.softThruDestination)
+						{
+							//DLog(@"%@ passing stop", self.source.name);
+							unsigned char byte = byteValue;
+							[self.softThruDestination sendBytes:&byte size:1];
+						}
+					}
+					else if(byteValue == MD_MIDI_STATUS_CONTINUE) // check for realtime messages
+					{
+						//DLog(@"%@ got continue", self.source.name);
+						if(self.softThruPassStartStop && self.softThruDestination)
+						{
+							//DLog(@"%@ passing continue", self.source.name);
+							unsigned char byte = byteValue;
+							[self.softThruDestination sendBytes:&byte size:1];
+						}
 					}
 					else if(byteValue == MD_MIDI_STATUS_ACTIVESENSE)
 					{
@@ -141,11 +183,13 @@ receiveState _receiveState = receiveState_None;
 					}
 					else
 					{
+						/*
 						NSString *type = @"unknown";
 						uint8_t loNib = byteValue & 0x0f;
 						if(hiNib == 0xD0) type = [NSString stringWithFormat:@"chan aftertouch @ chan %d", loNib];
 						else if(hiNib == 0xE0) type = [NSString stringWithFormat:@"pitch wheel range %d", loNib];
 						DLog(@"received unimplemented status byte: 0x%x type: %@", byteValue, type);
+						 */
 					}
 				}
 				else

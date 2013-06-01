@@ -63,9 +63,186 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	else if ( dir == MDPatternCopiPastaShiftDirectionLeft) s = -1;
 	else if ( dir == MDPatternCopiPastaShiftDirectionUp) t = -1;
 		
+	if(self.sourceRegion.numSteps < 0)
+		s *= -1;
+	
+	if(self.sourceRegion.numTracks < 0)
+		t *= -1;
+	
 	[self shiftSourceSteps:s tracks:t];
 }
 
+- (void)shiftTargetInDirection:(MDPatternCopiPastaShiftDirection)dir
+{
+	int s = 0; int t = 0;
+	if(dir == MDPatternCopiPastaShiftDirectionRight) s = 1;
+	else if ( dir == MDPatternCopiPastaShiftDirectionDown) t = 1;
+	else if ( dir == MDPatternCopiPastaShiftDirectionLeft) s = -1;
+	else if ( dir == MDPatternCopiPastaShiftDirectionUp) t = -1;
+	
+	
+	if(self.targetRegion.numSteps < 0)
+		s *= -1;
+	
+	if(self.targetRegion.numTracks < 0)
+		t *= -1;
+	
+	[self shiftTargetSteps:s tracks:t];
+}
+
+
+- (void)shiftTargetSteps:(int8_t)s tracks:(int8_t)t
+{
+	if(!self.sourcePattern ||
+	   !self.targetPattern ||
+	   !self.targetRegion)
+	{
+		DLog(@":(");
+		return;
+	}
+	
+	s = Wrap(s, -64, 64);
+	t = Wrap(t, -16, 16);
+	
+	NSMutableArray *targetNodes = [self targetNodes];
+	[self removeNodesFromTargetPattern:targetNodes];
+	
+	MDPatternRegion *r = self.targetRegion;
+	
+	int8_t trackStart = r.track;
+	int8_t trackEnd = r.track + r.numTracks - 1;
+	
+	//DLog(@"region track: %d numTracks: %d", r.track, r.numTracks);
+	//DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
+	
+	
+	if(trackStart > trackEnd) // reverse
+	{
+		//DLog(@"reversing tracks..");
+		
+		if(trackEnd == -2)
+		{
+			trackEnd = trackStart;
+			trackStart = 0;
+		}
+		else
+		{
+			if(r.track + r.numTracks < 0)
+				trackStart = Wrap(r.track + r.numTracks - 1, 0, 16);
+			else
+				trackStart = Wrap(r.track + r.numTracks, 0, 16);
+			
+			trackEnd = trackStart - r.numTracks;
+			trackStart ++ ;
+		}
+	}
+	
+	int8_t stepStart = r.step;
+	int8_t stepEnd = r.step + r.numSteps - 1;
+	//DLog(@"stepstart: %d end: %d", stepStart, stepEnd);
+	
+	if(stepStart > stepEnd) // reverse
+	{
+		//DLog(@"reversing steps..");
+		
+		if(stepEnd == -2)
+		{
+			stepEnd = stepStart;
+			stepStart = 0;
+		}
+		else
+		{
+			if(r.step + r.numSteps < 0)
+				stepStart = Wrap(r.step + r.numSteps - 1, 0, 64);
+			else
+				stepStart = Wrap(r.step + r.numSteps, 0, 64);
+			
+			stepEnd = stepStart - r.numSteps;
+			stepStart ++ ;
+		}
+	}
+	
+	//DLog(@"stepstart: %d end: %d", stepStart, stepEnd);
+	//DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
+	
+	
+	for (MDPatternNode *n in targetNodes)
+	{
+		int8_t track = 0;
+		int8_t step = 0;
+		
+		if(trackEnd < 16)
+			track = Wrap(n.position.track + t, trackStart, trackEnd);
+		else
+		{
+			track = n.position.track + t;
+			if(t > 0)
+			{
+				if(n.position.track < trackStart)
+				{
+					int rest = trackEnd % 16;
+	//				DLog(@"rest: %d", rest);
+					if(n.position.track <= rest)
+					{
+						int ntrack = n.position.track + t;
+						if(ntrack > rest)
+							track = trackStart + ntrack - rest - 1;
+					}
+				}
+			}
+			else if(t < 0)
+			{
+				if(n.position.track >= trackStart &&
+				   n.position.track + t < trackStart)
+				{
+					int rest = trackEnd % 16;
+	//				DLog(@"rest: %d", rest);
+					
+					int ntrack = n.position.track + t;
+					track = rest - (ntrack - trackStart) - 1;
+				}
+			}
+		}
+		
+		
+		if(stepEnd < 64)
+			step = Wrap(n.position.step + s, stepStart, stepEnd);
+		else
+		{
+			step = n.position.step + s;
+			if(s > 0)
+			{
+				if(n.position.step < stepStart)
+				{
+					int rest = stepEnd % 64;
+//					DLog(@"rest: %d", rest);
+					if(n.position.step <= rest)
+					{
+						int nstep = n.position.step + s;
+						if(nstep > rest)
+							step = stepStart + nstep - rest - 1;
+					}
+				}
+			}
+			else if(s < 0)
+			{
+				if(n.position.step >= stepStart &&
+				   n.position.step + s < stepStart)
+				{
+					int rest = stepEnd % 64;
+//					DLog(@"rest: %d", rest);
+					
+					int nstep = n.position.step + s;
+					step = rest - (nstep - stepStart) - 1;
+				}
+			}
+		}
+		
+		[n setPosition:[MDPatternNodePosition nodePositionAtTrack:track step:step]];
+	}
+	
+	[self writeToTargetPattern:targetNodes];
+}
 
 - (void)shiftSourceSteps:(int8_t)s tracks:(int8_t)t
 {
@@ -89,7 +266,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	int8_t trackStart = r.track;
 	int8_t trackEnd = r.track + r.numTracks - 1;
 	
-	DLog(@"region track: %d numTracks: %d", r.track, r.numTracks);
+//	DLog(@"region track: %d numTracks: %d", r.track, r.numTracks);
 	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
 	
 	
@@ -97,33 +274,51 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	{
 		DLog(@"reversing tracks..");
 		
-		if(r.track + r.numTracks < 0)
-			trackStart = Wrap(r.track + r.numTracks - 1, 0, 16);
+		if(trackEnd == -2)
+		{
+			trackEnd = trackStart;
+			trackStart = 0;
+		}
 		else
-			trackStart = Wrap(r.track + r.numTracks, 0, 16);
-		
-		trackEnd = trackStart - r.numTracks - 1;
+		{
+			if(r.track + r.numTracks < 0)
+				trackStart = Wrap(r.track + r.numTracks - 1, 0, 16);
+			else
+				trackStart = Wrap(r.track + r.numTracks, 0, 16);
+			
+			trackEnd = trackStart - r.numTracks;
+			trackStart ++;
+		}
 	}
+	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
 	
 	int8_t stepStart = r.step;
 	int8_t stepEnd = r.step + r.numSteps - 1;
-	DLog(@"stepstart: %d end: %d", stepStart, stepEnd);
+//	DLog(@"stepstart: %d end: %d", stepStart, stepEnd);
 	
 	if(stepStart > stepEnd) // reverse
 	{
-		DLog(@"reversing steps..");
+//		DLog(@"reversing steps..");
 		
-		
-		if(r.step + r.numSteps < 0)
-			stepStart = Wrap(r.step + r.numSteps - 1, 0, 64);
+		if(stepEnd == -2)
+		{
+			stepEnd = stepStart;
+			stepStart = 0;
+		}
 		else
-			stepStart = Wrap(r.step + r.numSteps, 0, 64);
-		
-		stepEnd = stepStart - r.numSteps - 1;
+		{
+			if(r.step + r.numSteps < 0)
+				stepStart = Wrap(r.step + r.numSteps - 1, 0, 64);
+			else
+				stepStart = Wrap(r.step + r.numSteps, 0, 64);
+			
+			stepEnd = stepStart - r.numSteps;
+			stepStart++;
+		}
 	}
 	
-	DLog(@"stepstart: %d end: %d", stepStart, stepEnd);
-	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
+//	DLog(@"stepstart: %d end: %d", stepStart, stepEnd);
+//	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
 	
 	
 	for (MDPatternNode *n in sourceNodes)
@@ -141,7 +336,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 				if(n.position.track < trackStart)
 				{
 					int rest = trackEnd % 16;
-					DLog(@"rest: %d", rest);
+//					DLog(@"rest: %d", rest);
 					if(n.position.track <= rest)
 					{
 						int ntrack = n.position.track + t;
@@ -156,7 +351,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 				   n.position.track + t < trackStart)
 				{
 					int rest = trackEnd % 16;
-					DLog(@"rest: %d", rest);
+//					DLog(@"rest: %d", rest);
 					
 					int ntrack = n.position.track + t;
 					track = rest - (ntrack - trackStart) - 1;
@@ -175,7 +370,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 				if(n.position.step < stepStart)
 				{
 					int rest = stepEnd % 64;
-					DLog(@"rest: %d", rest);
+//					DLog(@"rest: %d", rest);
 					if(n.position.step <= rest)
 					{
 						int nstep = n.position.step + s;
@@ -190,7 +385,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 				   n.position.step + s < stepStart)
 				{
 					int rest = stepEnd % 64;
-					DLog(@"rest: %d", rest);
+//					DLog(@"rest: %d", rest);
 					
 					int nstep = n.position.step + s;
 					step = rest - (nstep - stepStart) - 1;
@@ -206,6 +401,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 
 - (NSMutableArray *) nodesForPattern:(MDPattern *)pattern withRegion:(MDPatternRegion *)r
 {
+	DLog(@"region s: %d ns: %d", r.step, r.numSteps);
 	//DLog(@"fetching sourcenodes from source pattern:");
 	
 	NSMutableArray *nodes = [NSMutableArray array];
@@ -214,23 +410,24 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	int numNodesWithLocks = 0;
 	
 	int startStep = r.step;
-	int lastStep = r.numSteps + r.step;
+	int lastStep = r.numSteps + startStep;
 	
 	if(lastStep < startStep)
 	{
-		lastStep = startStep;
-		startStep = r.numSteps + r.step;
+		lastStep = startStep + 1;
+		startStep = r.numSteps + r.step + 1;
 	}
 	
-	int lastTrack = r.numTracks + r.track;
 	int startTrack = r.track;
+	int lastTrack = r.numTracks + startTrack;
 	
 	if(lastTrack < startTrack)
 	{
-		lastTrack = startTrack;
-		startTrack = r.numTracks + r.track;
+		lastTrack = startTrack + 1;
+		startTrack = r.numTracks + r.track + 1;
 	}
 	
+	DLog(@"s: %d ns: %d", startStep, lastStep);
 	
 	for (int step = startStep; step < lastStep; step++)
 	{
@@ -291,7 +488,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 			   (tgt.numTracks > 0 && src.numTracks < 0))
 			{
 				newTrack = Wrap(ceilf(map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks)), 0, 15);
-				newTrack -= 1;
+				//newTrack -= 1;
 			}
 			else
 				newTrack = Wrap(floorf(map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks)), 0, 15);
@@ -300,7 +497,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 			   (tgt.numSteps > 0 && src.numSteps < 0))
 			{
 				newStep = Wrap(ceilf(map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps)), 0, 63);
-				newStep -= 1;
+				//newStep -= 1;
 			}
 			else
 				newStep = Wrap(floorf(map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps)), 0, 63);

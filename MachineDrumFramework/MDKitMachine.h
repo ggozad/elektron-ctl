@@ -11,7 +11,7 @@
 typedef uint8_t MDMachineID;
 typedef NSUInteger MDMachineName;
 
-#define MDMachineNumberOfMachinesTotal 78
+#define MDMachineNumberOfMachinesTotal 50
 
 typedef const enum MDMachineNames
 {

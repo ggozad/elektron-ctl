@@ -8,18 +8,16 @@
 
 #import "MDProcedureScaleFilter.h"
 #import "MDPitch.h"
+#import "MDParameterLock.h"
 
 @implementation MDProcedureScaleFilter
 
 uint8_t base = MDPitchNote_C;
-uint8_t scale[] = {0,2,4,5,7,9,11};
-uint8_t scaleLength = 7;
 
 - (void)processPattern:(MDPattern *)pattern kit:(MDKit *)kit
 {
 	MDKitTrack *kitTrack = [kit.tracks objectAtIndex:self.track];
 	MDMachineID mid = kitTrack.machine;
-	
 	
 	MDNoteRange nr = [MDPitch noteRangeForMachine:mid];
 	if(nr.minNote == 0 && nr.maxNote == 0)
@@ -53,15 +51,18 @@ uint8_t scaleLength = 7;
 			uint8_t octave = oldNote / 12;
 			
 			uint8_t newNote = 0;
-			
-			for (int i = 0; i < scaleLength; i++)
+
+			for (int i = 0; i < self.scale.count; i++)
 			{
-				if(scale[i] >= oldNoteStrippedFromOctave)
+				uint8_t currentNoteFromScale = (self.baseNote + [[self.scale objectAtIndex:i] integerValue]) % 12;
+				DLog(@"current note: %d", currentNoteFromScale);
+				if(currentNoteFromScale >= oldNoteStrippedFromOctave)
 				{
-					newNote = scale[i];
+				
+					newNote = currentNoteFromScale;
+					DLog(@"new note: %d", newNote);
 					break;
 				}
-					
 			}
 			newNote += octave * 12;
 			//DLog(@"old note: %d, octave: %d, strippedNote: %d, new note: %d", oldNote, octave, oldNoteStrippedFromOctave, newNote);

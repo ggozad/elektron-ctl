@@ -135,6 +135,7 @@
 - (void) sendBytes:(const UInt8*)bytes size:(UInt32)size;
 - (void) sendPacketList:(const MIDIPacketList *)packetList;
 - (void) sendSysexBytes:(const UInt8*)bytes size:(UInt32)size;
+- (void) sendSysexData:(NSData *)d;
 @end
 
 //==============================================================================

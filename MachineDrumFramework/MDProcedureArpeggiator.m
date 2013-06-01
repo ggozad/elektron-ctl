@@ -7,6 +7,7 @@
 //
 
 #import "MDProcedureArpeggiator.h"
+#import "MDParameterLock.h"
 
 @implementation MDProcedureArpeggiator
 

@@ -8,25 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import "MDSysexTransaction.h"
+#import "MDKitMachine.h"
 
-
+typedef enum MDSysexTransactionQueuePriority
+{
+	MDSysexTransactionQueuePriorityHigh,
+	MDSysexTransactionQueuePriorityLow
+}
+MDSysexTransactionQueuePriority;
 
 
 @interface MDSysexTransactionController : NSObject
-@property (readonly) BOOL canProcessTransaction;
 
-- (void) requestCurrentGlobalSlot:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentKitNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentPatternNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-//- (void) requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-//- (void) requestCurrentSequencerMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-//- (void) requestCurrentLockMode:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-
-- (void) requestCurrentKit:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentPattern:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-- (void) requestCurrentGlobalSettings:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag;
-
-
-
+- (void) request:(MDSysexTransactionContext)context
+	   arguments:(NSDictionary *)args
+		priority:(MDSysexTransactionQueuePriority)priority
+	onCompletion:(void (^)(MDSysexTransaction *t))onCompletion
+		 onError:(void (^)(MDSysexTransaction *t))onError;
 
 @end

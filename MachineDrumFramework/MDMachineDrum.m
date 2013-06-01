@@ -35,6 +35,30 @@
 	return self;
 }
 
+- (void)loadMachine:(MDMachineID)machineID intoTrack:(uint8_t)trackIndex
+{
+	if(trackIndex > 15) return;
+	trackIndex &= 0x0F;
+	
+	//DLog(@"machineID: %d", machineID);
+	
+	int uw = (machineID & 0x80) >> 7;
+	machineID &= 0x7f;
+	int init = 0;
+	
+	//DLog(@"message params: track: %d, machineID: %d, UW: %d, init: %d", trackIndex, machineID, uw, init);
+		
+	uint8_t bytes[] = {0x5b, trackIndex, machineID, uw, init};
+	
+	
+	NSMutableData *d = [NSMutableData data];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
+	[d appendBytes:bytes length:5];
+	[d appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	if(self.delegate)
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
+}
+
 - (NSData *)currentKitMessageData
 {
 	char nameBytes[16] = {};
@@ -123,7 +147,7 @@
 	if(num > 63) num = 63;
 	
 	NSString *loadKitID = @"58";
-	char slotByte = num & 0x6f;
+	char slotByte = num & 0x3f;
 	
 	NSData *slotData = [NSData dataWithBytes:&slotByte length:1];
 	
@@ -247,6 +271,11 @@
 	char sampleRenameID = 0x73;
 	char slotByte = slot & 0x7f;
 	
+	while (name.length < 4)
+	{
+		name = [name stringByAppendingString:@" "];
+	}
+	
 	const char *nameChars = [[name substringToIndex:4] cStringUsingEncoding:NSASCIIStringEncoding];
 	
 	NSMutableData *d = [NSMutableData data];
@@ -274,6 +303,37 @@
 	[d appendBytes:&channel length:1];
 	[d appendBytes:&outputByte length:1];
 	[d appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	if(self.delegate)
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
+}
+
+
+static uint8_t masterEffectsMessage[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00, 0x00, 0x00, 0x00, 0xf7};
+
+- (void)setMasterEffect:(MDMasterEffectId)masterEffectID param:(uint8_t)param value:(uint8_t)value
+{
+	param = param % 8;
+	value &= 0x7f;
+	
+	masterEffectsMessage[6] = (uint8_t) masterEffectID;
+	masterEffectsMessage[7] = param;
+	masterEffectsMessage[8] = value;
+	
+	NSData *d = [NSData dataWithBytes: &masterEffectsMessage length:10];
+	if(self.delegate)
+		[self.delegate machineDrum:self wantsToSendSysExData:d];
+}
+static uint8_t LFOMessage[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00, 0x62, 0x00, 0x00, 0xf7};
+
+- (void)setLFOAtTrack:(uint8_t)track param:(uint8_t)param value:(uint8_t)value
+{
+	param = param % 8;
+	value &= 0x7f;
+	uint8_t byte = ((track & 0xf) << 3) | (param & 0x7);
+	LFOMessage[7] = byte; /// TODO: TEST THIS!!!!!!
+	LFOMessage[8] = value & 0x7f;
+	
+	NSData *d = [NSData dataWithBytes: &LFOMessage length:10];
 	if(self.delegate)
 		[self.delegate machineDrum:self wantsToSendSysExData:d];
 }

@@ -15,6 +15,8 @@
 #define kMDSysexGlobalSettingsDumpNotification @"kMDSysexGlobalSettingsDumpNotification"
 #define kMIDIFoundationReadyChange @"kMIDIFoundationReadyChange"
 
+#define kA4SysexNotification @"kA4SysexNotification"
+
 #define kMDturboMIDISpeedRequest @"kMDturboMIDISpeedRequest"
 #define kMDturboMIDISpeedAnswer @"kMDturboMIDISpeedRequestAnswer"
 #define kMDturboMIDISpeedNegotiation @"kMDturboMIDISpeedNegotiation"
@@ -35,6 +37,10 @@
 #define kMDDataDumpDidWriteFileNotification @"kMDDataDumpDidWriteFileNotification"
 #define kMDSDSDidWriteAudioFileNotification @"kMDSDSDidWriteAudioFileNotification"
 #define kMDSDSDidWriteSyxFileNotification @"kMDSDSDidWriteSyxFileNotification"
+
+#define kMDSoftMIDIThruMasterOrSlaveKey @"kMDSoftMIDIThruMasterOrSlaveKey"
+#define kMDSoftMIDIThruClockEnabledKey @"kMDSoftMIDIThruClockEnabledKey"
+#define kMDSoftMIDIThruStartStopEnabledKey @"kMDSoftMIDIThruStartStopEnabledKey"
 
 typedef enum MDPatternTrigState
 {

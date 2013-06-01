@@ -13,9 +13,10 @@
 #import "MDSysexUtil.h"
 #import "MDMachineDrum.h"
 #import "MDKitReceiveTester.h"
-#import "MDPatternReceiveTester.h"
 #import "MDSysexRouter.h"
 #import "MDPattern.h"
+#import "MDParameterLock.h"
+#import "MDPatternParameterLocks.h"
 #import "MDPitch.h"
 #import "MDKitMachine.h"
 #import "MDKit.h"
@@ -35,6 +36,17 @@
 #import "MDValuePair.h"
 
 #import "MDSDS.h"
-#import "MDDataDump.h"
+#import "MDStorage.h"
+
+#import "WaveEditor.h"
+#import "BufferPlayer.h"
+
+#import "A4Kit.h"
+#import "A4Pattern.h"
+#import "A4Sound.h"
+#import "A4Song.h"
+#import "A4Global.h"
+
+#import "MDAudioRecorder.h"
 
 #endif

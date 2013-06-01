@@ -130,7 +130,7 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 	if(name == MDMachineName_EFM_RS) return MDMachineAbsoluteNoteRangeMake(58.8, 106.4);
 	if(name == MDMachineName_EFM_SD) return MDMachineAbsoluteNoteRangeMake(46.8, 76.5);
 	if(name == MDMachineName_EFM_XT) return MDMachineAbsoluteNoteRangeMake(29.1, 52.6);
-	
+		
 	return MDMachineAbsoluteNoteRangeMake(0, 0);
 }
 

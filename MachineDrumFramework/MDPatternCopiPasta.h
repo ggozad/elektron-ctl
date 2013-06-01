@@ -10,8 +10,6 @@
 #import "MDMachinedrumPublic.h"
 #import "MDPatternRegion.h"
 
-
-
 typedef enum MDPatternCopiPastaShiftDirection
 {
 	MDPatternCopiPastaShiftDirectionRight,
@@ -21,25 +19,19 @@ typedef enum MDPatternCopiPastaShiftDirection
 }
 MDPatternCopiPastaShiftDirection;
 
-
 typedef enum MDPatternCopiPastaRemapMode
 {
 	MDPatternCopiPastaRemapModeScale
 }
 MDPatternCopiPastaRemapMode;
 
-
-
-
 @interface MDPatternCopiPasta : NSObject
-@property  (weak, nonatomic) MDPattern *sourcePattern, *targetPattern;
+@property  (strong, nonatomic) MDPattern *sourcePattern, *targetPattern;
 @property  (strong, nonatomic) MDPatternRegion *sourceRegion, *targetRegion;
-
-
-
 
 - (void) swapRegions;
 - (void) shiftSourceInDirection:(MDPatternCopiPastaShiftDirection)dir;
+- (void) shiftTargetInDirection:(MDPatternCopiPastaShiftDirection)dir;
 
 - (void) remapCopySourceToTarget_Transparent_WithMode: (MDPatternCopiPastaRemapMode)mode;
 - (void) remapCopySourceToTarget_Opaque_WithMode: (MDPatternCopiPastaRemapMode)mode;

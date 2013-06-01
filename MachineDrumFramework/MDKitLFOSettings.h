@@ -13,7 +13,8 @@ typedef enum MDLFOType
 	MD_LFO_TYPE_FREE = 0,
 	MD_LFO_TYPE_TRIG = 1,
 	MD_LFO_TYPE_HOLD = 2
-}MDLFOType;
+}
+MDLFOType;
 
 @interface MDKitLFOSettings : NSObject
 @property (strong, nonatomic) NSNumber *destinationTrack;

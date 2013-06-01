@@ -7,6 +7,11 @@
 //
 
 #import "MDSDS.h"
+#import "WaveEditor.h"
+
+#define kMDSDSDurationForSentPacketACKTimeout (0.2)
+
+
 
 typedef enum MDSDStransmissionState
 {
@@ -37,7 +42,6 @@ MDSDStransmissionState;
 
 @property (nonatomic, strong) NSData *headerForReceive;
 @property (nonatomic, strong) NSMutableArray *packetsForReceive;
-@property (nonatomic, strong) NSString *sampleNameForReceive;
 @property (nonatomic, strong) NSData *sampleNameMessageForReceive;
 @property NSUInteger currentPacketIndexForReceive;
 @property NSUInteger sampleRateForReceive;
@@ -47,10 +51,10 @@ MDSDStransmissionState;
 @property NSUInteger numberOfPacketsForReceive;
 @property NSUInteger bitsPerSampleForReceive;
 @property NSUInteger bytesPerSampleForReceive;
-@property NSUInteger sampleSlotForReceive;
 @property NSUInteger loopStartForReceive;
 @property NSUInteger loopEndForReceive;
 @property SDSLoopMode loopModeForReceive;
+@property (getter = isRegisteredForSDSNotifications) BOOL registeredForSDSNotifications;
 
 @end
 
@@ -67,6 +71,16 @@ static MDSDS *_default = nil;
 					  _default = [[self alloc] init];
 				  });
 	return _default;
+}
+
+- (void) reset
+{
+	self.currentPacketIndexForSend = 0;
+	self.transmissionState = MDSDStransmissionState_IDLE;
+//	[self unRegisterForSDSNotifications];
+	[self.timerForSend invalidate];
+	
+	self.totalSamplesWritten = 0;
 }
 
 - (id)init
@@ -86,9 +100,7 @@ static MDSDS *_default = nil;
 
 - (BOOL)armForReceiving
 {
-	
-#warning improve this
-	
+//	[self registerForSDSNotifications];
 	if(self.transmissionState == MDSDStransmissionState_IDLE)
 	{
 		self.transmissionState = MDSDStransmissionState_ARMED_FOR_RECEIVE;
@@ -109,6 +121,7 @@ static MDSDS *_default = nil;
 
 - (BOOL)disarmForReceiving
 {
+//	[self unRegisterForSDSNotifications];
 	if(self.transmissionState == MDSDStransmissionState_ARMED_FOR_RECEIVE)
 	{
 		DLog(@"disarmed!");
@@ -131,48 +144,69 @@ static MDSDS *_default = nil;
 	return YES;
 }
 
-- (void)sendWavData:(NSData *)wavData toSlot:(NSUInteger)slot name:(NSString *)name
+- (void)sendWavFileAtPath:(NSString *)path toSlot:(NSUInteger)slot name:(NSString *)name
 {
+	PGMidiDestination *dst = [[MDMIDI sharedInstance] machinedrumMidiDestination];
+	
+	if(self.transmissionState != MDSDStransmissionState_IDLE || dst == nil)
+	{
+		[self.delegate sdsDidCancelSendingFile:self];
+		return;
+	}
+	
+	[self reset];
+	
 	self.sampleNameForSend = name;
 	self.sampleSlotForSend = slot;
+	self.currentPacketIndexForSend = 0;
+		
+	WaveEditor *editor = [WaveEditor waveEditorWithFileAtPath:path];
+	AudioStreamBasicDescription asbd = editor.asbd;
+	NSData *data = editor.data;
 	
-	const char *wavBytes = wavData.bytes;
-	uint16_t numChannels = wavBytes[22] | wavBytes[23] << 8;
-	NSAssert(numChannels == 1, @"not a mono wav file..");
+	float sampleRate = asbd.mSampleRate;
+	NSUInteger numSamples = data.length / asbd.mBytesPerFrame;
 	
-	const uint32_t audioByteSize = wavBytes[40] | wavBytes[41] << 8 | wavBytes[42] << 16 | wavBytes[43] << 24;
-	const uint32_t sampleRate = wavBytes[24] | wavBytes[25] << 8 | wavBytes[26] << 16 | wavBytes[27] << 24;
-	const uint16_t bitsPerSample = wavBytes[34] | wavBytes[35] << 8;
-	uint16_t bytesPerSample = bitsPerSample / 8;
-	if(bitsPerSample % 8) bytesPerSample += 1;
-	const NSUInteger numSamples = audioByteSize / bytesPerSample;
-	
-	NSData *rawAudioData = [self rawAudioDataFor16BitMonoWavFileData:wavData];
-	
-	DLog(@"wav input:\n\n\tsamplerate: %d\n\tbytesize: %d(%ld)\n\tnumSamples: %ld\n\tbitspersample: %d\n\tbytespersample: %d\n\n", sampleRate, audioByteSize, rawAudioData.length, numSamples, bitsPerSample, bytesPerSample);
-	
-	
-	self.headerForSend = [self  dumpHeaderWithBitRate: bitsPerSample
-								numberOfFrames: numSamples
+	self.headerForSend = [self  dumpHeaderWithBitRate: asbd.mBytesPerFrame * 8
+								numberOfFrames: data.length / asbd.mBytesPerFrame
 									sampleRate: sampleRate
-									 loopStart: ( numSamples / 5 ) * 2
-									   loopEnd: ( numSamples / 5 ) * 2 + 3000
-									  loopType: SDSLoopModeForward
+									 loopStart: 0
+									   loopEnd: numSamples-1
+									  loopType: SDSLoopModeNone
 									  saveSlot: slot
 								  sysexChannel: 0];
 	
-	self.packetsForSend = [self dataPacketsForAudioData16BitMono:rawAudioData
+	self.packetsForSend = [self dataPacketsForAudioData16BitMono:data
 											   sampleRate:sampleRate
 											 sysexChannel:0];
 	
+	
+//	[self registerForSDSNotifications];
+	
 	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:self.headerForSend.bytes size:(UInt32)self.headerForSend.length];
+	
+	[self sendSampleName];
+	
 	self.transmissionState = MDSDStransmissionState_SENT_HEADER_WILL_SEND_PACKET_WAITING_FOR_ACK;
 	NSString *s = @"header ACK timeout";
 	[self startTimer:2.5 info:s];
 }
 
 
+- (void)cancelSend
+{
+	[self reset];
+	if([self.delegate respondsToSelector:@selector(sdsDidFinishSendingFile:)])
+	{
+		[self.delegate sdsDidFinishSendingFile:self];
+	}
+}
 
+- (void)cancelReceive
+{
+	[self disarmForReceiving];
+	[self reset];
+}
 
 - (void) unRegisterForSDSNotifications
 {
@@ -185,10 +219,13 @@ static MDSDS *_default = nil;
 	[c removeObserver:self name:kMDSysexSDSdumpCANCELNotification object:nil];
 	[c removeObserver:self name:kMDSysexSDSdumpWAITNotification object:nil];
 	[c removeObserver:self name:kMDSysexSetSampleNameNotification object:nil];
+	
+	self.registeredForSDSNotifications = NO;
 }
 
 - (void) registerForSDSNotifications
 {
+	if(self.isRegisteredForSDSNotifications) return;
 	NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
 	[c addObserver:self selector:@selector(handleDumpHeader:) name:kMDSysexSDSdumpHeaderNotification object:nil];
 	[c addObserver:self selector:@selector(handleDumpPacket:) name:kMDSysexSDSdumpPacketNotification object:nil];
@@ -198,6 +235,7 @@ static MDSDS *_default = nil;
 	[c addObserver:self selector:@selector(handleWAIT:) name:kMDSysexSDSdumpWAITNotification object:nil];
 	[c addObserver:self selector:@selector(handleCANCEL:) name:kMDSysexSDSdumpCANCELNotification object:nil];
 	[c addObserver:self selector:@selector(handleSetSampleName:) name:kMDSysexSetSampleNameNotification object:nil];
+	self.registeredForSDSNotifications = YES;
 }
 
 - (void) handleSetSampleName:(NSNotification *)n
@@ -222,6 +260,8 @@ static MDSDS *_default = nil;
 	self.sampleNameForReceive = name;
 	self.sampleNameMessageForReceive = d;
 	DLog(@"sample number: %ld name: %@", num, name);
+	
+	[self.delegate sdsDidReceiveSampleName:self];
 }
 
 - (void) handleACK:(NSNotification *)n
@@ -234,7 +274,7 @@ static MDSDS *_default = nil;
 	else if(self.transmissionState == MDSDStransmissionState_SENT_PACKET_WILL_IDLE_WAITING_FOR_ACK)
 	{
 		self.transmissionState = MDSDStransmissionState_IDLE;
-		[self sendSampleName];
+//		[self unRegisterForSDSNotifications];
 	}
 	[self killTimerForSend];
 	[self proceedWithSend];
@@ -251,6 +291,7 @@ static MDSDS *_default = nil;
 	DLog(@"CANCEL");
 	[self killTimerForSend];
 	self.transmissionState = MDSDStransmissionState_IDLE;
+	[self.delegate sdsDidCancelSendingFile:self];
 	//[self cancel];
 }
 
@@ -286,6 +327,7 @@ static MDSDS *_default = nil;
 	{
 		DLog(@"hack-fixing sample rate...");
 		sampleRate = 44100;
+#warning THAT'S A HACK HACK HACK
 	}
 	
 	NSUInteger numSamples = (bytes[10] | bytes[11] << 7 | bytes[12] << 14);
@@ -339,6 +381,11 @@ static MDSDS *_default = nil;
 	NSData *ackMessage = [self handShakeMessageWithID:SDSHandshakeMessageID_ACK packetNumber:0 channel:bytes[2]];
 	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:ackMessage.bytes size:ackMessage.length];
 	self.transmissionState = MDSDStransmissionState_RECEIVING_GOT_HEADER_WAITING_FOR_PACKETS;
+	
+	if([self.delegate respondsToSelector:@selector(sdsDidBeginReceiving:)])
+	{
+		[self.delegate sdsDidBeginReceiving:self];
+	}
 }
 
 - (void) handleDumpPacket:(NSNotification *)n
@@ -363,6 +410,7 @@ static MDSDS *_default = nil;
 		checksumOK = YES;
 	
 	DLog(@"packet num: %d(%ld)/%ld %@", packetNum, self.currentPacketIndexForReceive, self.numberOfPacketsForReceive, checksumOK ? @"OK" : @"ERR");
+
 	
 	NSData *handShakeMessage = nil;
 	SDSHandshakeMessageID handShakeID = SDSHandshakeMessageID_ACK;
@@ -375,12 +423,22 @@ static MDSDS *_default = nil;
 		[self.packetsForReceive addObject:data];
 		self.currentPacketIndexForReceive++;
 		
+		if([self.delegate respondsToSelector:@selector(sdsReceiveFileProgressUpdated:)])
+		{
+			float progress = self.currentPacketIndexForReceive / (float) self.numberOfPacketsForReceive;
+			[self.delegate sdsReceiveFileProgressUpdated:progress];
+		}
+		
 		if(self.currentPacketIndexForReceive == self.numberOfPacketsForReceive)
 		{
 			self.transmissionState = MDSDStransmissionState_IDLE;
 			DLog(@"received last packet..");
 			[self armForReceiving];
 			[self parsePackets];
+			if([self.delegate respondsToSelector:@selector(sdsDidFinishReceivingFile:)])
+			{
+				[self.delegate sdsDidFinishReceivingFile:self];
+			}
 		}
 	}
 	else
@@ -403,13 +461,18 @@ static MDSDS *_default = nil;
 	
 	[audioData setLength:self.numberOfSamplesForReceive * self.bytesPerSampleForReceive];
 	
+	
+	/*
+	
 	NSURL *url = [[MDDataDump sharedInstance] currentSnapshotDirectory];
 	url = [url URLByAppendingPathComponent:@"samples"];
 	url = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"%02ld_%@", self.sampleSlotForReceive, self.sampleNameForReceive]];
+	*/
 	
+	NSURL *url = [NSURL fileURLWithPath:self.pathForReceivedAudio];
 	DLog(@"writing files to url: %@", url);
-	[self writeAudioData: audioData toURL:[url URLByAppendingPathExtension:@"wav"]];
-	[self writeSyxFileToURL:[url URLByAppendingPathExtension:@"syx"]];
+	[self writeAudioData: audioData toURL:url];
+//	[self writeSyxFileToURL:[url URLByAppendingPathExtension:@"syx"]];
 }
 
 
@@ -543,7 +606,14 @@ int16_t unpack3(const uint8_t *ptr)
 
 - (void) proceedWithSend
 {
-	if(self.transmissionState == MDSDStransmissionState_IDLE) { DLog(@"nothing to do.."); return; }
+	if(self.transmissionState == MDSDStransmissionState_IDLE)
+	{
+		if([self.delegate respondsToSelector:@selector(sdsDidFinishSendingFile:)])
+		{
+			[self.delegate sdsDidFinishSendingFile:self];
+		}
+		DLog(@"nothing to do.."); return;
+	}
 	if(self.transmissionState == MDSDStransmissionState_SENT_HEADER_WILL_SEND_PACKET ||
 	   self.transmissionState == MDSDStransmissionState_SENT_PACKET_WILL_SEND_PACKET)
 	{
@@ -558,8 +628,16 @@ int16_t unpack3(const uint8_t *ptr)
 		
 		DLog(@"sending packet %ld/%ld", self.currentPacketIndexForSend, [self.packetsForSend count]);
 		
+		
+		
+		if([self.delegate respondsToSelector:@selector(sdsSendFileProgressUpdated:)])
+		{
+			float progress = self.currentPacketIndexForSend / (float) self.packetsForSend.count;
+			[self.delegate sdsSendFileProgressUpdated:progress];
+		}
+		
 		NSString *s = @"packet ACK timeout";
-		[self startTimer:.03 info:s];
+		[self startTimer:kMDSDSDurationForSentPacketACKTimeout info:s];
 	}
 }
 
@@ -567,7 +645,9 @@ int16_t unpack3(const uint8_t *ptr)
 {
 	if(self.sampleNameForSend)
 	{
-		self.sampleNameForSend = [self.sampleNameForSend substringToIndex:4];
+		if(self.sampleNameForSend.length > 4)
+			self.sampleNameForSend = [self.sampleNameForSend substringToIndex:4];
+		
 		[[[MDMIDI sharedInstance] machinedrum] setSampleName:self.sampleNameForSend atSlot:self.sampleSlotForSend];
 	}
 }
@@ -724,11 +804,5 @@ int16_t unpack3(const uint8_t *ptr)
 	return [NSData dataWithBytes:bytes length:6];
 }
 
-- (NSData *)rawAudioDataFor16BitMonoWavFileData:(NSData *)wavData
-{
-	const char *bytes = wavData.bytes;
-	bytes += 44;
-	return [NSData dataWithBytes:bytes length:wavData.length-44];
-}
 
 @end

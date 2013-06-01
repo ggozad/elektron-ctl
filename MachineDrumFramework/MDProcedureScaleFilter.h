@@ -7,7 +7,9 @@
 //
 
 #import "MDProc.h"
+#import "MDPitch.h"
 
 @interface MDProcedureScaleFilter : MDProc
-
+@property MDPitchNotes baseNote;
+@property (strong) NSMutableArray *scale;
 @end

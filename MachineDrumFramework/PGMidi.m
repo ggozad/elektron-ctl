@@ -166,6 +166,7 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
 	bytes[1] = noteOn.note;
 	bytes[2] = noteOn.velocity;
 	[self sendBytes:bytes size:3];
+	DLog(@"sending NOTE ON to \"%@\" channel: %d pitch: %d velocity: %d", self.name, noteOn.channel, noteOn.note, noteOn.velocity);
 }
 
 - (void)sendControlChange:(MidiControlChange *)cc
@@ -223,6 +224,13 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
 		DLog(@"sysex send error: %ld", err);
 		free(r);
 	}
+}
+
+- (void)sendSysexData:(NSData *)d
+{
+	const uint8_t *bytes = d.bytes;
+	UInt32 len = d.length;
+	[self sendSysexBytes:bytes size:len];
 }
 
 @end

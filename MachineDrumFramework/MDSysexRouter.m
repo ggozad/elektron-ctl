@@ -23,6 +23,7 @@
 #define kTurboMIDISpeedTestResultID 0x15
 
 @interface MDSysexRouter()
++ (BOOL) dataStartsWithA4Header:(NSData *)data;
 + (BOOL) dataStartsWithMachineDrumHeader:(NSData *)data;
 + (BOOL) dataStartsWithTurboMIDIHeader:(NSData *)data;
 + (BOOL) dataStartsWithAssumedTM1Header:(NSData *)data;
@@ -42,6 +43,7 @@
 	
 	if([self dataStartsWithMachineDrumHeader:data])
 	{
+		//DLog(@"got md message...");
 		const uint8_t *bytes = data.bytes;
 		uint8_t messageID = bytes[0x06];
 		
@@ -75,6 +77,10 @@
 			default:
 			{
 				DLog(@"unimplemented machinedrum message ID: 0x%X", messageID);
+				if(messageID == 0x62)
+				{
+					DLog(@"%@", data);
+				}
 				break;
 			}
 		}
@@ -121,6 +127,10 @@
 			default:
 				break;
 		}
+	}
+	else if([self dataStartsWithA4Header:data])
+	{
+		notificationName = kA4SysexNotification;
 	}
 	else if([self dataStartsWithAssumedTM1Header:data])
 	{
@@ -217,6 +227,16 @@ const uint8_t mdHeader[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00};
 	const uint8_t *bytes = data.bytes;
 	for (int i = 0; i < 6; i++)
 		if(bytes[i] != mdHeader[i]) return NO;
+	
+	return YES;
+}
+
+const uint8_t a4Header[] = {0xf0, 0x00, 0x20, 0x3c, 0x06, 0x00};
++ (BOOL)dataStartsWithA4Header:(NSData *)data
+{
+	const uint8_t *bytes = data.bytes;
+	for (int i = 0; i < 6; i++)
+		if(bytes[i] != a4Header[i]) return NO;
 	
 	return YES;
 }

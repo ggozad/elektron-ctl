@@ -53,6 +53,8 @@
 @end
 
 @interface MidiInputParser : NSObject <PGMidiSourceDelegate>
+@property BOOL softThruPassClock, softThruPassStartStop;
+@property (nonatomic, assign) PGMidiDestination *softThruDestination;
 @property (nonatomic, assign) id<MidiInputDelegate>delegate;
 @property (assign, nonatomic) PGMidiSource *source;
 @end

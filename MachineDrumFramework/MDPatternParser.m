@@ -130,7 +130,7 @@
 		[data appendData:[self dataForOptionalExtraPatternInPattern:pattern]];
 	[data appendData:[self dataForEndOfMessageData:data]];
 	
-	DLog(@"done building data, validating..");
+//	DLog(@"done building data, validating..");
 	
 	BOOL success = [self patternDataIsValid:data];
 	if(success) return data;
@@ -406,7 +406,7 @@
 	if(![self messageLengthIsValid:data] ||
 	   ![self checksumIsValid:data]) return NO;
 	
-	DLog(@"OK");
+	//DLog(@"OK");
 	
 	return YES;
 }
@@ -529,7 +529,10 @@
 														   value:value];
 							
 							if([pattern.locks setLock:lock]);
-								totalHydratedLocks++;
+						
+								
+	
+								//totalHydratedLocks++;
 						}
 					}
 					if(locksBytes64)
@@ -545,7 +548,7 @@
 																step:step + 32
 															   value:value];
 								
-								if([pattern.locks setLock:lock]);
+								if([pattern.locks setLock:lock])
 									totalHydratedLocks++;
 							}
 						}

@@ -82,6 +82,25 @@
 	return nil;
 }
 
+- (BOOL)hasLockAtTrack:(uint8_t)track step:(uint8_t)step
+{
+	if(step > 63) return NO;
+	if(track > 15) return NO;
+	BOOL hasLock = NO;
+	for (MDParameterLockRow *row in self.lockRows)
+	{
+		if(row.track == track)
+		{
+			int8_t val = [row valueForStep:step];
+			if(val > -1)
+			{
+				hasLock = YES;
+			}
+		}
+	}
+	return hasLock;
+}
+
 - (BOOL)setLock:(MDParameterLock *)lock
 {
 	

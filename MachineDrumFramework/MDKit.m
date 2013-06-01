@@ -13,10 +13,10 @@
 
 @interface MDKit()
 
-- (NSArray *)defaultReverbSettings;
-- (NSArray *)defaultDelaySettings;
-- (NSArray *)defaultEQSettings;
-- (NSArray *)defaultDynamicsSettings;
+- (NSMutableArray *)defaultReverbSettings;
+- (NSMutableArray *)defaultDelaySettings;
+- (NSMutableArray *)defaultEQSettings;
+- (NSMutableArray *)defaultDynamicsSettings;
 - (void) initTracks;
 
 
@@ -30,7 +30,7 @@
 {
 	const char *inString = [s cStringUsingEncoding:NSASCIIStringEncoding];
 	
-	NSUInteger len = s.length;
+	NSUInteger len = StrLength(inString);
 	if(len > 8) len = 8;
 	
 	char nameBytes[16];
@@ -138,9 +138,9 @@
 	 nil];
 }
 
-- (NSArray *)defaultReverbSettings
+- (NSMutableArray *)defaultReverbSettings
 {
-	return [NSArray arrayWithObjects:
+	return [NSMutableArray arrayWithObjects:
 			[NSNumber numberWithInt:   0],
 			[NSNumber numberWithInt:   0],
 			[NSNumber numberWithInt:  64],
@@ -153,9 +153,9 @@
 			nil];
 }
 
-- (NSArray *)defaultDelaySettings
+- (NSMutableArray *)defaultDelaySettings
 {
-	return [NSArray arrayWithObjects:
+	return [NSMutableArray arrayWithObjects:
 			[NSNumber numberWithInt:  32],
 			[NSNumber numberWithInt:   0],
 			[NSNumber numberWithInt:  32],
@@ -168,9 +168,9 @@
 			nil];
 }
 
-- (NSArray *)defaultEQSettings
+- (NSMutableArray *)defaultEQSettings
 {
-	return [NSArray arrayWithObjects:
+	return [NSMutableArray arrayWithObjects:
 			[NSNumber numberWithInt:  64],
 			[NSNumber numberWithInt:  64],
 			[NSNumber numberWithInt:  64],
@@ -183,9 +183,9 @@
 			nil];
 }
 
-- (NSArray *)defaultDynamicsSettings
+- (NSMutableArray *)defaultDynamicsSettings
 {
-	return [NSArray arrayWithObjects:
+	return [NSMutableArray arrayWithObjects:
 			[NSNumber numberWithInt: 127],
 			[NSNumber numberWithInt: 127],
 			[NSNumber numberWithInt: 127],
@@ -196,6 +196,46 @@
 			[NSNumber numberWithInt:   0],
 			[NSNumber numberWithInt:   0],
 			nil];
+}
+
+- (void)setReverbParam:(uint8_t)param toValue:(uint8_t)val
+{
+	[self.reverbSettings replaceObjectAtIndex:param withObject:@(val)];
+}
+
+- (void)setDelayParam:(uint8_t)param toValue:(uint8_t)val
+{
+	[self.delaySettings replaceObjectAtIndex:param withObject:@(val)];
+}
+
+- (void)setEQParam:(uint8_t)param toValue:(uint8_t)val
+{
+	[self.eqSettings replaceObjectAtIndex:param withObject:@(val)];
+}
+
+- (void)setDynamixParam:(uint8_t)param toValue:(uint8_t)val
+{
+	[self.dynamicsSettings replaceObjectAtIndex:param withObject:@(val)];
+}
+
+- (uint8_t)valueForReverbParam:(uint8_t)param
+{
+	return [[self.reverbSettings objectAtIndex:param] charValue];
+}
+
+- (uint8_t)valueForDelayParam:(uint8_t)param
+{
+	return [[self.delaySettings objectAtIndex:param] charValue];
+}
+
+- (uint8_t)valueForEQParam:(uint8_t)param
+{
+	return [[self.eqSettings objectAtIndex:param] charValue];
+}
+
+- (uint8_t)valueForDynamicsParam:(uint8_t)param
+{
+	return [[self.dynamicsSettings objectAtIndex:param] charValue];
 }
 
 
