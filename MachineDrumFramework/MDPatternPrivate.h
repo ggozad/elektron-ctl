@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class MDPatternParameterLocks;
 
 @interface MDPatternPrivate : NSObject
 {

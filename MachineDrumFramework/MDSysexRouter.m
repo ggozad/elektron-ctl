@@ -12,6 +12,7 @@
 #define kStatusResponseID 0x72
 #define kKitDumpMessageID 0x52
 #define kPatternDumpMessageID 0x67
+#define kSongDumpMessageID 0x69
 #define kGlobalSettingsDumpMessageID 0x50
 #define kSetSampleNameMessageID 0x73
 
@@ -39,6 +40,8 @@
 		return;
 	}
 	
+	DLog(@"got something!");
+	
 	NSString *notificationName;
 	
 	if([self dataStartsWithMachineDrumHeader:data])
@@ -57,6 +60,11 @@
 			case kPatternDumpMessageID:
 			{
 				notificationName = kMDSysexPatternDumpNotification;
+				break;
+			}
+			case kSongDumpMessageID:
+			{
+				notificationName = kMDSysexSongDumpNotification;
 				break;
 			}
 			case kStatusResponseID:

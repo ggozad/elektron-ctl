@@ -267,12 +267,12 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	int8_t trackEnd = r.track + r.numTracks - 1;
 	
 //	DLog(@"region track: %d numTracks: %d", r.track, r.numTracks);
-	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
+//	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
 	
 	
 	if(trackStart > trackEnd) // reverse
 	{
-		DLog(@"reversing tracks..");
+//		DLog(@"reversing tracks..");
 		
 		if(trackEnd == -2)
 		{
@@ -290,7 +290,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 			trackStart ++;
 		}
 	}
-	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
+//	DLog(@"trackstart: %d end: %d", trackStart, trackEnd);
 	
 	int8_t stepStart = r.step;
 	int8_t stepEnd = r.step + r.numSteps - 1;
@@ -401,7 +401,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 
 - (NSMutableArray *) nodesForPattern:(MDPattern *)pattern withRegion:(MDPatternRegion *)r
 {
-	DLog(@"region s: %d ns: %d", r.step, r.numSteps);
+//	DLog(@"region s: %d ns: %d", r.step, r.numSteps);
 	//DLog(@"fetching sourcenodes from source pattern:");
 	
 	NSMutableArray *nodes = [NSMutableArray array];
@@ -427,7 +427,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		startTrack = r.numTracks + r.track + 1;
 	}
 	
-	DLog(@"s: %d ns: %d", startStep, lastStep);
+//	DLog(@"s: %d ns: %d", startStep, lastStep);
 	
 	for (int step = startStep; step < lastStep; step++)
 	{
@@ -464,7 +464,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	}
 	
 	
-	DLog(@"found %d nodes, %d of which have locks.", numNodes, numNodesWithLocks);
+//	DLog(@"found %d nodes, %d of which have locks.", numNodes, numNodesWithLocks);
 	/*
 	for (MDPatternNode *n in nodes)
 		DLog(@"%@", [n description]);

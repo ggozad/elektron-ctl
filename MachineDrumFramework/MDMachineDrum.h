@@ -51,9 +51,11 @@ MDMasterEffectId;
 - (void) requestKitDumpForSlot:(uint8_t) num;
 - (void) requestGlobalSettingsDumpForSlot:(uint8_t) num;
 - (void) requestPatternDumpForSlot:(uint8_t)num;
+- (void) requestSongDumpForSlot:(uint8_t)num;
 
 - (void) requestCurrentKitNumber;
 - (void) requestCurrentPatternNumber;
+- (void) requestCurrentSongNumber;
 - (void) requestCurrentGlobalSettingsSlot;
 
 - (void) sendPattern:(MDPattern *)pattern;

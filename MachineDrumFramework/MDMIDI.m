@@ -145,6 +145,25 @@ void SetMIDISysExSpeed(MIDIEndpointRef ep, SInt32 speed)
 		[observer performSelectorOnMainThread:@selector(midiSourceRemoved:) withObject:source waitUntilDone:NO];
 }
 
+
+- (void)midiReceivedClockFromSource:(PGMidiSource *)source
+{
+	for (id<MidiInputDelegate> i in self.midiInputObservers)
+	{
+		if([i respondsToSelector:@selector(midiReceivedClockFromSource:)])
+			[i midiReceivedClockFromSource:source];
+	}
+}
+
+- (void)midiReceivedTransport:(uint8_t)transport fromSource:(PGMidiSource *)source
+{
+	for (id<MidiInputDelegate> i in self.midiInputObservers)
+	{
+		if([i respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+			[i midiReceivedTransport:transport fromSource:source];
+	}
+}
+
 - (void)midiReceivedNoteOn:(MidiNoteOn *)noteOn fromSource:(PGMidiSource *)source
 {
 	for (id<MidiInputDelegate> i in self.midiInputObservers)
@@ -336,6 +355,14 @@ static MDMIDI *_default = nil;
 					[self setA4MidiSource:source];
 					break;
 				}
+				/*
+				else if([source.name isEqualToString:@"Network Session 1"])
+				{
+					DLog(@"src success! connecting to %@", source.name);
+					[self setA4MidiSource:source];
+					break;
+				}
+				 */
 			}
 		}
 	}
@@ -359,6 +386,14 @@ static MDMIDI *_default = nil;
 					[self setA4MidiDestination:destination];
 					break;
 				}
+				/*
+				else if([destination.name isEqualToString:@"Network Session 1"])
+				{
+					DLog(@"dst success! connecting to %@", destination.name);
+					[self setA4MidiDestination:destination];
+					break;
+				}
+				 */
 			}
 		}
 	}

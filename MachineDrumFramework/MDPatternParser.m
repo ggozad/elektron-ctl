@@ -9,6 +9,9 @@
 #import "MDPatternParser.h"
 #import "MDSysexUtil.h"
 #import "MDParameterLockRow.h"
+#import "MDPatternTrack.h"
+#import "MDParameterLockRow.h"
+#import "MDPatternParameterLocks.h"
 
 #define kPatternMessageLengthShort (5400 - 2647)
 #define kPatternMessageLengthLong 5400

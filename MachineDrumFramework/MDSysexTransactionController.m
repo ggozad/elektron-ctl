@@ -17,6 +17,7 @@ typedef enum TransactionReturnType
 	TransactionReturnType_Void,
 	TransactionReturnType_Kit,
 	TransactionReturnType_Pattern,
+	TransactionReturnType_Song,
 	TransactionReturnType_PatternAndKit,
 	TransactionReturnType_GlobalSettings,
 	TransactionReturnType_Status
@@ -71,6 +72,10 @@ TransactionReturnType;
 	else if([n.name  isEqualToString: kMDSysexPatternDumpNotification] && self.transactionReturnType == TransactionReturnType_Pattern)
 	{
 		obj = [MDPattern patternWithData:d];
+	}
+	else if([n.name  isEqualToString: kMDSysexSongDumpNotification] && self.transactionReturnType == TransactionReturnType_Song)
+	{
+		obj = [MDSong songWithSysexData:d];
 	}
 	else if([n.name isEqualToString: kMDSysexGlobalSettingsDumpNotification] && self.transactionReturnType == TransactionReturnType_GlobalSettings)
 	{
@@ -142,13 +147,18 @@ TransactionReturnType;
 				[[[MDMIDI sharedInstance] machinedrum] requestPatternDumpForSlot:patternNum];
 			}
 		}
-		else if(bytes[7] == 0x08)
+		else if(bytes[7] == 0x08) // song num
 		{
 			uint8_t songNum = bytes[8] & 0x7f;
 			if(self.transactionReturnType == TransactionReturnType_Status)
 			{
 				[self sendSuccessfulTransactionWithObject:@(songNum)];
 				return;
+			}
+			else if(self.transactionReturnType == TransactionReturnType_Song)
+			{
+				notificationName = kMDSysexSongDumpNotification;
+				[[[MDMIDI sharedInstance] machinedrum] requestSongDumpForSlot:songNum];
 			}
 		}
 		else if(bytes[7] == 0x10 || bytes[7] == 0x20 || bytes[7] == 0x22)
@@ -319,6 +329,61 @@ TransactionReturnType;
 	[[[MDMIDI sharedInstance] machinedrum] requestCurrentPatternNumber];
 }
 
+- (void)requestCurrentSongNumber:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag
+{
+	MDSysexTransaction *failed = [self connectionFailedTransactionWithTag:tag];
+	if(failed)
+	{
+		failed.delegate = delegate;
+		[delegate sysexTransactionFailed:failed];
+		return;
+	}
+	_canProcessTransaction = NO;
+	[self beginTransaction:self.currentTransaction];
+	self.transactionReturnType = TransactionReturnType_Status;
+	[[[MDMIDI sharedInstance] machinedrum] requestCurrentSongNumber];
+}
+
+- (void)requestCurrentSong:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag
+{
+	MDSysexTransaction *failed = [self connectionFailedTransactionWithTag:tag];
+	if(failed)
+	{
+		failed.delegate = delegate;
+		[delegate sysexTransactionFailed:failed];
+		return;
+	}
+	
+	_canProcessTransaction = NO;
+	[self beginTransaction:self.currentTransaction];
+	self.transactionReturnType = TransactionReturnType_Song;
+	[[[MDMIDI sharedInstance] machinedrum] requestCurrentSongNumber];
+}
+
+- (void) requestSongNumber:(uint8_t)slot delegate:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag
+{
+	DLog(@"requesting song %d", slot);
+	MDSysexTransaction *failed = [self connectionFailedTransactionWithTag:tag];
+	if(failed)
+	{
+		failed.delegate = delegate;
+		[delegate sysexTransactionFailed:failed];
+		return;
+	}
+	
+	self.currentTransaction.error = MDSysexTransactionError_No_Error;
+	self.currentTransaction.type = MDSysexTransactionType_Dump;
+	self.currentTransaction.delegate = delegate;
+	self.currentTransaction.tag = [tag copy];
+	self.transactionReturnType = TransactionReturnType_Song;
+	_canProcessTransaction = NO;
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(machinedrumDumpReceived:) name:kMDSysexSongDumpNotification object:nil];
+	self.timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timeOut:) userInfo:self.currentTransaction repeats:NO];
+	
+	[[[MDMIDI sharedInstance] machinedrum] requestSongDumpForSlot:slot];
+}
+
 
 
 - (void) requestStatus:(uint8_t) statusID withDelegate:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag
@@ -433,6 +498,18 @@ TransactionReturnType;
 	{
 		t = [self transactionForDelegate:self tag:@"current pattern number"];
 	}
+	else if (context == MDSysexTransactionContextCurrentSongNumber)
+	{
+		t = [self transactionForDelegate:self tag:@"current song number"];
+	}
+	else if (context == MDSysexTransactionContextSong)
+	{
+		t = [self transactionForDelegate:self tag:@"specific song"];
+	}
+	else if (context == MDSysexTransactionContextCurrentSong)
+	{
+		t = [self transactionForDelegate:self tag:@"current song"];
+	}
 	else if (context == MDSysexTransactionContextStatus)
 	{
 		t = [self transactionForDelegate:self tag:@"status"];
@@ -515,6 +592,30 @@ TransactionReturnType;
 			else
 			{
 				[self requestPatternNumber:[i charValue] delegate:self tag:self.currentTransaction.tag];
+			}
+		}
+		else if(context == MDSysexTransactionContextCurrentSong)
+		{
+			[self requestCurrentSong:self tag:self.currentTransaction.tag];
+		}
+		else if(context == MDSysexTransactionContextCurrentSongNumber)
+		{
+			[self requestCurrentSongNumber:self tag:self.currentTransaction.tag];
+		}
+		else if(context == MDSysexTransactionContextSong)
+		{
+			NSNumber *i = [args valueForKey:MDSysexTransactionArgumentKeySongNumber];
+			
+			if(!i || !args)
+			{
+				self.currentTransaction.errorBlock(self.currentTransaction);
+				self.currentTransaction = nil;
+				[self dequeue];
+				return;
+			}
+			else
+			{
+				[self requestSongNumber:[i charValue] delegate:self tag:self.currentTransaction.tag];
 			}
 		}
 		else if(context == MDSysexTransactionContextStatus)

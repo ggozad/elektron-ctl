@@ -25,6 +25,10 @@ MDPatternScale;
 @property uint8_t length;
 @property uint8_t tempoMultiplier;
 @property (nonatomic) uint8_t swingAmount;
+@property (nonatomic) uint8_t accentAmount;
+@property (nonatomic) BOOL accentEditAllFlag;
+@property (nonatomic) BOOL slideEditAllFlag;
+@property (nonatomic) BOOL swingEditAllFlag;
 
 + (MDPattern *) pattern;
 + (MDPattern *) patternWithData:(NSData *)sysexData;
@@ -46,6 +50,21 @@ MDPatternScale;
 - (void) clearLock:(MDParameterLock *)lock clearTrig:(BOOL) clearTrig;
 - (uint8_t) numberOfUniqueLocks;
 
+- (BOOL) globalSlideTrigAtStep:(NSUInteger) step;
+- (BOOL) globalAccentTrigAtStep:(NSUInteger) step;
+- (BOOL) globalSwingTrigAtStep:(NSUInteger) step;
+
+- (void) setGlobalSlideTrigAtStep:(NSUInteger) step to:(BOOL) active;
+- (void) setGlobalAccentTrigAtStep:(NSUInteger) step to:(BOOL) active;
+- (void) setGlobalSwingTrigAtStep:(NSUInteger) step to:(BOOL) active;
+
+- (BOOL) slideTrigAtTrack:(NSUInteger)track step:(NSUInteger) step;
+- (BOOL) accentTrigAtTrack:(NSUInteger)track step:(NSUInteger) step;
+- (BOOL) swingTrigAtTrack:(NSUInteger)track step:(NSUInteger) step;
+
+- (void) setSlideTrigAtTrack:(NSUInteger)track step:(NSUInteger) step to:(BOOL) active;
+- (void) setAccentTrigAtTrack:(NSUInteger)track step:(NSUInteger) step to:(BOOL) active;
+- (void) setswingTrigAtTrack:(NSUInteger)track step:(NSUInteger) step to:(BOOL) active;
 
 - (NSData *)sysexData;
 

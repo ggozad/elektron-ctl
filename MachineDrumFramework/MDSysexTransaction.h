@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
+#define MDSysexTransactionArgumentKeySongNumber @"MDSysexTransactionArgumentKeySongNumber"
 #define MDSysexTransactionArgumentKeyKitNumber @"MDSysexTransactionArgumentKeyKitNumber"
 #define MDSysexTransactionArgumentKeyPatternNumber @"MDSysexTransactionArgumentKeyPatternNumber"
 #define MDSysexTransactionArgumentKeyStatusID @"MDSysexTransactionArgumentKeyStatusID"
@@ -22,11 +23,14 @@ typedef enum MDSysexTransactionContext
 	MDSysexTransactionContextCurrentPattern,
 	MDSysexTransactionContextCurrentKitNumber,
 	MDSysexTransactionContextCurrentKit,
+	MDSysexTransactionContextCurrentSongNumber,
+	MDSysexTransactionContextCurrentSong,
 //	MDSysexTransactionContextCurrentGlobalNumber,
 //	MDSysexTransactionContextCurrentGlobal,
 //	MDSysexTransactionContextCurrentPatternAndKit,
 	MDSysexTransactionContextKit,
 	MDSysexTransactionContextPattern,
+	MDSysexTransactionContextSong,
 //	MDSysexTransactionContextGlobal,
 }
 MDSysexTransactionContext;

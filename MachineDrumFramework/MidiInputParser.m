@@ -87,6 +87,11 @@ receiveState _receiveState = receiveState_None;
 							unsigned char byte = byteValue;
 							[self.softThruDestination sendBytes:&byte size:1];
 						}
+						
+						if([self.delegate respondsToSelector:@selector(midiReceivedClockFromSource:)])
+						{
+							[self.delegate midiReceivedClockFromSource:self.source];
+						}
 					}
 					else if(byteValue == MD_MIDI_STATUS_START) // check for realtime messages
 					{
@@ -99,6 +104,11 @@ receiveState _receiveState = receiveState_None;
 							unsigned char byte = byteValue;
 							[self.softThruDestination sendBytes:&byte size:1];
 						}
+						
+						if([self.delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+						{
+							[self.delegate midiReceivedTransport:byteValue fromSource:self.source];
+						}
 					}
 					else if(byteValue == MD_MIDI_STATUS_STOP) // check for realtime messages
 					{
@@ -109,6 +119,11 @@ receiveState _receiveState = receiveState_None;
 							unsigned char byte = byteValue;
 							[self.softThruDestination sendBytes:&byte size:1];
 						}
+						
+						if([self.delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+						{
+							[self.delegate midiReceivedTransport:byteValue fromSource:self.source];
+						}
 					}
 					else if(byteValue == MD_MIDI_STATUS_CONTINUE) // check for realtime messages
 					{
@@ -118,6 +133,11 @@ receiveState _receiveState = receiveState_None;
 							//DLog(@"%@ passing continue", self.source.name);
 							unsigned char byte = byteValue;
 							[self.softThruDestination sendBytes:&byte size:1];
+						}
+						
+						if([self.delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+						{
+							[self.delegate midiReceivedTransport:byteValue fromSource:self.source];
 						}
 					}
 					else if(byteValue == MD_MIDI_STATUS_ACTIVESENSE)

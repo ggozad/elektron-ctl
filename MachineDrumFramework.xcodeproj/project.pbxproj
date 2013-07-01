@@ -84,6 +84,14 @@
 		363D9C86175A3C7E00DC1ADF /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C82175A3C7D00DC1ADF /* MDPattern.m */; };
 		363D9C87175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */; };
 		363D9C88175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */; };
+		363D9C8D175A99CB00DC1ADF /* MDKitDiffs.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C8A175A99CA00DC1ADF /* MDKitDiffs.m */; };
+		363D9C8E175A99CB00DC1ADF /* MDKitDiffs.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C8A175A99CA00DC1ADF /* MDKitDiffs.m */; };
+		363D9C8F175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C8C175A99CB00DC1ADF /* MDPatternDiffs.m */; };
+		363D9C90175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C8C175A99CB00DC1ADF /* MDPatternDiffs.m */; };
+		36431AA517804B3F007283A9 /* MDSongRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 36431AA417804B3F007283A9 /* MDSongRow.m */; };
+		36431AA617804B3F007283A9 /* MDSongRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 36431AA417804B3F007283A9 /* MDSongRow.m */; };
+		36431AA917804B51007283A9 /* MDSongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 36431AA817804B51007283A9 /* MDSongParser.m */; };
+		36431AAA17804B51007283A9 /* MDSongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 36431AA817804B51007283A9 /* MDSongParser.m */; };
 		364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */; };
 		364CD2C015F5157200CA49A9 /* MDSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2BF15F5157200CA49A9 /* MDSong.m */; };
 		364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2C315F515BF00CA49A9 /* MDValueMap.m */; };
@@ -221,6 +229,14 @@
 		363D9C82175A3C7D00DC1ADF /* MDPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPattern.m; sourceTree = "<group>"; };
 		363D9C83175A3C7D00DC1ADF /* MDPatternPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternPrivate.h; sourceTree = "<group>"; };
 		363D9C84175A3C7E00DC1ADF /* MDPatternPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternPrivate.m; sourceTree = "<group>"; };
+		363D9C89175A99CA00DC1ADF /* MDKitDiffs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDKitDiffs.h; sourceTree = "<group>"; };
+		363D9C8A175A99CA00DC1ADF /* MDKitDiffs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDKitDiffs.m; sourceTree = "<group>"; };
+		363D9C8B175A99CA00DC1ADF /* MDPatternDiffs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternDiffs.h; sourceTree = "<group>"; };
+		363D9C8C175A99CB00DC1ADF /* MDPatternDiffs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternDiffs.m; sourceTree = "<group>"; };
+		36431AA317804B3F007283A9 /* MDSongRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSongRow.h; sourceTree = "<group>"; };
+		36431AA417804B3F007283A9 /* MDSongRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSongRow.m; sourceTree = "<group>"; };
+		36431AA717804B51007283A9 /* MDSongParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSongParser.h; sourceTree = "<group>"; };
+		36431AA817804B51007283A9 /* MDSongParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSongParser.m; sourceTree = "<group>"; };
 		364752F015D1AD63002DCA22 /* MDPatternTrigGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPatternTrigGenerator.h; sourceTree = "<group>"; };
 		364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPatternTrigGenerator.m; sourceTree = "<group>"; };
 		364CD2BE15F5157200CA49A9 /* MDSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSong.h; sourceTree = "<group>"; };
@@ -469,6 +485,13 @@
 			name = Sysex;
 			sourceTree = "<group>";
 		};
+		36B54867176C677700DF1F6E /* Sequencer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Sequencer;
+			sourceTree = "<group>";
+		};
 		36B61E0E170C401500C2EC42 /* A4 */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,6 +547,7 @@
 		36B920DF158F81670025F0B3 /* MachineDrumFramework */ = {
 			isa = PBXGroup;
 			children = (
+				36B54867176C677700DF1F6E /* Sequencer */,
 				36B61E0E170C401500C2EC42 /* A4 */,
 				36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */,
 				36814F011594CD8700220C88 /* MDConstants.h */,
@@ -563,6 +587,8 @@
 		36BAC90716414DD900F29993 /* Kit */ = {
 			isa = PBXGroup;
 			children = (
+				363D9C89175A99CA00DC1ADF /* MDKitDiffs.h */,
+				363D9C8A175A99CA00DC1ADF /* MDKitDiffs.m */,
 				36B92106158F82CC0025F0B3 /* MDKit.h */,
 				36B92107158F82CC0025F0B3 /* MDKit.m */,
 				36B92108158F82CC0025F0B3 /* MDKitLFOSettings.h */,
@@ -584,6 +610,8 @@
 		36BAC90816414E1100F29993 /* Pattern */ = {
 			isa = PBXGroup;
 			children = (
+				363D9C8B175A99CA00DC1ADF /* MDPatternDiffs.h */,
+				363D9C8C175A99CB00DC1ADF /* MDPatternDiffs.m */,
 				363D9C81175A3C7D00DC1ADF /* MDPattern.h */,
 				363D9C82175A3C7D00DC1ADF /* MDPattern.m */,
 				363D9C83175A3C7D00DC1ADF /* MDPatternPrivate.h */,
@@ -607,6 +635,10 @@
 			children = (
 				364CD2BE15F5157200CA49A9 /* MDSong.h */,
 				364CD2BF15F5157200CA49A9 /* MDSong.m */,
+				36431AA317804B3F007283A9 /* MDSongRow.h */,
+				36431AA417804B3F007283A9 /* MDSongRow.m */,
+				36431AA717804B51007283A9 /* MDSongParser.h */,
+				36431AA817804B51007283A9 /* MDSongParser.m */,
 			);
 			name = Song;
 			sourceTree = "<group>";
@@ -835,6 +867,10 @@
 				36AE3F58173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */,
 				363D9C86175A3C7E00DC1ADF /* MDPattern.m in Sources */,
 				363D9C88175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
+				363D9C8E175A99CB00DC1ADF /* MDKitDiffs.m in Sources */,
+				363D9C90175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
+				36431AA617804B3F007283A9 /* MDSongRow.m in Sources */,
+				36431AAA17804B51007283A9 /* MDSongParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -904,6 +940,10 @@
 				36AE3F57173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */,
 				363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */,
 				363D9C87175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
+				363D9C8D175A99CB00DC1ADF /* MDKitDiffs.m in Sources */,
+				363D9C8F175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
+				36431AA517804B3F007283A9 /* MDSongRow.m in Sources */,
+				36431AA917804B51007283A9 /* MDSongParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

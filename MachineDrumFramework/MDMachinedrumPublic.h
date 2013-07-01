@@ -15,11 +15,13 @@
 #import "MDKitReceiveTester.h"
 #import "MDSysexRouter.h"
 #import "MDPattern.h"
+#import "MDPatternDiffs.h"
 #import "MDParameterLock.h"
 #import "MDPatternParameterLocks.h"
 #import "MDPitch.h"
 #import "MDKitMachine.h"
 #import "MDKit.h"
+#import "MDKitDiffs.h"
 #import "MDMachinedrumGlobalSettings.h"
 
 #import "MDProcessingPipeline.h"
@@ -32,6 +34,8 @@
 #import "MDSysexTransactionController.h"
 
 #import "MDSong.h"
+#import "MDSongRow.h"
+
 #import "MDValueMap.h"
 #import "MDValuePair.h"
 

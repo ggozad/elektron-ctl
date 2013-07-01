@@ -9,6 +9,8 @@
 #import "MDPatternParameterLocks.h"
 #import "MDPatternPrivate.h"
 #import "MDParameterLockRow.h"
+#import "MDParameterLock.h"
+#import "MDPatternTrack.h"
 
 @interface MDPatternParameterLocks()
 {

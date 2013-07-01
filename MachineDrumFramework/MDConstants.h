@@ -11,6 +11,7 @@
 
 #define kMDSysexStatusResponseNotification @"kMDSysexStatusResponseNotification"
 #define kMDSysexPatternDumpNotification @"kMDSysexPatternDumpNotification"
+#define kMDSysexSongDumpNotification @"kMDSysexSongDumpNotification"
 #define kMDSysexKitDumpNotification @"kMDSysexKitDumpNotification"
 #define kMDSysexGlobalSettingsDumpNotification @"kMDSysexGlobalSettingsDumpNotification"
 #define kMIDIFoundationReadyChange @"kMIDIFoundationReadyChange"

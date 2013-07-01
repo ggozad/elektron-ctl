@@ -17,6 +17,45 @@
 
 @implementation MDPattern
 
+- (BOOL)accentEditAllFlag
+{
+	return self.privatePattern.accentEditAllFlag;
+}
+
+- (void)setAccentEditAllFlag:(BOOL)accentEditAllFlag
+{
+	self.privatePattern.accentEditAllFlag = accentEditAllFlag;
+}
+
+- (BOOL)swingEditAllFlag
+{
+	return self.privatePattern.swingEditAllFlag;
+}
+
+- (void)setSwingEditAllFlag:(BOOL)swingEditAllFlag
+{
+	self.privatePattern.swingEditAllFlag = swingEditAllFlag;
+}
+
+- (BOOL)slideEditAllFlag
+{
+	return self.privatePattern.slideEditAllFlag;
+}
+
+- (void)setSlideEditAllFlag:(BOOL)slideEditAllFlag
+{
+	self.privatePattern.slideEditAllFlag = slideEditAllFlag;
+}
+
+- (uint8_t)accentAmount
+{
+	return self.privatePattern.accentAmount;
+}
+
+- (void)setAccentAmount:(uint8_t)accentAmount
+{
+	self.privatePattern.accentAmount = accentAmount;
+}
 
 - (uint8_t)swingAmount
 {
@@ -160,6 +199,66 @@
 	if(step >= 64) return;
 	BOOL on = [self trigAtTrack:track step:step];
 	[self setTrigAtTrack:track step:step toValue:!on];
+}
+
+- (BOOL) globalSlideTrigAtStep:(NSUInteger) step
+{
+	return [self.privatePattern slideTrigAtStep:step];
+}
+
+- (BOOL) globalAccentTrigAtStep:(NSUInteger) step
+{
+	return [self.privatePattern accentTrigAtStep:step];
+}
+
+- (BOOL) globalSwingTrigAtStep:(NSUInteger) step
+{
+	return [self.privatePattern swingTrigAtStep:step];
+}
+
+- (void) setGlobalSlideTrigAtStep:(NSUInteger) step to:(BOOL) active
+{
+	[self.privatePattern setSlideTrigAtStep:step to:active];
+}
+
+- (void) setGlobalAccentTrigAtStep:(NSUInteger) step to:(BOOL) active
+{
+	[self.privatePattern setAccentTrigAtStep:step to:active];
+}
+
+- (void) setGlobalSwingTrigAtStep:(NSUInteger) step to:(BOOL) active
+{
+	[self.privatePattern setswingTrigAtStep:step to:active];
+}
+
+- (BOOL) slideTrigAtTrack:(NSUInteger)track step:(NSUInteger) step
+{
+	return [[self.privatePattern.tracks objectAtIndex:track] slideTrigAtStep:step];
+}
+
+- (BOOL) accentTrigAtTrack:(NSUInteger)track step:(NSUInteger) step
+{
+	return [[self.privatePattern.tracks objectAtIndex:track] accentTrigAtStep:step];
+}
+
+- (BOOL) swingTrigAtTrack:(NSUInteger)track step:(NSUInteger) step
+{
+	return [[self.privatePattern.tracks objectAtIndex:track] swingTrigAtStep:step];
+}
+
+- (void) setSlideTrigAtTrack:(NSUInteger)track step:(NSUInteger) step to:(BOOL) active
+{
+	[[self.privatePattern.tracks objectAtIndex:track] setSlideTrigAtStep:step to:active];
+}
+
+- (void) setAccentTrigAtTrack:(NSUInteger)track step:(NSUInteger) step to:(BOOL) active
+{
+	[[self.privatePattern.tracks objectAtIndex:track] setAccentTrigAtStep:step to:active];
+}
+
+- (void) setswingTrigAtTrack:(NSUInteger)track step:(NSUInteger) step to:(BOOL) active
+{
+	[[self.privatePattern.tracks objectAtIndex:track] setswingTrigAtStep:step to:active];
 }
 
 - (void)setLength:(uint8_t)len

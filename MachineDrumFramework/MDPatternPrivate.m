@@ -8,6 +8,8 @@
 
 #import "MDPatternPrivate.h"
 #import "MDPatternParser.h"
+#import "MDPatternTrack.h"
+#import "MDPatternParameterLocks.h"
 
 static void SetTrig(void *slf, int32_t *pattern, NSUInteger step, BOOL active)
 {

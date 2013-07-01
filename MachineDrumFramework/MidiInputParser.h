@@ -44,6 +44,8 @@
 
 @protocol MidiInputDelegate <NSObject>
 @optional
+- (void) midiReceivedTransport:(uint8_t) transport fromSource:(PGMidiSource *)source;
+- (void) midiReceivedClockFromSource:(PGMidiSource *)source;
 - (void) midiReceivedNoteOn:(MidiNoteOn *)noteOn fromSource:(PGMidiSource *)source;
 - (void) midiReceivedNoteOff:(MidiNoteOff *)noteOff fromSource:(PGMidiSource *)source;
 - (void) midiReceivedControlChange:(MidiControlChange *)controlChange fromSource:(PGMidiSource *)source;

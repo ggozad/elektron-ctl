@@ -283,7 +283,28 @@ static MDSDS *_default = nil;
 - (void) handleNAK:(NSNotification *)n
 {
 	DLog(@"NAK!");
-	[self killTimerForSend];
+	if(self.transmissionState == MDSDStransmissionState_SENT_PACKET_WILL_IDLE_WAITING_FOR_ACK ||
+	   self.transmissionState == MDSDStransmissionState_SENT_PACKET_WILL_SEND_PACKET_WAITING_FOR_ACK)
+	{
+		NSData *d = n.object;
+		const char *bytes = d.bytes;
+		uint8_t packetNum = bytes[3];
+		NSUInteger n = self.currentPacketIndexForSend;
+		
+		while (n % 128 > packetNum)
+		{
+			n--;
+		}
+		self.currentPacketIndexForSend = n;
+		
+		[self killTimerForSend];
+		[self proceedWithSend];
+	}
+	else
+	{
+		[self killTimerForSend];
+		self.transmissionState = MDSDStransmissionState_IDLE;
+	}
 }
 
 - (void) handleCANCEL:(NSNotification *)n
@@ -358,7 +379,6 @@ static MDSDS *_default = nil;
 	if (numSamples % samplesPerPacket) numPackets += 1;
 	
 	self.headerForReceive = n.object;
-	
 	
 	self.packetsForReceive = [NSMutableArray array];
 	
@@ -440,10 +460,6 @@ static MDSDS *_default = nil;
 				[self.delegate sdsDidFinishReceivingFile:self];
 			}
 		}
-	}
-	else
-	{
-#warning checksum error unimplemented
 	}
 }
 

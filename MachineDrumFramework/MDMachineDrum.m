@@ -197,6 +197,11 @@
 	[self requestDumpOfType:0x68 slot:num];
 }
 
+- (void)requestSongDumpForSlot:(uint8_t)num
+{
+	[self requestDumpOfType:0x6a slot:num];
+}
+
 - (void)requestGlobalSettingsDumpForSlot:(uint8_t)num
 {
 	[self requestDumpOfType:0x51 slot:num];
@@ -216,6 +221,12 @@
 {
 	[self requestStatus:0x04];
 }
+
+- (void)requestCurrentSongNumber
+{
+	[self requestStatus:0x08];
+}
+
 
 - (void) requestStatus:(uint8_t) statusID
 {
