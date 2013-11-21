@@ -34,7 +34,7 @@ MDSDStransmissionState;
 - (NSMutableArray *) dataPacketsForAudioData16BitMono:(NSData *)audioData sampleRate:(NSUInteger)sampleRate sysexChannel: (uint8_t)channel;
 @property (nonatomic, strong) NSData *headerForSend;
 @property (nonatomic, strong) NSArray *packetsForSend;
-@property (nonatomic, weak) NSTimer *timerForSend;
+@property (nonatomic, assign) NSTimer *timerForSend;
 @property MDSDStransmissionState transmissionState;
 @property NSUInteger currentPacketIndexForSend;
 @property (nonatomic, strong) NSString *sampleNameForSend;
@@ -133,7 +133,10 @@ static MDSDS *_default = nil;
 	{
 		DLog(@"cancelling receive..");
 		NSData *cancelMessage = [self handShakeMessageWithID:SDSHandshakeMessageID_CANCEL packetNumber:0 channel:0];
-		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:cancelMessage.bytes size:cancelMessage.length];
+//		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:cancelMessage.bytes size:cancelMessage.length];
+		
+		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexData:cancelMessage];
+		
 		self.transmissionState = MDSDStransmissionState_IDLE;
 		{
 			DLog(@"disarmed!");
@@ -183,7 +186,8 @@ static MDSDS *_default = nil;
 	
 //	[self registerForSDSNotifications];
 	
-	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:self.headerForSend.bytes size:(UInt32)self.headerForSend.length];
+//	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:self.headerForSend.bytes size:(UInt32)self.headerForSend.length];
+	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexData:self.headerForSend];
 	
 	[self sendSampleName];
 	
@@ -330,7 +334,8 @@ static MDSDS *_default = nil;
 	{
 		DLog(@"got header, ignoring..");
 		NSData *cancelMessage = [self handShakeMessageWithID:SDSHandshakeMessageID_CANCEL packetNumber:0 channel:0];
-		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:cancelMessage.bytes size:cancelMessage.length];
+//		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:cancelMessage.bytes size:cancelMessage.length];
+		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexData:cancelMessage];
 		return;
 	}
 	
@@ -342,14 +347,8 @@ static MDSDS *_default = nil;
 	DLog(@"bytes per sample: %ld", bytesPerSample);
 	
 	NSUInteger samplePeriod = (bytes[7] | bytes[8] << 7 | bytes[9] << 14);
-	NSUInteger sampleRate = 1000000000.0 / samplePeriod;
+	NSUInteger sampleRate = 1000000000 / samplePeriod;
 	DLog(@"sample rate: %ld", sampleRate);
-	if(sampleRate > 44090 && sampleRate < 44110)
-	{
-		DLog(@"hack-fixing sample rate...");
-		sampleRate = 44100;
-#warning THAT'S A HACK HACK HACK
-	}
 	
 	NSUInteger numSamples = (bytes[10] | bytes[11] << 7 | bytes[12] << 14);
 	DLog(@"number of samples: %ld", numSamples);
@@ -379,9 +378,7 @@ static MDSDS *_default = nil;
 	if (numSamples % samplesPerPacket) numPackets += 1;
 	
 	self.headerForReceive = n.object;
-	
 	self.packetsForReceive = [NSMutableArray array];
-	
 	self.sampleRateForReceive = sampleRate;
 	self.bitsPerSampleForReceive = bytes[6];
 	self.bytesPerSampleForReceive = bytesPerSample;
@@ -399,7 +396,8 @@ static MDSDS *_default = nil;
 #warning todo: check format
 	
 	NSData *ackMessage = [self handShakeMessageWithID:SDSHandshakeMessageID_ACK packetNumber:0 channel:bytes[2]];
-	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:ackMessage.bytes size:ackMessage.length];
+//	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:ackMessage.bytes size:ackMessage.length];
+	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexData:ackMessage];
 	self.transmissionState = MDSDStransmissionState_RECEIVING_GOT_HEADER_WAITING_FOR_PACKETS;
 	
 	if([self.delegate respondsToSelector:@selector(sdsDidBeginReceiving:)])
@@ -436,7 +434,8 @@ static MDSDS *_default = nil;
 	SDSHandshakeMessageID handShakeID = SDSHandshakeMessageID_ACK;
 	if(!checksumOK)	handShakeID = SDSHandshakeMessageID_NAK;
 	handShakeMessage = [self handShakeMessageWithID:handShakeID packetNumber:packetNum channel:channel];
-	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendBytes:handShakeMessage.bytes size:handShakeMessage.length];
+//	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendBytes:handShakeMessage.bytes size:handShakeMessage.length];
+	[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexData:handShakeMessage];
 	
 	if(checksumOK)
 	{
@@ -573,14 +572,13 @@ int16_t unpack3(const uint8_t *ptr)
 	
 	int16_t *samples = malloc(len);
 	
-	for (int i = 0; i < len / self.bytesPerSampleForReceive; i++)
+	for (NSUInteger i = 0; i < len / self.bytesPerSampleForReceive; i++)
 	{
 		samples[i] = unpack3(bytes);
 		bytes += 3;
 	}
-	
-	return [NSData dataWithBytes:samples length: len];
-	free(samples);
+
+	return [NSData dataWithBytesNoCopy:samples length:len freeWhenDone:YES];
 }
 
 - (void) handleDumpRequest:(NSNotification *)n
@@ -635,7 +633,8 @@ int16_t unpack3(const uint8_t *ptr)
 	{
 		
 		NSData *packet = [self.packetsForSend objectAtIndex:self.currentPacketIndexForSend++];
-		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:packet.bytes size:packet.length];
+//		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexBytes:packet.bytes size:packet.length];
+		[[[MDMIDI sharedInstance] machinedrumMidiDestination] sendSysexData:packet];
 		
 		if (self.currentPacketIndexForSend < [self.packetsForSend count])
 			self.transmissionState = MDSDStransmissionState_SENT_PACKET_WILL_SEND_PACKET_WAITING_FOR_ACK;
@@ -689,6 +688,7 @@ int16_t unpack3(const uint8_t *ptr)
 						 saveSlot:(NSUInteger)i
 					 sysexChannel:(uint8_t)channel
 {
+	DLog(@"header w/ samprate: %d", sampleRate);
 	NSAssert(sampleRate > 0, @"sampleRate must be higher than 0");
 	NSAssert(bitsPerSample >=8 && bitsPerSample <= 24, @"bitRate must be between 8 and 24");
 	

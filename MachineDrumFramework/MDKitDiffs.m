@@ -18,8 +18,8 @@
 	uint16_t levelsFlags;
 }
 @end
-
 @implementation MDKitDiffs
+
 
 + (NSUInteger)dataLength
 {

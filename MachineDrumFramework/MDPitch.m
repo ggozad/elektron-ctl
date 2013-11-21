@@ -7,14 +7,7 @@
 //
 
 #import "MDPitch.h"
-
-
-static float map(float value,
-				float istart, float istop,
-							  float ostart, float ostop)
-{
-    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
+#import "MDMath.h"
 
 MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 {
@@ -37,8 +30,14 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 + (uint8_t)noteClosestToPitchParamValue:(uint8_t)pitch forMachineID:(MDMachineID)mid
 {
 	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID:mid];
-	uint8_t n = roundf(map(pitch, 0, 127, r.lowest, r.highest));
+	uint8_t n = roundf(mdmath_map(pitch, 0, 127, r.lowest, r.highest));
 	if(n < 128) return n; return 0;
+}
+
++ (double)noteForPitchParamValue:(uint8_t)pitch forMachineID:(MDMachineID)mid
+{
+	MDMachineAbsoluteNoteRange r = [self absoluteNoteRangeForMachineID:mid];
+	return mdmath_map(pitch, 0, 127, r.lowest, r.highest);
 }
 
 + (MDNoteRange)noteRangeForMachineAbsoluteRange:(MDMachineAbsoluteNoteRange)fr
@@ -63,14 +62,14 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 	//NSInteger pitchVal = (NSInteger)roundf(map(note, nr.minNote, nr.maxNote, 0, 127));
 	
 	
-	int pitchVal = roundf(map(note, fr.lowest, fr.highest, 0, 127));
+	int pitchVal = roundf(mdmath_map(note, fr.lowest, fr.highest, 0, 127));
 	if(pitchVal >= 0 && pitchVal <= 127) return (int8_t)pitchVal;
 	
 	if(rangeMode == MDPitchRangeMode_CLAMP)
 	{
 		if(note < fr.lowest)
-			return roundf(map(ceilf(fr.lowest), fr.lowest, fr.highest, 0, 127));
-		return roundf(map(floorf(fr.highest), fr.lowest, fr.highest, 0, 127));
+			return roundf(mdmath_map(ceilf(fr.lowest), fr.lowest, fr.highest, 0, 127));
+		return roundf(mdmath_map(floorf(fr.highest), fr.lowest, fr.highest, 0, 127));
 	}
 	if(rangeMode == MDPitchRangeMode_WRAP)
 	{
@@ -85,7 +84,7 @@ MDMachineAbsoluteNoteRange MDMachineAbsoluteNoteRangeMake(float l, float h)
 			else
 				wrappedNote -= 12;
 			
-			pitchVal = roundf(map(wrappedNote, fr.lowest, fr.highest, 0, 127));
+			pitchVal = roundf(mdmath_map(wrappedNote, fr.lowest, fr.highest, 0, 127));
 			if(pitchVal >= 0 && pitchVal <= 127) return (int8_t)pitchVal;
 		}
 	}

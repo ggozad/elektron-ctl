@@ -40,9 +40,9 @@
 		return;
 	}
 	
-	DLog(@"got something!");
+//	DLog(@"got something!");
 	
-	NSString *notificationName;
+	NSString *notificationName = nil;
 	
 	if([self dataStartsWithMachineDrumHeader:data])
 	{
@@ -192,12 +192,14 @@
 	else
 	{
 		DLog(@"unknown header, ignoring.");
+		DLog(@"data:\n%@", data.description);
 	}
 	
 	if(notificationName)
 	{
-		NSNotification *n = [NSNotification notificationWithName:notificationName object:data];
-		[[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
+		NSNotification *n = [NSNotification notificationWithName:notificationName object:data.copy];
+		[[NSNotificationCenter defaultCenter] postNotification:n];
+//		[[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:n.copy waitUntilDone:NO];
 	}
 }
 
@@ -208,7 +210,7 @@
 	return NO;
 }
 
-const uint8_t tm1header[] = {0xf0, 0x00, 0x20, 0x3c, 0x04, 0x00};
+static const uint8_t tm1header[] = {0xf0, 0x00, 0x20, 0x3c, 0x04, 0x00};
 + (BOOL)dataStartsWithAssumedTM1Header:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
@@ -219,7 +221,7 @@ const uint8_t tm1header[] = {0xf0, 0x00, 0x20, 0x3c, 0x04, 0x00};
 	return YES;
 }
 
-const uint8_t tmheader[] = {0xf0, 0x00, 0x20, 0x3c, 0x00, 0x00};
+static const uint8_t tmheader[] = {0xf0, 0x00, 0x20, 0x3c, 0x00, 0x00};
 + (BOOL)dataStartsWithTurboMIDIHeader:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
@@ -229,7 +231,7 @@ const uint8_t tmheader[] = {0xf0, 0x00, 0x20, 0x3c, 0x00, 0x00};
 	return YES;
 }
 
-const uint8_t mdHeader[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00};
+static const uint8_t mdHeader[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00};
 + (BOOL)dataStartsWithMachineDrumHeader:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;
@@ -239,7 +241,7 @@ const uint8_t mdHeader[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00};
 	return YES;
 }
 
-const uint8_t a4Header[] = {0xf0, 0x00, 0x20, 0x3c, 0x06, 0x00};
+static const uint8_t a4Header[] = {0xf0, 0x00, 0x20, 0x3c, 0x06, 0x00};
 + (BOOL)dataStartsWithA4Header:(NSData *)data
 {
 	const uint8_t *bytes = data.bytes;

@@ -10,13 +10,99 @@
 @class PGMidiSource;
 @class PGMidiDestination;
 @class MidiInputParser;
-@class MidiControlChange;
-@class MidiNoteOn;
+
+typedef struct MidiNoteOn
+{
+	uint8_t channel, note, velocity;
+}
+MidiNoteOn;
+
+typedef struct MidiNoteOff
+{
+	uint8_t channel, note, velocity;
+}
+MidiNoteOff;
+
+typedef struct MidiControlChange
+{
+	uint8_t channel, parameter, value;
+}
+MidiControlChange;
+
+
+typedef struct MidiProgramChange
+{
+	uint8_t channel, program;
+}
+MidiProgramChange;
+
+typedef struct MidiChannelPressure
+{
+	uint8_t channel, pressure;
+}
+MidiChannelPressure;
+
+typedef struct MidiAftertouch
+{
+	uint8_t channel, note, pressure;
+}
+MidiAftertouch;
+
+typedef struct MidiPitchWheel
+{
+	uint8_t channel;
+	UInt16 pitch;
+}
+MidiPitchWheel;
+
+
+@interface NSValue(MidiNoteOn)
++ (instancetype) valueWithMidiNoteOn:(MidiNoteOn)noteOn;
+- (MidiNoteOn) midiNoteOnValue;
+@end
+
+@implementation NSValue(MidiNoteOn)
++ (instancetype)valueWithMidiNoteOn:(MidiNoteOn)noteOn
+{
+	return [NSValue valueWithBytes:&noteOn objCType:@encode(MidiNoteOn)];
+}
+
+- (MidiNoteOn)midiNoteOnValue
+{
+	MidiNoteOn noteOn; [self getValue:&noteOn]; return noteOn;
+}
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /// Delegate protocol for PGMidi class.
 ///
-/// @see PGMidi
-@protocol PGMidiDelegate
+///
+
+@protocol PGMidiDelegate <NSObject>
+@optional
 - (void) midiSourceAdded:(PGMidiSource *)source;
 - (void) midiSourceRemoved:(PGMidiSource *)source;
 - (void) midiDestinationAdded:(PGMidiDestination *)destination;
@@ -35,13 +121,10 @@
     MIDIClientRef      client;
     MIDIPortRef        outputPort;
     MIDIPortRef        inputPort;
-    id<PGMidiDelegate> delegate;
     NSMutableArray    *sources, *destinations;
 }
 
-@property (nonatomic,strong) id<PGMidiDelegate> delegate;
-
-
+@property (nonatomic,weak)  id<PGMidiDelegate> delegate;
 @property (nonatomic,readonly) NSUInteger         numberOfConnections;
 @property (nonatomic,readonly) NSMutableArray    *sources;
 @property (nonatomic,readonly) NSMutableArray    *destinations;
@@ -117,9 +200,6 @@
 ///
 /// @see PGMidiSourceDelegate
 @interface PGMidiSource : PGMidiConnection
-{
-    id<PGMidiSourceDelegate> delegate;
-}
 @property (nonatomic, strong) MidiInputParser *parser;
 @property (nonatomic, strong) id<PGMidiSourceDelegate> delegate;
 @end
@@ -130,8 +210,10 @@
 @interface PGMidiDestination : PGMidiConnection
 {
 }
-- (void) sendNoteOn:(MidiNoteOn *)noteOn;
-- (void) sendControlChange:(MidiControlChange *)cc;
+- (void) sendNoteOn:(MidiNoteOn)noteOn;
+- (void) sendNoteOff:(MidiNoteOff)noteOff;
+- (void) sendControlChange:(MidiControlChange)cc;
+- (void) sendPitchWheel:(MidiPitchWheel)pw;
 - (void) sendBytes:(const UInt8*)bytes size:(UInt32)size;
 - (void) sendPacketList:(const MIDIPacketList *)packetList;
 - (void) sendSysexBytes:(const UInt8*)bytes size:(UInt32)size;

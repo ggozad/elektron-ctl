@@ -11,6 +11,38 @@
 
 @implementation MDSysexUtil
 
++ (NSArray *)splitDataFromData:(NSData *)data
+{
+	NSMutableArray *array = [NSMutableArray array];
+	
+	const uint8_t *bytes = data.bytes;
+	NSUInteger dataLength = data.length;
+	if(!dataLength) return nil;
+	
+	for (NSUInteger start = 0; start < dataLength - 1; start++)
+	{
+		uint8_t current = bytes[start];
+		BOOL isSysexStart = current == 0xf0;
+		
+		if(isSysexStart) // sysex begin
+		{
+			int chunkLength = 0;
+			while (YES)
+			{
+				chunkLength++;
+				
+				if(start + chunkLength == dataLength ||
+				   bytes[start + chunkLength] == 0xF7)
+					break;
+			}
+			chunkLength++;
+			NSData *chunk = [NSData dataWithBytes: bytes+start length:chunkLength];
+			[array addObject:chunk];
+		}
+	}
+	
+	return [array copy];
+}
 
 + (NSString *)md5StringFromData:(NSData *)data
 {
@@ -104,12 +136,13 @@
 	blocksOfSevenInBytes += 1;
 	outLength = blocksOfSevenInBytes + inLength;
 	
-	outDataBytes = calloc(outLength, 1);
+	outDataBytes = malloc(outLength);
 	outDataBytes[0] = 0;
 	
 	const uint8_t *inBytes = [inData bytes];
 	NSUInteger count7 = 0;
 	NSUInteger outIndex = 0;
+	outDataBytes[0] = 0;
 	
 	for (int i = 0; i < inLength; i++)
 	{
@@ -142,10 +175,9 @@
 	NSUInteger outLength = 0;
 	
 	for (cnt = 0; cnt < inLength; cnt++)
-		if(cnt % 8 != 0)
-			outLength++;
+		if(cnt % 8) outLength++;
 	
-	void *outBytes = calloc(outLength, 1);
+	void *outBytes = malloc(outLength);
 	
 	for (cnt = 0; cnt < inLength; cnt++)
 	{
@@ -204,35 +236,20 @@
     return bits;
 }
 
-+ (NSData *)dataWithInvalidBytesStrippedFromData:(NSData *)data
++ (NSString *)sizeFormattedWithSize:(NSUInteger)size
 {
-	const unsigned char *bytes = data.bytes;
-	NSUInteger length = data.length;
 	
-	unsigned char newBytes[length];
-	NSUInteger newBytesIndex = 0;
+    double convertedValue = size;
+    int multiplyFactor = 0;
 	
-	for (int i = 0; i < length; i++)
-	{
-		if((i == 0 || i == length-1) ||
-		   ! (bytes[i] & 0x80 ))
-		{
-			newBytes[newBytesIndex++] = bytes[i];
-		}
-		else
-			DLog(@"stripped a byte at 0x%x value: 0x%x", i, bytes[i]);
-	}
+    NSArray *tokens = [NSArray arrayWithObjects:@"bytes",@"KiB",@"MiB",@"GiB",@"TiB",nil];
 	
-	NSUInteger newLength = newBytesIndex;
-	NSUInteger diff = length - newLength;
+    while (convertedValue > 1024) {
+        convertedValue /= 1024;
+        multiplyFactor++;
+    }
 	
-	DLog(@"stripped %ld %@.", diff, diff == 1 ? @"byte" : @"bytes");
-	DLog(@"new length: %ld", newLength);
-	
-	if(diff)
-		return [NSData dataWithBytes:&newBytes length:newLength];
-	
-	return data;
+    return [NSString stringWithFormat:@"%4.2f %@",convertedValue, [tokens objectAtIndex:multiplyFactor]];
 }
 
 

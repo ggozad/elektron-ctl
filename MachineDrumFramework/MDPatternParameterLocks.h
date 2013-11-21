@@ -13,7 +13,7 @@
 @interface MDPatternParameterLocks : NSObject
 @property (readonly) uint8_t rowCount;
 @property (readonly) uint8_t totalCount;
-@property (weak, nonatomic) MDPatternPrivate *pattern;
+@property (assign, nonatomic) MDPatternPrivate *pattern;
 @property (strong, nonatomic, readonly) NSMutableArray *lockRows;
 
 - (void) clearLock:(MDParameterLock *)lock;

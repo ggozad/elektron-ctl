@@ -7,358 +7,490 @@
 //
 
 #import "MidiInputParser.h"
-
-#define MD_MIDI_STATUS_SYSEX_BEGIN (0xF0)
-#define MD_MIDI_STATUS_SYSEX_END (0xF7)
-#define MD_MIDI_STATUS_CLOCK (0xF8)
-#define MD_MIDI_STATUS_TICK (0xF9)
-#define MD_MIDI_STATUS_START (0xFA)
-#define MD_MIDI_STATUS_CONTINUE (0xFB)
-#define MD_MIDI_STATUS_STOP (0xFC)
-#define MD_MIDI_STATUS_ACTIVESENSE (0xFE)
-#define MD_MIDI_STATUS_NOTE_ON (0x90)
-#define MD_MIDI_STATUS_NOTE_OFF (0x80)
-#define MD_MIDI_STATUS_AFTERTOUCH (0xA0)
-#define MD_MIDI_STATUS_CONTROL_CHANGE (0xB0)
-#define MD_MIDI_STATUS_PROGRAM_CHANGE (0xC0)
-
-#define MD_MIDI_STATUS_ANY (0x80)
+#import "MDConstants.h"
+#import <mach/mach_time.h>
+#import <QuartzCore/QuartzCore.h>
 
 
-#define sysexBufferSize (1024*1024)
-uint8_t sysexBuffer[sysexBufferSize];
-NSUInteger sysexBufferIndex = 0;
 
-uint8_t noteOnBuffer[3];
-NSUInteger noteOnBufferIndex = 0;
+#define kMidiInputParserBufferSize (1024*1024)
 
-uint8_t noteOffBuffer[3];
-NSUInteger noteOffBufferIndex = 0;
-
-uint8_t aftertouchBuffer[3];
-NSUInteger aftertouchBufferIndex = 0;
-
-uint8_t ccBuffer[3];
-NSUInteger ccBufferIndex = 0;
-
-uint8_t programChangeBuffer[2];
-NSUInteger programChangeBufferIndex = 0;
-
-
-typedef enum receiveState
+@interface MidiInputParser()
 {
-	receiveState_None,
-	receiveState_Sysex,
-	receiveState_NoteOn,
-	receiveState_NoteOff,
-	receiveState_Aftertouch,
-	receiveState_ControlChange,
-	receiveState_ProgramChange,
+	uint8_t *_buffer;
+	NSUInteger _idx;
+	uint8_t _status;
+	dispatch_source_t interpolationTimer;
+	uint64_t lastNanos;
+	double lastTime;
+	NSUInteger interpolationDivisionCount;
+	NSUInteger clockCount;
+	BOOL interpolationTimerIsSuspended;
 }
-receiveState;
+@end
 
-receiveState _receiveState = receiveState_None;
+static dispatch_queue_t sysexQueue, realtimeQueue, voiceQueue;
+
+static dispatch_queue_t getSysexQueue()
+{
+	if(sysexQueue == NULL)
+	{
+		sysexQueue = dispatch_queue_create("sysex", NULL);
+	}
+	return sysexQueue;
+}
+
+static dispatch_queue_t getRealtimeQueue()
+{
+	if(realtimeQueue == NULL)
+	{
+		realtimeQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+	}
+	return realtimeQueue;
+}
+
+static dispatch_queue_t getVoiceQueue()
+{
+	if(voiceQueue == NULL)
+	{
+		voiceQueue = dispatch_queue_create("voice", NULL);
+	}
+	return voiceQueue;
+}
+
 
 @implementation MidiInputParser
 
-- (void)midiSource:(PGMidiSource *)input midiReceived:(const MIDIPacketList *)list
-{	
-	//DLog(@"midi received..");
-	const MIDIPacket *currentPacket = &list->packet[0];
-	
-	for (NSUInteger currentPacketIndex = 0; currentPacketIndex < list->numPackets; currentPacketIndex++)
+- (id)init
+{
+	if(self = [super init])
 	{
-		for (NSUInteger currentByteIndex = 0; currentByteIndex < currentPacket->length; currentByteIndex++)
+		_buffer = calloc(kMidiInputParserBufferSize, 1);
+		_interpolationDivisions = 16;
+	}
+	return self;
+}
+
+- (void)dealloc
+{
+	free(_buffer);
+	if(interpolationTimer != NULL)
+	{
+		if(!interpolationTimerIsSuspended) dispatch_suspend(interpolationTimer);
+		dispatch_source_cancel(interpolationTimer);
+		dispatch_release(interpolationTimer);
+	}
+}
+
+static inline uint64_t convertTimestampToNanoseconds(uint64_t time)
+{
+    static mach_timebase_info_data_t s_timebase_info;
+	
+    if (s_timebase_info.denom == 0)
+    {
+        (void) mach_timebase_info(&s_timebase_info);
+    }
+
+    return (uint64_t)((time * s_timebase_info.numer) / (s_timebase_info.denom));
+}
+
+dispatch_source_t CreateDispatchTimer(uint64_t interval,
+									  uint64_t leeway,
+									  dispatch_queue_t queue,
+									  dispatch_block_t block)
+{
+	dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,
+                                                     0, 0, queue);
+	if (timer)
+	{
+		dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, interval), interval, leeway);
+		dispatch_source_set_event_handler(timer, block);
+		dispatch_resume(timer);
+		dispatch_retain(timer);
+	}
+	return timer;
+}
+
+
+- (void)setInterpolateClock:(BOOL)interpolateClock
+{
+	_interpolateClock = interpolateClock;
+	if(!_interpolateClock && interpolationTimer)
+	{
+		dispatch_source_cancel(interpolationTimer);
+		interpolationTimer = NULL;
+	}
+}
+
+- (void) handleClockWithTimestamp:(MIDITimeStamp)timestamp
+{
+	if(interpolationTimer && !interpolationTimerIsSuspended)
+	{
+		dispatch_source_cancel(interpolationTimer);
+		dispatch_suspend(interpolationTimer);
+		interpolationTimerIsSuspended = YES;
+	}
+	
+	if(! _interpolateClock && interpolationTimer != NULL)
+	{
+		interpolationTimer = NULL;
+	}
+	
+	if(_interpolateClock && _interpolationDivisions > 1)
+	{
+		int numberOfMissedClocks = _interpolationDivisions - interpolationDivisionCount-1;
+		
+		if(numberOfMissedClocks)
 		{
-			if(self.delegate)
+			for (int i = 0; i < numberOfMissedClocks; i++)
 			{
-				unsigned char byteValue = currentPacket->data[currentByteIndex];
+				if(interpolationDivisionCount >= _interpolationDivisions) break;
+				interpolationDivisionCount++;
+				/*
+				double nanos = convertTimestampToNanoseconds(mach_absolute_time());
+				double delta = nanos - lastNanosInterpolated;
+				lastNanosInterpolated = nanos;
+				 */
+//				printf("inter: %d\n", interpolationDivisionCount);
+				if([_delegate respondsToSelector:@selector(midiReceivedClockInterpolationFromSource:)])[ _delegate midiReceivedClockInterpolationFromSource:_source];
+			}
+		}
+		
+		uint64_t nanos = convertTimestampToNanoseconds(timestamp);
+		
+		if(lastNanos != 0)
+		{
+			uint64_t delta = nanos - lastNanos;
+			delta /= _interpolationDivisions;
+			
+			if(interpolationTimer == NULL)
+			{
+				dispatch_source_t timer = CreateDispatchTimer(delta, 0, getRealtimeQueue(), ^{
+					
+					[self handleInterpolationTimer];
+					
+				});
+				
+				if(timer) interpolationTimer = timer;
+			}
+			else
+			{
+				if(interpolationTimerIsSuspended) dispatch_resume(interpolationTimer);
+				interpolationTimerIsSuspended = NO;
+				dispatch_source_set_timer(interpolationTimer, dispatch_time(DISPATCH_TIME_NOW, delta), delta, 0);
+			}
+		}
+		
+		lastNanos = nanos;
+		interpolationDivisionCount = 0;
+	}
+
+	if(_delegate)[ _delegate midiReceivedClockFromSource:_source];
+}
+
+- (void)setInterpolationDivisions:(NSUInteger)interpolationDivisions
+{
+	if(interpolationDivisions < 1) return;
+	_interpolationDivisions = interpolationDivisions;
+}
+
+- (void) handleInterpolationTimer
+{
+	if(interpolationTimerIsSuspended) return;
+	interpolationDivisionCount++;
+	if(interpolationDivisionCount >= _interpolationDivisions) return;
+	if([_delegate respondsToSelector:@selector(midiReceivedClockInterpolationFromSource:)])[ _delegate midiReceivedClockInterpolationFromSource:_source];
+	
+	/*
+	double nanos = convertTimestampToNanoseconds(mach_absolute_time());
+	double delta = nanos - lastNanosInterpolated;
+	lastNanosInterpolated = nanos;
+	 */
+//	printf("inter: %d\n", interpolationDivisionCount);
+}
+
+- (void)midiSource:(PGMidiSource *)input midiReceived:(const MIDIPacketList *)list
+{
+	if(_delegate)
+	{
+		const MIDIPacket *currentPacket = &list->packet[0];
+		
+		for (NSUInteger currentPacketIndex = 0; currentPacketIndex < list->numPackets; currentPacketIndex++)
+		{
+			for (NSUInteger currentByteIndex = 0; currentByteIndex < currentPacket->length; currentByteIndex++)
+			{
+				uint8_t byteValue = currentPacket->data[currentByteIndex];
 				
 				if(byteValue & MD_MIDI_STATUS_ANY) // got status byte
 				{
-					uint8_t hiNib = byteValue & 0xf0;
-					
-					if(byteValue == MD_MIDI_STATUS_CLOCK) // check for realtime messages
+					if(byteValue >= (uint8_t) MD_MIDI_RT_CLOCK) // realtime status
 					{
-						//DLog(@"%@ got clock", self.source.name);
-						if(self.softThruPassClock && self.softThruDestination)
+						if(byteValue == MD_MIDI_RT_CLOCK) // check for realtime messages
 						{
-							//DLog(@"%@ passing clock", self.source.name);
-							unsigned char byte = byteValue;
-							[self.softThruDestination sendBytes:&byte size:1];
-						}
-						
-						if([self.delegate respondsToSelector:@selector(midiReceivedClockFromSource:)])
-						{
-							[self.delegate midiReceivedClockFromSource:self.source];
-						}
-					}
-					else if(byteValue == MD_MIDI_STATUS_START) // check for realtime messages
-					{
-						//DLog(@"%@ got start", self.source.name);
-						
-						
-						if(self.softThruPassStartStop && self.softThruDestination)
-						{
-							//DLog(@"%@ passing start", self.source.name);
-							unsigned char byte = byteValue;
-							[self.softThruDestination sendBytes:&byte size:1];
-						}
-						
-						if([self.delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
-						{
-							[self.delegate midiReceivedTransport:byteValue fromSource:self.source];
-						}
-					}
-					else if(byteValue == MD_MIDI_STATUS_STOP) // check for realtime messages
-					{
-						//DLog(@"%@ got stop", self.source.name);
-						if(self.softThruPassStartStop && self.softThruDestination)
-						{
-							//DLog(@"%@ passing stop", self.source.name);
-							unsigned char byte = byteValue;
-							[self.softThruDestination sendBytes:&byte size:1];
-						}
-						
-						if([self.delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
-						{
-							[self.delegate midiReceivedTransport:byteValue fromSource:self.source];
-						}
-					}
-					else if(byteValue == MD_MIDI_STATUS_CONTINUE) // check for realtime messages
-					{
-						//DLog(@"%@ got continue", self.source.name);
-						if(self.softThruPassStartStop && self.softThruDestination)
-						{
-							//DLog(@"%@ passing continue", self.source.name);
-							unsigned char byte = byteValue;
-							[self.softThruDestination sendBytes:&byte size:1];
-						}
-						
-						if([self.delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
-						{
-							[self.delegate midiReceivedTransport:byteValue fromSource:self.source];
-						}
-					}
-					else if(byteValue == MD_MIDI_STATUS_ACTIVESENSE)
-					{
-						// handle activesense
-					}
-					else if(byteValue == MD_MIDI_STATUS_SYSEX_BEGIN)
-					{
-						//DLog(@"sysex receive begin");
-						_receiveState = receiveState_Sysex;
-						// discard sysex buffer
-						sysexBufferIndex = 0;
-						sysexBuffer[sysexBufferIndex++] = byteValue;
-					}
-					else if (_receiveState == receiveState_Sysex && byteValue == MD_MIDI_STATUS_SYSEX_END) // sysex end (expected)
-					{
-						_receiveState = receiveState_None;
-						sysexBuffer[sysexBufferIndex++] = byteValue;
-						NSUInteger sysexDataLength = sysexBufferIndex;
-						sysexBufferIndex = 0;	
-						if([self.delegate respondsToSelector:@selector(midiReceivedSysexData:fromSource:)])
-						{
-							@autoreleasepool
+							if(_softThruPassClock && _softThruDestination)
 							{
-								NSData *d = [NSData dataWithBytes:&sysexBuffer length:sysexDataLength];
-								[self.delegate midiReceivedSysexData:d fromSource:self.source];
+								unsigned char byte = byteValue;
+								[_softThruDestination sendBytes:&byte size:1];
 							}
+							
+							MIDITimeStamp timeStamp = currentPacket->timeStamp;
+							dispatch_async(getRealtimeQueue(), ^{
+								
+								@synchronized(self)
+								{
+									if([_delegate respondsToSelector:@selector(midiReceivedClockFromSource:)])
+									{
+										[self handleClockWithTimestamp:timeStamp];
+									}
+								}
+								
+							});
+							
 						}
-					}
-					else if (byteValue == MD_MIDI_STATUS_SYSEX_END) // unexpected sysex end (haven't started sysex receive)
-					{
-						;
-					}
-					else if (hiNib == MD_MIDI_STATUS_NOTE_ON)
-					{
-						_receiveState = receiveState_NoteOn;
-						noteOnBufferIndex = 0;
-						noteOnBuffer[noteOnBufferIndex++] = byteValue;
-					}
-					else if (hiNib == MD_MIDI_STATUS_NOTE_OFF)
-					{
-						_receiveState = receiveState_NoteOff;
-						noteOffBufferIndex = 0;
-						noteOffBuffer[noteOffBufferIndex++] = byteValue;
-					}
-					else if (hiNib == MD_MIDI_STATUS_CONTROL_CHANGE)
-					{
-						_receiveState = receiveState_ControlChange;
-						ccBufferIndex = 0;
-						ccBuffer[ccBufferIndex++] = byteValue;
-					}
-					else if (hiNib == MD_MIDI_STATUS_PROGRAM_CHANGE)
-					{
-						_receiveState = receiveState_ProgramChange;
-						programChangeBufferIndex = 0;
-						programChangeBuffer[programChangeBufferIndex++] = byteValue;
-					}
-					else if (hiNib == MD_MIDI_STATUS_AFTERTOUCH)
-					{
-						_receiveState = receiveState_Aftertouch;
-						aftertouchBufferIndex = 0;
-						aftertouchBuffer[aftertouchBufferIndex++] = byteValue;
+						else if(byteValue == MD_MIDI_RT_START) // check for realtime messages
+						{
+//							DLog(@"%@ got start", self.source.name);
+							
+							if(_softThruPassStartStop && _softThruDestination)
+							{
+								//DLog(@"%@ passing start", self.source.name);
+								unsigned char byte = byteValue;
+								[_softThruDestination sendBytes:&byte size:1];
+							}
+							
+							dispatch_async(getRealtimeQueue(), ^{
+								
+								if([_delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+								{
+									[_delegate midiReceivedTransport:byteValue fromSource:_source];
+								}
+							});
+						}
+						else if(byteValue == MD_MIDI_RT_STOP) // check for realtime messages
+						{
+//							DLog(@"%@ got stop", self.source.name);
+							if(_softThruPassStartStop && _softThruDestination)
+							{
+								//DLog(@"%@ passing stop", self.source.name);
+								unsigned char byte = byteValue;
+								[_softThruDestination sendBytes:&byte size:1];
+							}
+							
+							dispatch_async(getRealtimeQueue(), ^{
+								
+								if([_delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+								{
+									[_delegate midiReceivedTransport:byteValue fromSource:_source];
+								}
+								
+							});
+							
+							
+						}
+						else if(byteValue == MD_MIDI_RT_CONTINUE) // check for realtime messages
+						{
+//							DLog(@"%@ got continue", self.source.name);
+							if(_softThruPassStartStop && _softThruDestination)
+							{
+								//DLog(@"%@ passing continue", self.source.name);
+								unsigned char byte = byteValue;
+								[_softThruDestination sendBytes:&byte size:1];
+							}
+							
+							dispatch_async(getRealtimeQueue(), ^{
+								
+								if([_delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
+								{
+									[_delegate midiReceivedTransport:byteValue fromSource:_source];
+								}
+								
+							});
+						}
+						else if(byteValue == MD_MIDI_RT_ACTIVESENSE)
+						{
+							// handle activesense
+						}
 					}
 					else
 					{
-						/*
-						NSString *type = @"unknown";
-						uint8_t loNib = byteValue & 0x0f;
-						if(hiNib == 0xD0) type = [NSString stringWithFormat:@"chan aftertouch @ chan %d", loNib];
-						else if(hiNib == 0xE0) type = [NSString stringWithFormat:@"pitch wheel range %d", loNib];
-						DLog(@"received unimplemented status byte: 0x%x type: %@", byteValue, type);
-						 */
+						if(byteValue != MD_MIDI_STATUS_SYSEX_END){ _idx = 0; _status = byteValue & 0xF0;}
+						_buffer[_idx++] = byteValue;
+						
+						if (_status == MD_MIDI_STATUS_SYSEX_BEGIN && byteValue == MD_MIDI_STATUS_SYSEX_END) // sysex end (expected)
+						{
+							_status = MD_MIDI_STATUS_SYSEX_END;
+							NSUInteger sysexDataLength = _idx;
+							
+							@autoreleasepool
+							{
+								NSData *d = [NSData dataWithBytes:_buffer length:sysexDataLength];
+								dispatch_async(getSysexQueue(), ^{
+									
+									if([_delegate respondsToSelector:@selector(midiReceivedSysexData:fromSource:)])
+									{
+										[self.delegate midiReceivedSysexData:d fromSource:self.source];
+									}
+											   
+								});
+							}
+						}
 					}
 				}
 				else
 				{
-					if(_receiveState == receiveState_Sysex)
+					_buffer[_idx++] = byteValue;
+					
+					if(_status != MD_MIDI_STATUS_SYSEX_BEGIN)
 					{
-						// fill buffer
-						sysexBuffer[sysexBufferIndex++] = byteValue;
-						if(sysexBufferIndex >= sysexBufferSize)
+						if(_idx == 2)
 						{
-							DLog(@"overflowing sysex buffer, cancelling sysex receive.");
-							sysexBufferIndex = 0;
-							_receiveState = receiveState_None;
+							switch(_status)
+							{
+								case MD_MIDI_STATUS_PROGRAM_CHANGE:
+								{
+									MidiProgramChange pc;
+									pc.channel = _buffer[0] & 0x0f;
+									pc.program = _buffer[1] & 0x7f;
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedProgramChange:fromSource:)])
+										{
+											[_delegate midiReceivedProgramChange:pc fromSource:self.source];
+										}
+										
+									});
+									break;
+								}
+								case MD_MIDI_STATUS_CHANNEL_PRESSURE:
+								{
+									MidiChannelPressure pressure;
+									pressure.channel =	_buffer[0] & 0x0f;
+									pressure.pressure = _buffer[1] & 0x7f;
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedChannelPressure:fromSource:)])
+										{
+											[_delegate midiReceivedChannelPressure: pressure fromSource:self.source];
+										}
+										
+									});
+									break;
+								}
+								default: break;
+							}
+						}
+						else if (_idx == 3)
+						{
+							switch(_status)
+							{
+								case MD_MIDI_STATUS_NOTE_ON:
+								{
+									
+									MidiNoteOn noteOn;
+									noteOn.channel = _buffer[0] & 0x0f;
+									noteOn.note = _buffer[1] & 0x7f;
+									noteOn.velocity = _buffer[2] & 0x7f;
+									
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedNoteOn:fromSource:)])
+										{
+											
+											[_delegate midiReceivedNoteOn:noteOn fromSource:self.source];
+										}
+										
+									});
+									break;
+								}
+								case MD_MIDI_STATUS_NOTE_OFF:
+								{
+									MidiNoteOff noteOff;
+									noteOff.channel =	_buffer[0] & 0x0f;
+									noteOff.note =		_buffer[1] & 0x7f;
+									noteOff.velocity =	_buffer[2] & 0x7f;
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedNoteOff:fromSource:)])
+										{
+											
+											[_delegate midiReceivedNoteOff:noteOff fromSource:self.source];
+										}
+				
+									});
+									break;
+								}
+								case MD_MIDI_STATUS_CONTROL_CHANGE:
+								{
+									MidiControlChange cc;
+									cc.channel =	_buffer[0] & 0x0f;
+									cc.parameter =	_buffer[1] & 0x7f;
+									cc.value =		_buffer[2] & 0x7f;
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedControlChange:fromSource:)])
+										{
+											
+											[_delegate midiReceivedControlChange:cc fromSource:self.source];
+										}
+										
+									});
+									break;
+								}
+								case MD_MIDI_STATUS_AFTERTOUCH:
+								{
+									MidiAftertouch aftertouch;
+									aftertouch.channel =	_buffer[0] & 0x0f;
+									aftertouch.note =		_buffer[1] & 0x7f;
+									aftertouch.pressure =	_buffer[2] & 0x7f;
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedAftertouch:fromSource:)])
+										{
+											
+											[_delegate midiReceivedAftertouch:aftertouch fromSource:self.source];
+										}
+										
+									});
+									break;
+								}
+								case MD_MIDI_STATUS_PITCH_WHEEL:
+								{
+									MidiPitchWheel pw;
+									pw.channel = _buffer[0] & 0x0f;
+									UInt16 pitch = (_buffer[2] & 0x7F) << 7 | (_buffer[1] & 0x7F);
+									pw.pitch = pitch;
+									
+									dispatch_async(getVoiceQueue(), ^{
+										
+										if([_delegate respondsToSelector:@selector(midiReceivedPitchWheel:fromSource:)])
+										{
+											[_delegate midiReceivedPitchWheel:pw fromSource:self.source];
+										}
+										
+									});
+									break;
+								}
+								default: break;
+							}
 						}
 					}
-					else if(_receiveState == receiveState_NoteOn)
+					if (_idx == kMidiInputParserBufferSize)
 					{
-						//DLog(@"filling note on buffer..");
-						noteOnBuffer[noteOnBufferIndex++] = byteValue;
-						if(noteOnBufferIndex == 3)
-						{
-							_receiveState = receiveState_None;
-							noteOnBufferIndex = 0;
-							if((noteOnBuffer[2] & 0x7f) == 0 &&
-							   [self.delegate respondsToSelector:@selector(midiReceivedNoteOff:fromSource:)]) // zero velocity note off
-							{
-								@autoreleasepool
-								{
-									MidiNoteOff *noteOff = [MidiNoteOff new];
-									noteOff.channel = noteOnBuffer[0] & 0x0f;
-									noteOff.note = noteOnBuffer[1] & 0x7f;
-									noteOff.velocity = noteOnBuffer[2] & 0x7f;
-									[self.delegate midiReceivedNoteOff:noteOff fromSource:self.source];
-								}
-							}
-							else if([self.delegate respondsToSelector:@selector(midiReceivedNoteOn:fromSource:)])
-							{
-								@autoreleasepool
-								{
-									MidiNoteOn *noteOn = [MidiNoteOn new];
-									noteOn.channel = noteOnBuffer[0] & 0x0f;
-									noteOn.note = noteOnBuffer[1] & 0x7f;
-									noteOn.velocity = noteOnBuffer[2] & 0x7f;
-									[self.delegate midiReceivedNoteOn:noteOn fromSource:self.source];
-								}
-							}
-						}
-					}
-					else if(_receiveState == receiveState_NoteOff)
-					{
-						//DLog(@"filling note on buffer..");
-						noteOffBuffer[noteOffBufferIndex++] = byteValue;
-						if(noteOffBufferIndex == 3)
-						{
-							_receiveState = receiveState_None;
-							noteOffBufferIndex = 0;
-							if([self.delegate respondsToSelector:@selector(midiReceivedNoteOff:fromSource:)])
-							{
-								@autoreleasepool
-								{
-									MidiNoteOff *noteOff = [MidiNoteOff new];
-									noteOff.channel = noteOffBuffer[0] & 0x0f;
-									noteOff.note = noteOffBuffer[1] & 0x7f;
-									noteOff.velocity = noteOffBuffer[2] & 0x7f;
-									[self.delegate midiReceivedNoteOff:noteOff fromSource:self.source];
-								}
-							}
-						}
-					}
-					else if(_receiveState == receiveState_ControlChange)
-					{
-						ccBuffer[ccBufferIndex++] = byteValue;
-						if(ccBufferIndex == 3)
-						{
-							_receiveState = receiveState_None;
-							ccBufferIndex = 0;
-							if([self.delegate respondsToSelector:@selector(midiReceivedControlChange:fromSource:)])
-							{
-								@autoreleasepool
-								{
-									MidiControlChange *cc = [MidiControlChange new];
-									cc.channel = ccBuffer[0] & 0x0f;
-									cc.parameter = ccBuffer[1] & 0x7f;
-									cc.ccValue = ccBuffer[2] & 0x7f;
-									[self.delegate midiReceivedControlChange:cc fromSource:self.source];
-								}
-							}
-						}
-					}
-					else if(_receiveState == receiveState_ProgramChange)
-					{
-						programChangeBuffer[programChangeBufferIndex++] = byteValue;
-						if(programChangeBufferIndex == 2)
-						{
-							_receiveState = receiveState_None;
-							programChangeBufferIndex = 0;
-							if([self.delegate respondsToSelector:@selector(midiReceivedProgramChange:fromSource:)])
-							{
-								@autoreleasepool
-								{
-									MidiProgramChange *pc = [MidiProgramChange new];
-									pc.channel = programChangeBuffer[0] & 0x0f;
-									pc.program = programChangeBuffer[1] & 0x7f;
-									[self.delegate midiReceivedProgramChange:pc fromSource:self.source];
-								}
-							}
-						}
-					}
-					else if(_receiveState == receiveState_Aftertouch)
-					{
-						//DLog(@"filling note on buffer..");
-						aftertouchBuffer[aftertouchBufferIndex++] = byteValue;
-						if(aftertouchBufferIndex == 3)
-						{
-							_receiveState = receiveState_None;
-							aftertouchBufferIndex = 0;
-							if([self.delegate respondsToSelector:@selector(midiReceivedAftertouch:fromSource:)])
-							{
-								@autoreleasepool
-								{
-									MidiAftertouch *aftertouch = [MidiAftertouch new];
-									aftertouch.channel = aftertouchBuffer[0] & 0x0f;
-									aftertouch.note = aftertouchBuffer[1] & 0x7f;
-									aftertouch.pressure = aftertouchBuffer[2] & 0x7f;
-									[self.delegate midiReceivedAftertouch:aftertouch fromSource:self.source];
-								}
-							}
-						}
+						_status = 0;
+						_idx = 0;
 					}
 				}
 			}
+			currentPacket = MIDIPacketNext(currentPacket);
 		}
-		currentPacket = MIDIPacketNext(currentPacket);
+		
 	}
 }
 
-@end
-
-@implementation MidiNoteOn
-@end
-
-@implementation MidiNoteOff
-@end
-
-@implementation MidiControlChange
-@end
-
-@implementation MidiAftertouch
-@end
-
-@implementation MidiProgramChange
 @end

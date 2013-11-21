@@ -16,6 +16,7 @@
 	if(self = [super init])
 	{
 		self.stop = 16;
+		self.tempo = INT16_MAX / 24.0;
 	}
 	return self;
 }
@@ -49,6 +50,24 @@
 	row.tempo = songRow.tempo;
 	row.start = songRow.start;
 	row.stop = songRow.stop;
+	return row;
+}
+
++ (MDSongRow *)songRowWithPattern:(uint8_t)pattern loop:(uint8_t)loopCount start:(uint8_t)strt stop:(uint8_t)stop tempo:(float)tempo
+{
+	MDSongRow *row = [MDSongRow new];
+	row.pattern = pattern;
+	row.loopCount = loopCount;
+	row.start = strt;
+	row.stop = stop;
+	row.tempo = tempo;
+	return row;
+}
+
++ (MDSongRow *)endRow
+{
+	MDSongRow *row = [MDSongRow new];
+	row.pattern = MDSongRowPatternPositionEnd;
 	return row;
 }
 

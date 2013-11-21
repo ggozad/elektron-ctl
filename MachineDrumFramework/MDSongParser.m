@@ -134,7 +134,7 @@ const uint8_t header[] = {0xf0, 0x00, 0x20, 0x3c, 0x02, 0x00, 0x69, 0x02, 0x02};
 	uint16_t *mute = (uint16_t *)(bytes+4);
 	*mute = CFSwapInt16HostToBig(songRow.mutes);
 	uint16_t *tempo = (uint16_t *)(bytes+6);
-	*tempo = (uint16_t) (songRow.tempo * 24.0);
+	*tempo = CFSwapInt16HostToBig((uint16_t) (songRow.tempo * 24.0));
 	
 	bytes[8] = songRow.start;
 	bytes[9] = songRow.stop;

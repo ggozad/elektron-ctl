@@ -10,7 +10,6 @@
 
 @interface MDSysexUtil : NSObject
 
-+ (NSData *) dataWithInvalidBytesStrippedFromData:(NSData *)data;
 + (NSData *) dataFromHexString:(NSString *)hexStr;
 + (NSData *) dataPackedWith7BitSysexEncoding:(NSData *)inData;
 + (NSData *) dataUnpackedFrom7BitSysexEncoding:(NSData *)inData;
@@ -21,5 +20,7 @@
 + (NSString *)md5StringFromData:(NSData *)data;
 
 + (NSString *)getBitStringForInt:(int)value;
++ (NSArray *)splitDataFromData:(NSData *)data;
++ (NSString *)sizeFormattedWithSize:(NSUInteger)size;
 
 @end

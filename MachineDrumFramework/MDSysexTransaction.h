@@ -11,6 +11,7 @@
 
 #define MDSysexTransactionArgumentKeySongNumber @"MDSysexTransactionArgumentKeySongNumber"
 #define MDSysexTransactionArgumentKeyKitNumber @"MDSysexTransactionArgumentKeyKitNumber"
+#define MDSysexTransactionArgumentKeyGlobalNumber @"MDSysexTransactionArgumentKeyGlobalNumber"
 #define MDSysexTransactionArgumentKeyPatternNumber @"MDSysexTransactionArgumentKeyPatternNumber"
 #define MDSysexTransactionArgumentKeyStatusID @"MDSysexTransactionArgumentKeyStatusID"
 
@@ -25,13 +26,13 @@ typedef enum MDSysexTransactionContext
 	MDSysexTransactionContextCurrentKit,
 	MDSysexTransactionContextCurrentSongNumber,
 	MDSysexTransactionContextCurrentSong,
-//	MDSysexTransactionContextCurrentGlobalNumber,
-//	MDSysexTransactionContextCurrentGlobal,
+	MDSysexTransactionContextCurrentGlobalNumber,
+	MDSysexTransactionContextCurrentGlobal,
 //	MDSysexTransactionContextCurrentPatternAndKit,
 	MDSysexTransactionContextKit,
 	MDSysexTransactionContextPattern,
 	MDSysexTransactionContextSong,
-//	MDSysexTransactionContextGlobal,
+	MDSysexTransactionContextGlobal,
 }
 MDSysexTransactionContext;
 
@@ -72,7 +73,7 @@ MDSysexTransactionError;
 @end
 
 @interface MDSysexTransaction : NSObject
-@property (weak, nonatomic) id<MDSysexTransactionDelegate> delegate;
+@property (assign, nonatomic) id<MDSysexTransactionDelegate> delegate;
 @property (strong, nonatomic) NSDictionary *args;
 @property MDSysexTransactionContext context;
 @property MDSysexTransactionType type;

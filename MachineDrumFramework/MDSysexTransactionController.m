@@ -267,6 +267,30 @@ TransactionReturnType;
 	[[[MDMIDI sharedInstance] machinedrum] requestPatternDumpForSlot:slot];
 }
 
+- (void) requestGlobalSettingsNumber:(uint8_t)slot delegate:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag
+{
+	DLog(@"requesting global %d", slot);
+	MDSysexTransaction *failed = [self connectionFailedTransactionWithTag:tag];
+	if(failed)
+	{
+		failed.delegate = delegate;
+		[delegate sysexTransactionFailed:failed];
+		return;
+	}
+	
+	self.currentTransaction.error = MDSysexTransactionError_No_Error;
+	self.currentTransaction.type = MDSysexTransactionType_Dump;
+	self.currentTransaction.delegate = delegate;
+	self.currentTransaction.tag = [tag copy];
+	self.transactionReturnType = TransactionReturnType_GlobalSettings;
+	_canProcessTransaction = NO;
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(machinedrumDumpReceived:) name:kMDSysexGlobalSettingsDumpNotification object:nil];
+	self.timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timeOut:) userInfo:self.currentTransaction repeats:NO];
+	
+	[[[MDMIDI sharedInstance] machinedrum] requestGlobalSettingsDumpForSlot:slot];
+}
+
 - (void)requestCurrentGlobalSlot:(id<MDSysexTransactionDelegate>)delegate tag:(NSString *)tag
 {
 	MDSysexTransaction *failed = [self connectionFailedTransactionWithTag:tag];
@@ -474,7 +498,19 @@ TransactionReturnType;
 
 	MDSysexTransaction *t = nil;
 
-	if(context == MDSysexTransactionContextCurrentKit)
+	if(context == MDSysexTransactionContextCurrentGlobal)
+	{
+		t = [self transactionForDelegate:self tag:@"current global"];
+	}
+	else if(context == MDSysexTransactionContextGlobal)
+	{
+		t = [self transactionForDelegate:self tag:@"specific global"];
+	}
+	else if (context == MDSysexTransactionContextCurrentGlobalNumber)
+	{
+		t = [self transactionForDelegate:self tag:@"current global number"];
+	}
+	else if(context == MDSysexTransactionContextCurrentKit)
 	{
 		t = [self transactionForDelegate:self tag:@"current kit"];
 	}
@@ -546,7 +582,31 @@ TransactionReturnType;
 		NSDictionary *args = self.currentTransaction.args;
 		MDSysexTransactionContext context = self.currentTransaction.context;
 		
-		if(context == MDSysexTransactionContextCurrentKit)
+		if(context == MDSysexTransactionContextCurrentGlobal)
+		{
+			[self requestCurrentGlobalSettings:self tag:self.currentTransaction.tag];
+		}
+		else if(context == MDSysexTransactionContextCurrentGlobalNumber)
+		{
+			[self requestCurrentGlobalSlot:self tag:self.currentTransaction.tag];
+		}
+		else if(context == MDSysexTransactionContextGlobal)
+		{
+			NSNumber *i = [args valueForKey:MDSysexTransactionArgumentKeyGlobalNumber];
+			
+			if(!i || !args)
+			{
+				self.currentTransaction.errorBlock(self.currentTransaction);
+				self.currentTransaction = nil;
+				[self dequeue];
+				return;
+			}
+			else
+			{
+				[self requestGlobalSettingsNumber:[i charValue] delegate:self tag:self.currentTransaction.tag];
+			}
+		}
+		else if(context == MDSysexTransactionContextCurrentKit)
 		{
 			[self requestCurrentKit:self tag:self.currentTransaction.tag];
 		}
@@ -646,6 +706,9 @@ TransactionReturnType;
 		[self.transactionQueue insertObject:t atIndex:0];
 }
 
-
+- (void)clearQueue
+{
+	[self.transactionQueue removeAllObjects];
+}
 
 @end

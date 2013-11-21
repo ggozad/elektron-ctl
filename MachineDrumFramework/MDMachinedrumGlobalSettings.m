@@ -33,6 +33,7 @@
 
 - (void)setKeyMapStructure:(uint8_t *)keyMapStructure
 {
+	if(_keyMapStructure) free(_keyMapStructure);
 	_keyMapStructure = malloc(128);
 	memmove(_keyMapStructure, keyMapStructure, 128);
 }

@@ -10,6 +10,7 @@
 #import "MDMachinedrumGlobalSettings.h"
 #import "MDSysexUtil.h"
 #import "MDKit.h"
+#import "MidiInputParser.h"
 
 #define kTempoChanged @"tempoChanged"
 #define kSetCurrentKitName @"setCurrentKitName"
@@ -42,9 +43,9 @@
 	
 	//DLog(@"machineID: %d", machineID);
 	
-	int uw = (machineID & 0x80) >> 7;
+	uint8_t uw = (machineID & 0x80) >> 7;
 	machineID &= 0x7f;
-	int init = 0;
+	uint8_t init = 0;
 	
 	//DLog(@"message params: track: %d, machineID: %d, UW: %d, init: %d", trackIndex, machineID, uw, init);
 		
@@ -55,6 +56,7 @@
 	[d appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
 	[d appendBytes:bytes length:5];
 	[d appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	
 	if(self.delegate)
 		[self.delegate machineDrum:self wantsToSendSysExData:d];
 }
@@ -163,6 +165,27 @@
 
 }
 
+- (NSData *)loadSongMessageDataWithSlot:(NSUInteger)num
+{
+	if(num > 31) num = 31;
+	
+	NSString *loadSongID = @"6c";
+	char slotByte = num & 0x3f;
+	
+	NSData *slotData = [NSData dataWithBytes:&slotByte length:1];
+	
+	NSMutableData *msgData = [NSMutableData new];
+	
+	
+	[msgData appendData:[MDSysexUtil dataFromHexString:kSysexMDPrefix]];
+	[msgData appendData:[MDSysexUtil dataFromHexString:loadSongID]];
+	[msgData appendData:slotData];
+	[msgData appendData:[MDSysexUtil dataFromHexString:kSysexEnd]];
+	
+	return msgData;
+	
+}
+
 
 
 - (void)saveCurrentKitToSlot:(NSUInteger)num
@@ -185,6 +208,13 @@
 	if(self.delegate)
 		[self.delegate machineDrum:self
 			  wantsToSendSysExData:[self loadKitMessageDataWithSlot:num]];
+}
+
+- (void)loadSong:(NSUInteger)num
+{
+	if(self.delegate)
+		[self.delegate machineDrum:self
+			  wantsToSendSysExData:[self loadSongMessageDataWithSlot:num]];
 }
 
 - (void)requestKitDumpForSlot:(uint8_t)num

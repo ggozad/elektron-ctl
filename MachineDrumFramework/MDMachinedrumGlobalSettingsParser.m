@@ -80,9 +80,10 @@
 	NSData *packedData = [NSData dataWithBytes:packedBytes length:147];
 	NSData *unpackedData = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:packedData];
 	const unsigned char *unpackedBytes = unpackedData.bytes;
-	//NSUInteger unpackedLength = unpackedData.length;
+//	NSUInteger unpackedLength = unpackedData.length;
 	
 	s.keyMapStructure = (uint8_t *)unpackedBytes;
+
 	/*
 	DLog(@"keymap structure length: %ld", unpackedLength);
 	printf("\n\n\n");
@@ -91,7 +92,7 @@
 		printf("[%03d:%03d] ", i, unpackedBytes[i]);
 	}
 	printf("\n\n\n");
-	 */
+	*/
 }
 
 + (BOOL)settingsDataIsValid:(NSData *)data

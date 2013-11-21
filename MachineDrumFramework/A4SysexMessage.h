@@ -18,13 +18,36 @@ typedef enum A4SysexMessageID
 }
 A4SysexMessageID;
 
+typedef enum A4MessagePayloadLength
+{
+	A4MessagePayloadLengthSound		= 0x16E,
+	A4MessagePayloadLengthKit		= 0x933,
+	A4MessagePayloadLengthPattern	= 0x30FE,
+	A4MessagePayloadLengthTrack		= 0x2A7,
+	A4MessagePayloadLengthProject	= 0x1DCF80
+}
+A4MessagePayloadLength;
+
 @interface A4SysexMessage : NSObject
+{
+	NSMutableData *_sysexData;
+	char *_payload;
+}
 
-@property (strong, nonatomic) NSMutableData *data;
-@property uint8_t position;
-
-+ (id) messageWithData:(NSData *)data;
-- (void) updateChecksum;
-- (BOOL) checksumIsValid;
-- (BOOL) messageLengthIsValid;
+@property (nonatomic) char *payload;
+@property (nonatomic) BOOL ownsPayload;
+@property (nonatomic) NSUInteger payloadLength;
+@property (nonatomic, copy) NSData *sysexData;
+@property (nonatomic) uint8_t type, version, revision, position;
+@property (nonatomic, readonly, copy) NSData *payloadData;
++ (instancetype) messageWithSysexData:(NSData *)data;
++ (instancetype) messageWithPayloadAddress:(char *)payload;
++ (BOOL) checksumIsValidInSysexData:(NSData *)data;
++ (void) updateChecksumInSysexData:(NSMutableData *)data;
++ (BOOL) messageLengthIsValidInSysexData:(NSData *)data;
++ (void) updateMessageLengthInSysexData:(NSMutableData *)data;
+- (void) clear;
+- (void) setByteValue:(char)byte inPayloadAtIndex:(NSUInteger)i;
+- (char) byteValueInPayloadAtIndex:(NSUInteger)i;
+- (void) send;
 @end

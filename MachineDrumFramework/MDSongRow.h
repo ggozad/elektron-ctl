@@ -11,7 +11,7 @@
 typedef enum MDSongRowPatternPosition
 {
 	MDSongRowPatternPositionEnd = -1,
-	MDSongRowPatternPositionJumpHaltEnd = -2,
+	MDSongRowPatternPositionJumpHaltLoop = -2,
 	MDSongRowPatternPositionRemark = -3
 }
 MDSongRowPatternPosition;
@@ -27,6 +27,9 @@ MDSongRowPatternPosition;
 
 
 + (MDSongRow *)songRowWithSongRow:(MDSongRow *)songRow;
++ (MDSongRow *)songRowWithPattern:(uint8_t)pattern loop:(uint8_t)loopCount start:(uint8_t)strt stop:(uint8_t)stop tempo:(float)tempo;
++ (MDSongRow *)endRow;
+
 - (BOOL) isTrackMuted:(uint8_t)track;
 - (void) setTrack:(uint8_t)track muted:(BOOL)muted;
 @end

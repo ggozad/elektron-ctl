@@ -20,6 +20,8 @@ MDSysexTransactionQueuePriority;
 
 @interface MDSysexTransactionController : NSObject
 
+- (void) clearQueue;
+
 - (void) request:(MDSysexTransactionContext)context
 	   arguments:(NSDictionary *)args
 		priority:(MDSysexTransactionQueuePriority)priority

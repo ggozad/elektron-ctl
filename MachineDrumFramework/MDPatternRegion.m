@@ -7,17 +7,7 @@
 //
 
 #import "MDPatternRegion.h"
-
-static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
-{
-    int range_size = kUpperBound - kLowerBound + 1;
-	
-    if (kX < kLowerBound)
-        kX += range_size * ((kLowerBound - kX) / range_size + 1);
-	
-    return kLowerBound + (kX - kLowerBound) % range_size;
-}
-
+#import "MDMath.h"
 
 @interface MDPatternRegion()
 {
@@ -54,7 +44,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		else numSteps = -1;
 	}
 	
-	_numSteps = Wrap(numSteps, -64, 64);
+	_numSteps = mdmath_wrap(numSteps, -64, 64);
 }
 
 - (int8_t)numSteps
@@ -69,7 +59,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		if(_numTracks < 0) numTracks = 1;
 		else numTracks = -1;
 	}
-	_numTracks = Wrap(numTracks, -16, 16);
+	_numTracks = mdmath_wrap(numTracks, -16, 16);
 }
 
 - (int8_t)numTracks
@@ -79,7 +69,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 
 - (void)setTrack:(uint8_t)track
 {
-	_track = Wrap(track, 0, 15);
+	_track = mdmath_wrap(track, 0, 15);
 }
 
 - (uint8_t)track
@@ -89,7 +79,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 
 - (void)setStep:(uint8_t)step
 {
-	_step = Wrap(step, 0, 63);
+	_step = mdmath_wrap(step, 0, 63);
 }
 
 - (uint8_t)step
@@ -108,8 +98,8 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	r.track = t%16;
 	r.step = s%64;
 	
-	r.numTracks = Wrap(nt, -16, 16);
-	r.numSteps = Wrap(ns, -64, 64);
+	r.numTracks = mdmath_wrap(nt, -16, 16);
+	r.numSteps = mdmath_wrap(ns, -64, 64);
 	
 	return r;
 }

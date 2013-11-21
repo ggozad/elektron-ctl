@@ -7,25 +7,8 @@
 //
 
 #import "MDPatternTrigGenerator.h"
-
+#import "MDMath.h"
 @implementation MDPatternTrigGenerator
-
-static float map(float value,
-				 float istart, float istop,
-				 float ostart, float ostop)
-{
-    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
-
-static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
-{
-    int range_size = kUpperBound - kLowerBound + 1;
-	
-    if (kX < kLowerBound)
-        kX += range_size * ((kLowerBound - kX) / range_size + 1);
-	
-    return kLowerBound + (kX - kLowerBound) % range_size;
-}
 
 - (void) generateTrigsWithStartStride:(uint8_t)startStride endStride:(uint8_t)endStride mode:(MDPatternTrigGeneratorMode)mode
 {
@@ -55,7 +38,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 			while (step < ls)
 			{
 				[self setTrigInPattern:self.pattern atTrack:track step:step mode:mode];
-				int stride = round(map(step, s, ls, startStride, endStride));
+				int stride = round(mdmath_map(step, s, ls, startStride, endStride));
 				step+=stride;
 			}
 		}
@@ -65,7 +48,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 			while (step > ls)
 			{
 				[self setTrigInPattern:self.pattern atTrack:track step:step mode:mode];
-				int stride = roundf(map(step, s, ls, startStride, endStride));
+				int stride = roundf(mdmath_map(step, s, ls, startStride, endStride));
 				step-=stride;
 			}
 		}
@@ -74,8 +57,8 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 
 - (void) setTrigInPattern: (MDPattern *) p atTrack:(int)t step:(int)s mode:(MDPatternTrigGeneratorMode)mode
 {
-	t = Wrap(t, 0, 15);
-	s = Wrap(s, 0, 63);
+	t = mdmath_wrap(t, 0, 15);
+	s = mdmath_wrap(s, 0, 63);
 	
 	if(mode == MDPatternTrigGeneratorMode_Replace)
 	{

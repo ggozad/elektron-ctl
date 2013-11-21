@@ -5,6 +5,8 @@
 
 #import "PGMidi.h"
 #import "MidiInputParser.h"
+#import "MDSysexUtil.h"
+#import <mach/mach_time.h>
 
 #if TARGET_OS_IPHONE
 #import <CoreMIDI/MIDINetworkSession.h>
@@ -114,8 +116,6 @@ NSString *NameOfEndpoint(MIDIEndpointRef ref)
 
 @implementation PGMidiSource
 
-@synthesize delegate;
-
 - (id) initWithMidi:(PGMidi*)m endpoint:(MIDIEndpointRef)e
 {
     if ((self = [super initWithMidi:m endpoint:e]))
@@ -132,8 +132,8 @@ NSString *NameOfEndpoint(MIDIEndpointRef ref)
 // NOTE: Called on a separate high-priority thread, not the main runloop
 - (void) midiRead:(const MIDIPacketList *)pktlist
 {
-	if(self.parser.delegate)
-		[self.delegate midiSource:self midiReceived:pktlist];
+	if(_parser.delegate)
+		[_delegate midiSource:self midiReceived:pktlist];
 }
 
 static
@@ -147,7 +147,15 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
 
 //==============================================================================
 
+@interface PGMidiDestination()
+{
+	BOOL _sysexQueueRunning;
+}
+@property (strong, nonatomic) NSMutableArray *sysexQueue;
+@end
+
 @implementation PGMidiDestination
+
 
 - (id) initWithMidi:(PGMidi*)m endpoint:(MIDIEndpointRef)e
 {
@@ -155,26 +163,38 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
     {
         _midi     = m;
         _endpoint = e;
+		self.sysexQueue = [NSMutableArray array];
     }
     return self;
 }
 
-- (void)sendNoteOn:(MidiNoteOn *)noteOn
+- (void)sendNoteOn:(MidiNoteOn)noteOn
 {
-	uint8_t bytes[3];
-	bytes[0] = 0x90 | (noteOn.channel & 0x0F);
-	bytes[1] = noteOn.note;
-	bytes[2] = noteOn.velocity;
-	[self sendBytes:bytes size:3];
-//	DLog(@"sending NOTE ON to \"%@\" channel: %d pitch: %d velocity: %d", self.name, noteOn.channel, noteOn.note, noteOn.velocity);
+	
+	noteOn.channel = 0x90 | noteOn.channel;
+	const uint8_t bytes[3] = {noteOn.channel, noteOn.note, noteOn.velocity};
+	[self sendBytes: bytes size:3];
 }
 
-- (void)sendControlChange:(MidiControlChange *)cc
+- (void)sendNoteOff:(MidiNoteOff)noteOff
+{
+	noteOff.channel = 0x80 | (noteOff.channel & 0x0F);
+	[self sendBytes:(uint8_t *) & noteOff size:3];
+}
+
+- (void)sendControlChange:(MidiControlChange)cc
+{
+	cc.channel = 0xB0 | (cc.channel & 0x0F);
+	[self sendBytes:(uint8_t *) & cc size:3];
+}
+
+- (void)sendPitchWheel:(MidiPitchWheel)pw
 {
 	uint8_t bytes[3];
-	bytes[0] = 0xB0 | (cc.channel & 0x0F);
-	bytes[1] = cc.parameter;
-	bytes[2] = cc.ccValue;
+	bytes[0] = 0xE0 | (pw.channel & 0x0F);
+	UInt16 pitch = pw.pitch;
+	bytes[1] = pitch & 0x7F;
+	bytes[2] = (pitch >> 7) & 0x7F;
 	[self sendBytes:bytes size:3];
 }
 
@@ -199,14 +219,14 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
 static
 void sysexSendCompletionProc(MIDISysexSendRequest *request)
 {
-	//DLog(@"sysex send %@", request->complete ? @"succeeded" : @"failed");
+	DLog(@"sysex send %@", request->complete ? @"succeeded" : @"failed");
 	free(request);
 }
 
 - (void) sendSysexBytes:(const UInt8*)bytes size:(UInt32)size
 {
 	//DLog(@"sending %ld sysex bytes to %@", size, self.name);
-	assert(size < 65536);
+//	assert(size < 65536);
 	
 	MIDISysexSendRequest *r = (MIDISysexSendRequest *) malloc(sizeof(MIDISysexSendRequest) + size);
 	Byte *copiedBytes = (Byte *)r+sizeof(MIDISysexSendRequest);
@@ -228,6 +248,96 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
 
 - (void)sendSysexData:(NSData *)d
 {
+	NSArray *individualMessages = [MDSysexUtil splitDataFromData:d];
+	for (NSData *data in individualMessages)
+	{
+		[self enqueueSysexData:data];
+	}
+	if(!_sysexQueueRunning)
+		[self dequeueSysexQueue:nil];
+}
+
+- (void) enqueueSysexData:(NSData *)data
+{
+	[self.sysexQueue addObject:data];
+}
+
+- (void) dequeueSysexQueue:(NSTimer *)t
+{
+	if(!self.sysexQueue.count) return;	
+	NSData *data = self.sysexQueue[0];
+	[self.sysexQueue removeObjectAtIndex:0];
+	[self sendSysexDataUsingMidiSend:data];
+	
+	if(self.sysexQueue.count)
+	{
+		_sysexQueueRunning = YES;
+		NSTimeInterval time = (data.length / 31500.0) / 100;
+		[NSTimer scheduledTimerWithTimeInterval:time target:self selector:@selector(dequeueSysexQueue:) userInfo:nil repeats:NO];
+	}
+	else
+	{
+		_sysexQueueRunning = NO;
+	}
+}
+
+
+static inline uint64_t convertNanosecondsToTimestamp(uint64_t time)
+{
+    const int64_t kOneThousand = 1000;
+    static mach_timebase_info_data_t s_timebase_info;
+	
+    if (s_timebase_info.denom == 0)
+    {
+        (void) mach_timebase_info(&s_timebase_info);
+    }
+	
+    return (uint64_t)((time * s_timebase_info.numer) * (kOneThousand * s_timebase_info.denom));
+}
+
+static inline uint64_t convertTimestampToNanoseconds(uint64_t time)
+{
+    const int64_t kOneThousand = 1000;
+    static mach_timebase_info_data_t s_timebase_info;
+	
+    if (s_timebase_info.denom == 0)
+    {
+        (void) mach_timebase_info(&s_timebase_info);
+    }
+	
+    // mach_absolute_time() returns billionth of seconds,
+    // so divide by one thousand to get nanoseconds
+    return (uint64_t)((time * s_timebase_info.numer) / (kOneThousand * s_timebase_info.denom));
+}
+
+
+- (void) sendSysexDataUsingMidiSend:(NSData *)d
+{
+	const uint8_t *bytes = d.bytes;
+	NSUInteger len = d.length;
+	NSUInteger idx = 0;
+	
+	NSUInteger packetListLength = 256;
+	NSUInteger currentLen = packetListLength;
+	size_t packetListSize = sizeof(MIDIPacketList);
+	
+	while(idx < len)
+	{
+		NSInteger l = len - idx;
+		if(l >= packetListLength) currentLen = packetListLength;
+		else if(l <= 0) break;
+		else if(l < packetListLength) currentLen = l;
+		const uint8_t *packetBytes = &(bytes[idx]);
+		MIDIPacketList packetlist = {};
+		MIDIPacket *packet = MIDIPacketListInit(&packetlist);
+		packet = MIDIPacketListAdd(&packetlist, packetListSize, packet, 0, currentLen, packetBytes);
+		[self sendPacketList:&packetlist];
+		idx+= packetListLength;
+	}
+}
+
+- (void) sendSysexDataUsingSysexSend:(NSData *)d
+{
 	const uint8_t *bytes = d.bytes;
 	UInt32 len = d.length;
 	[self sendSysexBytes:bytes size:len];
@@ -239,7 +349,6 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
 
 @implementation PGMidi
 
-@synthesize delegate;
 @synthesize sources,destinations;
 
 
@@ -345,7 +454,9 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
 {
     PGMidiSource *source = [[PGMidiSource alloc] initWithMidi:self endpoint:endpoint];
     [sources addObject:source];
-    [delegate midiSourceAdded:source];
+
+	if([_delegate respondsToSelector:@selector(midiSourceAdded:)])
+		[_delegate midiSourceAdded:source];
 
     OSStatus s = MIDIPortConnectSource(inputPort, endpoint, (__bridge void *)source);
     NSLogError(s, @"Connecting to MIDI source");
@@ -359,17 +470,18 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
     {
         OSStatus s = MIDIPortDisconnectSource(inputPort, endpoint);
         NSLogError(s, @"Disconnecting from MIDI source");
-        [delegate midiSourceRemoved:source];
+        if([_delegate respondsToSelector:@selector(midiSourceRemoved:)])
+			[_delegate midiSourceRemoved:source];
         [sources removeObject:source];
     }
 }
 
 - (void) connectDestination:(MIDIEndpointRef)endpoint
 {
-    //[delegate midiInput:self event:@"Added a destination"];
     PGMidiDestination *destination = [[PGMidiDestination alloc] initWithMidi:self endpoint:endpoint];
     [destinations addObject:destination];
-    [delegate midiDestinationAdded:destination];
+	if([_delegate respondsToSelector:@selector(midiDestinationAdded:)])
+		[_delegate midiDestinationAdded:destination];
 }
 
 - (void) disconnectDestination:(MIDIEndpointRef)endpoint
@@ -380,7 +492,8 @@ void sysexSendCompletionProc(MIDISysexSendRequest *request)
 
     if (destination)
     {
-        [delegate midiDestinationRemoved:destination];
+		if([_delegate respondsToSelector:@selector(midiDestinationRemoved:)])
+			[_delegate midiDestinationRemoved:destination];
         [destinations removeObject:destination];
     }
 }

@@ -79,7 +79,7 @@
 		return asbd;
 	}
 	
-	[[self class] printASBD:asbd];
+//	[[self class] printASBD:asbd];
 	return asbd;
 }
 
@@ -87,8 +87,8 @@
 {
 	uint16_t numChannels = 0;	
 	uint32_t audioByteSize = 0;
-	uint32_t sampleRate = 0;
-	uint16_t bitsPerSample = 0;
+//	uint32_t sampleRate = 0;
+//	uint16_t bitsPerSample = 0;
 	uint16_t bytesPerSample = 0;
 	NSUInteger numSamples = 0;
 	
@@ -111,7 +111,7 @@
 		return nil;
 	}
 	
-	[[self class] printASBD:asbd];
+//	[[self class] printASBD:asbd];
 	
 	
 	numChannels = asbd.mChannelsPerFrame;
@@ -121,9 +121,9 @@
 		return nil;
 	}
 	
-	bitsPerSample = asbd.mBitsPerChannel;
+//	bitsPerSample = asbd.mBitsPerChannel;
 	bytesPerSample = asbd.mBytesPerFrame;
-	sampleRate = asbd.mSampleRate;
+//	sampleRate = asbd.mSampleRate;
 	
 	SInt64 numFrames = 0;
 	UInt32 sint64size = sizeof(SInt64);
@@ -157,14 +157,14 @@
 		return nil;
 	}
 	
-	DLog(@"read %d frames - should be %ld. bytes: %d", ioFrames, numSamples, audioByteSize);
+//	DLog(@"read %d frames - should be %ld. bytes: %d", ioFrames, numSamples, audioByteSize);
 	err = ExtAudioFileDispose(fileRef);
-	
+	NSAssert1(err == noErr, @"lol", NULL);
 	
 	NSData *rawAudioData = [NSData dataWithBytesNoCopy:rawAudioBytes length:audioByteSize freeWhenDone:YES];
-	
+	/*
 	DLog(@"wav input:\n\n\tsamplerate: %d\n\tbytesize: %d(%ld)\n\tnumSamples: %ld\n\tbitspersample: %d\n\tbytespersample: %d\n\n", sampleRate, audioByteSize, rawAudioData.length, numSamples, bitsPerSample, bytesPerSample);
-	
+	*/
 	return rawAudioData;
 }
 

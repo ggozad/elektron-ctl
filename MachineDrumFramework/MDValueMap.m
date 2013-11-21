@@ -8,17 +8,11 @@
 
 #import "MDValueMap.h"
 #import "MDValuePair.h"
+#import "MDMath.h"
+
 @interface MDValueMap()
 @property uint8_t *mapping;
 @end
-
-
-static inline float map(float value,
-				 float istart, float istop,
-				 float ostart, float ostop)
-{
-    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
 
 @implementation MDValueMap
 
@@ -49,7 +43,7 @@ static inline float map(float value,
 	
 	for(int x = 0; x < 127; x++)
     {
-		float fx = map(x, 0, 127, 0, 1);
+		float fx = mdmath_map(x, 0, 127, 0, 1);
 		
 		MDValuePair *a = [self.valuePairs objectAtIndex:0];
 		for (MDValuePair *v in self.valuePairs)
@@ -64,7 +58,7 @@ static inline float map(float value,
 			b = [self.valuePairs objectAtIndex:i+1];
 		
 		float deltaBetweenPoints = b.x - a.x;
-		float biasOfFX = map(b.x - fx, 0, deltaBetweenPoints, 0, 1);
+		float biasOfFX = mdmath_map(b.x - fx, 0, deltaBetweenPoints, 0, 1);
 		uint8_t y = roundf(a.y*127.0*biasOfFX + b.y*127.0*(1.0-biasOfFX));
 		//DLog(@"%d - %d", );
 		//uint8_t x = y;

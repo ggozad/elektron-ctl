@@ -273,8 +273,7 @@
 
 - (void)setScale:(MDPatternScale)scale
 {
-	if(scale > 0 && scale < 4)
-		self.privatePattern.scale = scale;
+	self.privatePattern.scale = scale;
 }
 
 - (MDPatternScale)scale

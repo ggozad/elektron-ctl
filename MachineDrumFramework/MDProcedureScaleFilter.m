@@ -71,8 +71,10 @@ uint8_t base = MDPitchNote_C;
 			
 			//DLog(@"old pitch: %d new pitch: %d", oldPitch, newPitch);
 			
-			if(newPitch != -1 && newPitch < 128)
+			if(newPitch > -1)
+			{
 				[pattern setLock:[MDParameterLock lockForTrack:self.track param:0 step:step value:newPitch] setTrigIfNone:NO];
+			}
 			else
 			{
 				if(lock)

@@ -508,7 +508,7 @@
 	const char *bytesForCurrentRow = locksBytes;
 	const char *bytesForCurrentRow64 = locksBytes64;
 	
-	NSUInteger totalHydratedLocks = 0;
+//	NSUInteger totalHydratedLocks = 0;
 	
 	for (uint8_t track = 0; track < 16; track++)
 	{
@@ -531,11 +531,7 @@
 															step:step
 														   value:value];
 							
-							if([pattern.locks setLock:lock]);
-						
-								
-	
-								//totalHydratedLocks++;
+							[pattern.locks setLock:lock];
 						}
 					}
 					if(locksBytes64)
@@ -551,8 +547,7 @@
 																step:step + 32
 															   value:value];
 								
-								if([pattern.locks setLock:lock])
-									totalHydratedLocks++;
+								[pattern.locks setLock:lock];
 							}
 						}
 					}

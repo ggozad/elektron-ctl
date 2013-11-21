@@ -7,71 +7,196 @@
 //
 
 #import "A4Kit.h"
+#import "A4SysexHelper.h"
+#import "NSData+MachinedrumBundle.h"
+
+@interface A4Kit()
+@property (strong, nonatomic) NSMutableArray *sounds;
+@end
 
 @implementation A4Kit
 
-
-- (void)setPosition:(uint8_t)position
++ (instancetype)messageWithPayloadAddress:(char *)payload
 {
-	uint8_t *bytes = self.data.mutableBytes;
-	bytes[0x9] = position;
-	[self updateChecksum];
+	A4Kit *kit = [super messageWithPayloadAddress:payload];
+	[kit initSounds];
+	[kit initMacros];
+	return kit;
 }
 
-- (uint8_t)position
++ (instancetype)messageWithSysexData:(NSData *)data
 {
-	const uint8_t *bytes = self.data.bytes;
-	uint8_t pos = bytes[0x9];
-	return pos;
+	A4Kit *instance = [super messageWithSysexData:data];
+	[instance initSounds];
+	[instance initMacros];
+	return instance;
+}
+
++ (instancetype)defaultKit
+{
+	A4Kit *kit = [self new];
+	[kit allocPayload];
+	[kit initSounds];
+	[kit initMacros];
+	[kit clear];
+	return kit;
+}
+
+- (BOOL)isDefaultKit
+{
+	return [A4SysexHelper kitIsEqualToDefaultKit:self];
+}
+
+- (BOOL)isEqualToKit:(A4Kit *)kit
+{
+	return [A4SysexHelper kit:self isEqualToKit:kit];
+}
+
+- (instancetype)init
+{
+	if(self = [super init])
+	{
+		self.type = A4SysexMessageID_Kit;
+	}
+	return self;
+}
+
+- (void)allocPayload
+{
+	if(_payload && self.ownsPayload) free(_payload);
+	NSUInteger len = A4MessagePayloadLengthKit;
+	char *bytes = malloc(len);
+	memset(bytes, 0, len);
+	self.payload = bytes;
+	self.ownsPayload = YES;
+}
+
+- (void)setPayload:(char *)payload
+{
+	[super setPayload:payload];
+	if(_payload)
+	{
+		[self initSounds];
+		[self initMacros];
+	}
+}
+
+- (void)clear
+{
+	[self setDefaultValuesForPayload];
+}
+
+- (void) setDefaultValuesForPayload
+{
+	if (!_payload) return;
+	static dispatch_once_t onceToken;
+    static NSData *kitData = nil;
+    
+	dispatch_once(&onceToken, ^{
+        
+		kitData = [NSData dataFromMachinedrumBundleResourceWithName:@"defaultKit" ofType:@"payload"];
+		
+    });
+	
+	if(kitData != nil)
+	{
+		memmove(_payload, kitData.bytes, A4MessagePayloadLengthKit);
+	}
+}
+
+- (void)initSounds
+{
+	self.sounds = [@[]mutableCopy];
+		
+	for (int track = 0; track < 4; track++)
+	{
+		NSUInteger offset = 0x20 + A4MessagePayloadLengthSound * track;
+		A4Sound *s = [A4Sound messageWithPayloadAddress:self.payload + offset];
+
+		[self.sounds addObject:s];
+	}
+}
+
+- (void) initMacros
+{
+	self.macros = (A4PerformanceMacro *)(_payload + 0x7B0);
+}
+
+- (A4Sound *)copySound:(A4Sound *)sound toTrack:(uint8_t)track
+{
+	if (track > 3) return nil;
+
+	const char *soundPayloadBytes = sound.payload;
+	A4Sound *targetSound = (A4Sound *)_sounds[track];
+	char *targetBytes = [targetSound payload];
+	
+	if(targetBytes != soundPayloadBytes)
+	{
+		memmove(targetBytes, soundPayloadBytes, A4MessagePayloadLengthSound);
+	}
+	
+	return targetSound;
+}
+
+- (A4Sound *)soundAtTrack:(uint8_t)track copy:(BOOL)copy
+{
+	if(track > 3)return nil;
+	if(copy)
+	{
+		A4Sound *originalSound = self.sounds[track];
+		char *payload = malloc(A4MessagePayloadLengthSound);
+		memmove(payload, originalSound.payload, A4MessagePayloadLengthSound);
+		A4Sound *copiedSound = [A4Sound messageWithPayloadAddress:payload];
+		copiedSound.ownsPayload = YES;
+		return copiedSound;
+	}
+	return self.sounds[track];
 }
 
 - (void)setName:(NSString *)name
 {
-	name = [name uppercaseString];
-	NSCharacterSet * set =
-	[[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLKMNOPQRSTUVWXYZ0123456789+-=&/#@?\%$0123456789\""] invertedSet];
-	name = [[name componentsSeparatedByCharactersInSet:set] componentsJoinedByString:@""];
-	
-	NSUInteger len = name.length;
-	if (len > 15) len = 15;
-	name = [name substringWithRange:NSMakeRange(0, len)];
-	
-	const uint8_t *cString = (const uint8_t *)[[name uppercaseString] cStringUsingEncoding:NSASCIIStringEncoding];
-	unsigned long cStringLength = strlen((const char *)cString);
-	
-	uint8_t *bytes = self.data.mutableBytes;
-	bytes += 0xf;
-	
-	for (int j = 0; j < 15; j++)
-		bytes[j] = 0;
-	
-	int i = 0;
-
-	for (int j = 0; j < cStringLength; j++)
-	{
-		bytes[i++] = cString[j];
-		if(i == 3 || i == 11) i++;
-	}
-	
-	[self updateChecksum];
+	void *bytes = self.payload + 0x4;
+	[A4SysexHelper setName:name inPayloadLocation:bytes];
 }
 
 - (NSString *)name
 {
-	uint8_t buf[16] = {0};
-	NSString *name = @"";
-	uint8_t *bytes = self.data.mutableBytes;
-	bytes += 0xf;
+	const void *bytes = self.payload + 0x4;
+	return [A4SysexHelper nameAtPayloadLocation:bytes];
+}
+
+- (void) setFxParamValue:(A4PVal)value
+{
+	if(!_payload) return;
+	if(! A4ParamFxIsLockable(value.param)) return;
+	value = A4PValFxSanitizeClamp(value);
 	
-	for (int i = 0, j = 0; i < 15; i++)
-	{
-		buf[i] = bytes[j];
-		j++;
-		if(j == 3 || j == 11) j++;
-	}
+	_payload[A4KitOffsetForFxParam(value.param)] = value.coarse;
+	if(A4ParamFxIs16Bit(value.param))
+		_payload[A4KitOffsetForFxParam(value.param) + 1] = value.fine;
+}
+
+- (A4PVal) valueForFxParam:(A4Param)param
+{
+	if(! A4ParamFxIsLockable(param)) return A4PValMakeInvalid();
 	
-	name = [NSString stringWithCString:(const char *)&buf encoding:NSASCIIStringEncoding];
-	return name;
+	UInt16 offset = A4KitOffsetForFxParam(param);
+	uint8_t coarse = _payload[offset];
+	uint8_t  fine  = _payload[offset+1];
+	return A4PValFxMake16(param, coarse, fine);
+}
+
+- (uint8_t)levelForTrack:(uint8_t)t
+{
+	if(t > 5) return 0;
+	return _payload[0x14 + t*2];
+}
+
+- (void)setLevel:(uint8_t)level forTrack:(uint8_t)t
+{
+	if(t > 5) return;
+	if(level > 127) level = 127;
+	_payload[0x14 + t*2] = level;
 }
 
 

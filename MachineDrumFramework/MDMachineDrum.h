@@ -39,13 +39,14 @@ MDMasterEffectId;
 @end
 
 @interface MDMachineDrum : NSObject
-@property (weak, nonatomic) id<MDMachineDrumDelegate> delegate;
+@property (assign, nonatomic) id<MDMachineDrumDelegate> delegate;
 @property int tempo;
 @property (strong, nonatomic) NSString *currentKitName;
 
 - (void) saveCurrentKitToSlot:(NSUInteger) num;
 - (void) loadPattern:(NSUInteger) num;
 - (void) loadKit:(NSUInteger) num;
+- (void) loadSong:(NSUInteger) num;
 - (void) loadMachine:(MDMachineID) machineID intoTrack:(uint8_t)trackIndex;
 
 - (void) requestKitDumpForSlot:(uint8_t) num;

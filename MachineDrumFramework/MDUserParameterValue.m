@@ -7,17 +7,7 @@
 //
 
 #import "MDUserParameterValue.h"
-
-
-static inline int Wrap(int kX, int const kLowerBound, int const kUpperBound)
-{
-    int range_size = kUpperBound - kLowerBound + 1;
-	
-    if (kX < kLowerBound)
-        kX += range_size * ((kLowerBound - kX) / range_size + 1);
-	
-    return kLowerBound + (kX - kLowerBound) % range_size;
-}
+#import "MDMath.h"
 
 @interface MDUserParameterValue()
 {
@@ -55,7 +45,7 @@ static inline int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	}
 	else if(self.wrapMode == MDUserParameterWrapMode_Wrap)
 	{
-		mutableValue = Wrap(mutableValue, self.limit.lower, self.limit.upper);
+		mutableValue = mdmath_wrap(mutableValue, self.limit.lower, self.limit.upper);
 		_mutableValue = mutableValue;
 	}
 	else if(self.wrapMode == MDUserParameterWrapMode_Clamp)
@@ -76,7 +66,7 @@ static inline int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 	}
 	else if(self.wrapMode == MDUserParameterWrapMode_Wrap)
 	{
-		innerValue = Wrap(innerValue, self.limit.lower, self.limit.upper);
+		innerValue = mdmath_wrap(innerValue, self.limit.lower, self.limit.upper);
 		_innerValue = innerValue;
 	}
 	else if(self.wrapMode == MDUserParameterWrapMode_Clamp)

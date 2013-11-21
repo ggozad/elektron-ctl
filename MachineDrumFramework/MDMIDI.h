@@ -12,6 +12,7 @@
 #import "PGMidi.h"
 #import "MidiInputParser.h"
 #import "MDMachineDrum.h"
+@class A4PolyMapper;
 
 @interface MDMIDI : NSObject <PGMidiDelegate, MidiInputDelegate, MDMachineDrumDelegate>
 @property (strong, nonatomic) MDMachineDrum *machinedrum;
@@ -21,6 +22,7 @@
 @property (strong, nonatomic) PGMidiDestination *machinedrumMidiDestination;
 @property (strong, nonatomic) PGMidiSource *a4MidiSource;
 @property (strong, nonatomic) PGMidiDestination *a4MidiDestination;
+@property (strong, nonatomic) A4PolyMapper *a4PolyMapper;
 
 @property (strong, nonatomic) MDSysexTransactionController *sysex;
 + (MDMIDI *) sharedInstance;

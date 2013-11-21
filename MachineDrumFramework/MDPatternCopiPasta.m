@@ -9,23 +9,7 @@
 #import "MDPatternCopiPasta.h"
 #import "MDPatternNode.h"
 #import "MDPatternNodePosition.h"
-
-static float map(float value,
-				 float istart, float istop,
-				 float ostart, float ostop)
-{
-    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
-
-static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
-{
-    int range_size = kUpperBound - kLowerBound + 1;
-	
-    if (kX < kLowerBound)
-        kX += range_size * ((kLowerBound - kX) / range_size + 1);
-	
-    return kLowerBound + (kX - kLowerBound) % range_size;
-}
+#import "MDMath.h"
 
 @interface MDPatternCopiPasta()
 - (NSMutableArray *) sourceNodes;
@@ -101,8 +85,8 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		return;
 	}
 	
-	s = Wrap(s, -64, 64);
-	t = Wrap(t, -16, 16);
+	s = mdmath_wrap(s, -64, 64);
+	t = mdmath_wrap(t, -16, 16);
 	
 	NSMutableArray *targetNodes = [self targetNodes];
 	[self removeNodesFromTargetPattern:targetNodes];
@@ -128,9 +112,9 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		else
 		{
 			if(r.track + r.numTracks < 0)
-				trackStart = Wrap(r.track + r.numTracks - 1, 0, 16);
+				trackStart = mdmath_wrap(r.track + r.numTracks - 1, 0, 16);
 			else
-				trackStart = Wrap(r.track + r.numTracks, 0, 16);
+				trackStart = mdmath_wrap(r.track + r.numTracks, 0, 16);
 			
 			trackEnd = trackStart - r.numTracks;
 			trackStart ++ ;
@@ -153,9 +137,9 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		else
 		{
 			if(r.step + r.numSteps < 0)
-				stepStart = Wrap(r.step + r.numSteps - 1, 0, 64);
+				stepStart = mdmath_wrap(r.step + r.numSteps - 1, 0, 64);
 			else
-				stepStart = Wrap(r.step + r.numSteps, 0, 64);
+				stepStart = mdmath_wrap(r.step + r.numSteps, 0, 64);
 			
 			stepEnd = stepStart - r.numSteps;
 			stepStart ++ ;
@@ -172,7 +156,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		int8_t step = 0;
 		
 		if(trackEnd < 16)
-			track = Wrap(n.position.track + t, trackStart, trackEnd);
+			track = mdmath_wrap(n.position.track + t, trackStart, trackEnd);
 		else
 		{
 			track = n.position.track + t;
@@ -206,7 +190,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		
 		
 		if(stepEnd < 64)
-			step = Wrap(n.position.step + s, stepStart, stepEnd);
+			step = mdmath_wrap(n.position.step + s, stepStart, stepEnd);
 		else
 		{
 			step = n.position.step + s;
@@ -254,8 +238,8 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		return;
 	}
 	
-	s = Wrap(s, -64, 64);
-	t = Wrap(t, -16, 16);
+	s = mdmath_wrap(s, -64, 64);
+	t = mdmath_wrap(t, -16, 16);
 	
 	
 	NSMutableArray *sourceNodes = [self sourceNodes];
@@ -282,9 +266,9 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		else
 		{
 			if(r.track + r.numTracks < 0)
-				trackStart = Wrap(r.track + r.numTracks - 1, 0, 16);
+				trackStart = mdmath_wrap(r.track + r.numTracks - 1, 0, 16);
 			else
-				trackStart = Wrap(r.track + r.numTracks, 0, 16);
+				trackStart = mdmath_wrap(r.track + r.numTracks, 0, 16);
 			
 			trackEnd = trackStart - r.numTracks;
 			trackStart ++;
@@ -308,9 +292,9 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		else
 		{
 			if(r.step + r.numSteps < 0)
-				stepStart = Wrap(r.step + r.numSteps - 1, 0, 64);
+				stepStart = mdmath_wrap(r.step + r.numSteps - 1, 0, 64);
 			else
-				stepStart = Wrap(r.step + r.numSteps, 0, 64);
+				stepStart = mdmath_wrap(r.step + r.numSteps, 0, 64);
 			
 			stepEnd = stepStart - r.numSteps;
 			stepStart++;
@@ -327,7 +311,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		int8_t step = 0;
 		
 		if(trackEnd < 16)
-			track = Wrap(n.position.track + t, trackStart, trackEnd);
+			track = mdmath_wrap(n.position.track + t, trackStart, trackEnd);
 		else
 		{
 			track = n.position.track + t;
@@ -361,7 +345,7 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		
 		
 		if(stepEnd < 64)
-			step = Wrap(n.position.step + s, stepStart, stepEnd);
+			step = mdmath_wrap(n.position.step + s, stepStart, stepEnd);
 		else
 		{
 			step = n.position.step + s;
@@ -434,8 +418,8 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 		for (int track = startTrack; track < lastTrack; track++)
 		{
 			
-			int wrappedStep = Wrap(step, 0, 63);
-			int wrappedTrack = Wrap(track, 0, 15);
+			int wrappedStep = mdmath_wrap(step, 0, 63);
+			int wrappedTrack = mdmath_wrap(track, 0, 15);
 			
 			//DLog(@"t: %d s: %d ", wrappedTrack, wrappedStep);
 			
@@ -487,20 +471,20 @@ static int Wrap(int kX, int const kLowerBound, int const kUpperBound)
 			if((tgt.numTracks < 0 && src.numTracks > 0 )||
 			   (tgt.numTracks > 0 && src.numTracks < 0))
 			{
-				newTrack = Wrap(ceilf(map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks)), 0, 15);
+				newTrack = mdmath_wrap(ceilf(mdmath_map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks)), 0, 15);
 				//newTrack -= 1;
 			}
 			else
-				newTrack = Wrap(floorf(map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks)), 0, 15);
+				newTrack = mdmath_wrap(floorf(mdmath_map(track, src.track, src.track + src.numTracks, tgt.track, tgt.track + tgt.numTracks)), 0, 15);
 			
 			if((tgt.numSteps < 0 && src.numSteps > 0) ||
 			   (tgt.numSteps > 0 && src.numSteps < 0))
 			{
-				newStep = Wrap(ceilf(map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps)), 0, 63);
+				newStep = mdmath_wrap(ceilf(mdmath_map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps)), 0, 63);
 				//newStep -= 1;
 			}
 			else
-				newStep = Wrap(floorf(map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps)), 0, 63);
+				newStep = mdmath_wrap(floorf(mdmath_map(step, src.step, src.step + src.numSteps, tgt.step, tgt.step + tgt.numSteps)), 0, 63);
 		}
 		//DLog(@"moving node\nt: %d -> %d\ns: %d -> %d", track, newTrack, step, newStep);
 		
