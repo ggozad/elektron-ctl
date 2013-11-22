@@ -17,6 +17,8 @@ static double delta[16];
 
 + (double)secondsBetweenClockTicks
 {
+	// TODO: this is bullshit.
+	
 	double sum = 0;
 	for(int i = 0; i < len; i++)
 	{
