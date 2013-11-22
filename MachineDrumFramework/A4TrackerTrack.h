@@ -28,6 +28,7 @@
 @property (nonatomic) GateEvent nextGateEventTrigless, currentGateEventTrigless;
 @property (nonatomic) GateEvent nextProperGateEvent;
 @property (nonatomic) GateEvent lastProperGateEvent;
+- (void) setSourceKit:(A4Kit *)sourceKit immediately:(BOOL)immediately;
 - (void) openGateAtStep:(uint8_t)step trig:(A4Trig)trig context:(TrigContext)context time:(A4TrackerParam_t)time;
 - (void) closeGateWithContext:(TrigContext)context time:(A4TrackerParam_t)time;
 - (void) openTriglessGateAtStep:(uint8_t)step trig:(A4Trig)trig time:(A4TrackerParam_t)time;

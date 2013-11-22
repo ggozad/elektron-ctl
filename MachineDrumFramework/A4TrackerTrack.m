@@ -97,7 +97,13 @@ ParameterSlide;
 
 - (void)setSourceKit:(A4Kit *)sourceKit
 {
+	[self setSourceKit:sourceKit immediately:NO];
+}
+
+- (void)setSourceKit:(A4Kit *)sourceKit immediately:(BOOL)immediately
+{
 	self.queuedSourceKit = sourceKit;
+	if(immediately) [self applyQueuedSourceKit];
 }
 
 - (void) applyQueuedSourceKit
@@ -455,9 +461,9 @@ ParameterSlide;
 	
 	[self updateParameterSlidesWithTime:time];
 	[self updatePerformanceMacros];
-	[self updateLFO2];
+	[self updateLFO2WithTime:time];
 	[self updateEnvelope2WithTime:time];
-	[self updateLFO1];
+	[self updateLFO1WithTime:time];
 	[self updateEnvelope1WithTime:time];
 	[self updateAccent];
 	[self updateEnvelope1FilterDepth];
@@ -511,7 +517,7 @@ ParameterSlide;
 	}
 }
 
-- (void) updateLFO2
+- (void) updateLFO2WithTime:(double)time
 {
 	_lfo2.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.SPEED)];
 	_lfo2.multiplier = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.MULTIPLIER)];
@@ -520,13 +526,7 @@ ParameterSlide;
 	_lfo2.shape = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.WAVEFORM)];
 	_lfo2.mode = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.MODE)];
 	
-	if(_trackIdx == 2)
-	{
-		DLog(@"lol");
-	}
-	
-	
-	A4TrackerParam_t depth = _lfo2.lfoValue;
+	A4TrackerParam_t depth = [_lfo2 lfoValueWithTime:time];
 	
 	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO2.DESTINATION_A];
 	A4Param target = pval.coarse;
@@ -543,7 +543,7 @@ ParameterSlide;
 	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
 }
 
-- (void) updateLFO1
+- (void) updateLFO1WithTime:(double) time
 {
 	_lfo1.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
 	_lfo1.multiplier = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.MULTIPLIER)];
@@ -552,7 +552,7 @@ ParameterSlide;
 	_lfo1.shape = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.WAVEFORM)];
 	_lfo1.mode = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.MODE)];
 	
-	A4TrackerParam_t depth = _lfo1.lfoValue;
+	A4TrackerParam_t depth = [_lfo1 lfoValueWithTime:time];
 	
 	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_A];
 	A4Param target = pval.coarse;

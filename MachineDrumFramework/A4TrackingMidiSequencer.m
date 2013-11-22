@@ -336,7 +336,7 @@
 		char *payload = malloc(A4MessagePayloadLengthKit);
 		memmove(payload, _sourceKit.payload, A4MessagePayloadLengthKit);
 		A4Kit *kit = [A4Kit messageWithPayloadAddress:payload];
-		track.sourceKit = kit;
+		[track setSourceKit:kit immediately: ! self.playing];
 	}
 }
 

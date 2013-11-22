@@ -8,6 +8,7 @@
 
 #import "A4LFO.h"
 #import "MDMath.h"
+#import "A4Timepiece.h"
 
 @interface A4LFO()
 {
@@ -16,6 +17,7 @@
 	uint16_t _multiplier;
 	BOOL doIncrement, didStartAfterStopPhase;
 	double holdPhase;
+	double lastTickTime;
 }
 @end
 
@@ -91,6 +93,7 @@
 
 - (void)tickWithTime:(double)time trig:(BOOL)trig;
 {
+	lastTickTime = time;
 	if(trig) [self trig];
 	[self incrementPhase];
 }
@@ -122,20 +125,43 @@
 	}
 }
 
+- (A4TrackerParam_t) phaseIncrementPerTick
+{
+	return mdmath_map(_speed * _multiplier, 0, 128, 0, 1.0/16/6/_clockInterpolationFactor);
+}
+
 - (void) incrementPhase
 {
 	if(!doIncrement) return;
 	
-	internalPhase = internalPhase + mdmath_map(_speed * _multiplier, 0, 128, 0, 1.0/16/6/_clockInterpolationFactor);
+	internalPhase = internalPhase + [self phaseIncrementPerTick];
 		
 	if(internalPhase > 1) internalPhase -= 1;
 	else if(internalPhase < 0) internalPhase += 1;
 }
 
-- (A4TrackerParam_t)lfoValue
+- (A4TrackerParam_t)lfoValueWithTime:(double)time
 {
-	double phase = internalPhase;
-	if(_mode == A4LFOModeHold) phase = holdPhase;
+	double phase;
+	if(_mode == A4LFOModeHold)
+	{
+		phase = holdPhase;
+	}
+	else
+	{
+		double tickInterval = [A4Timepiece secondsBetweenClockTicks];
+		double secondsSinceLastTick = time - lastTickTime;
+		if(tickInterval <= 0)
+		{
+			phase = internalPhase;
+		}
+		else
+		{
+			phase = internalPhase + [self phaseIncrementPerTick] * secondsSinceLastTick / tickInterval;
+			while (phase > 1) phase -= 1;
+			while (phase < 0) phase += 1;
+		}
+	}
 	
 	if(_shape == A4LFOWaveshapeTri)
 	{

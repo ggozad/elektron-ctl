@@ -12,8 +12,8 @@
 @implementation A4Timepiece
 
 static double lastTickTime;
-static uint8_t len = 64;
-static double delta[64];
+static uint8_t len = 16;
+static double delta[16];
 
 + (double)secondsBetweenClockTicks
 {
