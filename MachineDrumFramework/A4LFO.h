@@ -60,7 +60,6 @@ A4LFOMode;
 @property (nonatomic) A4LFOWaveshape shape;
 @property (nonatomic, readonly) A4TrackerParam_t lfoValue;
 @property (nonatomic) A4TrackerParam_t phase;
-- (void) trig;
-- (void) tick;
+- (void)tickWithTime:(double)time trig:(BOOL)trig;
 - (void) restart;
 @end

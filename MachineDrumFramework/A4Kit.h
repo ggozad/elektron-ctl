@@ -15,7 +15,6 @@ typedef struct A4PerformanceMacro
 {
 	char name[16];
 	A4ModTarget targets[5];
-//	uint8_t reserved;
 	uint8_t bipolar;
 	uint8_t value;
 }

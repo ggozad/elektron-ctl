@@ -33,5 +33,5 @@
 - (void) openTriglessGateAtStep:(uint8_t)step trig:(A4Trig)trig time:(A4TrackerParam_t)time;
 - (void) closeTriglessGateWithTime:(A4TrackerParam_t)time;
 - (void) updateContinuousValuesWithTime:(A4TrackerParam_t)time;
-- (void) tick;
+- (void) tickWithTime:(A4TrackerParam_t)time;
 @end

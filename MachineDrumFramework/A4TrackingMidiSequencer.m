@@ -283,12 +283,13 @@
 		
 		[A4Timepiece tickWithTime:_time];
 		
+		double time = _time;
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
 			
 			for (A4TrackerTrack *track in _trackerTracks)
 			{
-				[track tick];
+				[track tickWithTime:time];
 			}
 			
 		});

@@ -111,8 +111,7 @@ static inline void nextIdx(UInt32 *currentIdx, UInt32 threshold, UInt32 idxMax)
 			{
 				NSInteger t =  min; min = max; max = t;
 			}
-			
-			double dice = arc4random_uniform(UINT32_MAX)/(double)(UINT32_MAX-1);
+
 			
 			return value;
 			break;

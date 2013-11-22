@@ -38,6 +38,7 @@ ParameterSlide;
 @property (nonatomic) A4Envelope *envelopeAmp, *envelope1, *envelope2;
 @property (nonatomic) A4LFO *lfo1, *lfo2;
 @property (nonatomic) A4Kit *queuedSourceKit;
+@property (nonatomic) BOOL doTrigLFOs;
 @end
 
 @implementation A4TrackerTrack
@@ -161,10 +162,13 @@ ParameterSlide;
 	if(_lastNote == A4NULL) _lastNote = sourceTrack.settings->trigNote;
 }
 
-- (void)tick
+- (void)tickWithTime:(A4TrackerParam_t)time
 {
-	[_lfo1 tick];
-//	[_lfo2 tick];
+	_lfo2.mode = _paramsPostLocks[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.MODE)];
+	_lfo1.mode = _paramsPostLocks[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.MODE)];
+	[_lfo2 tickWithTime:time trig:_doTrigLFOs];
+	[_lfo1 tickWithTime:time trig:_doTrigLFOs];
+	_doTrigLFOs = NO;
 }
 
 
@@ -210,14 +214,14 @@ ParameterSlide;
 	
 	if(trig.flags & A4TRIGFLAGS.LFO1)
 	{
-		DLog(@"TRIGGGG ************ %f", _lfo1.phase);
 		[_lfo1 restart];
 	}
 	if(trig.flags & A4TRIGFLAGS.LFO2)
 	{
-		
 		[_lfo2 restart];
 	}
+	
+	_doTrigLFOs = YES;
 }
 
 - (void)openTriglessGateAtStep:(uint8_t)step trig:(A4Trig)trig time:(A4TrackerParam_t)time
@@ -387,9 +391,9 @@ ParameterSlide;
 		{
 			valTo = _paramsPostParams[idx];
 		}
-		if(lockTo.param == A4NULL)
+		else if (lockTo.param != A4NULL)
 		{
-			continue;
+			valTo = A4PValDoubleVal(lockTo);
 		}
 		
 		A4TrackerParam_t fromValNormalized = valFrom/A4ParamMax(lockFrom.param);
@@ -448,30 +452,39 @@ ParameterSlide;
 
 	memmove(_paramsPostModulations, _paramsPostLocks, A4ParamLockableCount * sizeof(A4TrackerParam_t));
 	
+	
+	[self updateParameterSlidesWithTime:time];
+	[self updatePerformanceMacros];
+	[self updateLFO2];
+	[self updateEnvelope2WithTime:time];
+	[self updateLFO1];
+	[self updateEnvelope1WithTime:time];
+	[self updateAccent];
+	[self updateEnvelope1FilterDepth];
+	[self updateAmpEnvelopeWithTime:time];
+
+	memmove(_paramsPostNote, _paramsPostModulations, sizeof(A4TrackerParam_t) * A4ParamLockableCount);
+	
+	[self updateTargetSoundTuningsWithNoteValue];
+	[self updateTargetFilterTrackingWithNoteValue];
+	
+}
+
+- (void) updateParameterSlidesWithTime:(A4TrackerParam_t)time
+{
 	for(int i = 0; i < _parameterSlidesLen; i++)
 	{
 		ParameterSlide slide = _parameterSlides[i];
-		if(time >= slide.startTime && time < slide.startTime + slide.duration)
+//		if(time >= slide.startTime && time < slide.startTime + slide.duration)
+		if(time >= slide.startTime)
 		{
 			A4TrackerParam_t progressNormalized = (time - slide.startTime) / slide.duration;
 			A4TrackerParam_t normalizedVal = ((1-progressNormalized) * slide.fromValNormalized + progressNormalized * slide.toValNormalized);
+			normalizedVal = mdmath_clamp(normalizedVal, 0, 1);
 			int idx = A4ParamIndexOfParamLockableParams(slide.param);
 			_paramsPostModulations[idx] = normalizedVal * A4ParamMax(slide.param);
 		}
 	}
-	
-//	[self updatePerformanceMacros];
-	[self updateLFO1];
-//	[self updateEnvelopesWithTime:time];
-//	[self updateAccent];
-//	[self updateEnvelope1FilterDepth];
-//	[self updateAmpEnvelopeWithTime:time];
-
-	memmove(_paramsPostNote, _paramsPostModulations, sizeof(A4TrackerParam_t) * A4ParamLockableCount);
-	
-//	[self updateTargetSoundTuningsWithNoteValue];
-//	[self updateTargetFilterTrackingWithNoteValue];
-	
 }
 
 - (void) updatePerformanceMacros
@@ -489,11 +502,6 @@ ParameterSlide;
 			A4ModTarget *target = &macro->targets[targetIdx];
 			if(target->track == _trackIdx)
 			{
-				if(_trackIdx == 1 && macroIdx == 1 && targetIdx == 0)
-				{
-//					DLog(@"lol");
-				}
-				
 				A4TrackerParam_t targetDepth = (int8_t)target->coarse;
 				A4TrackerParam_t modDepth = targetDepth * macroValue/128.0;
 				
@@ -503,34 +511,65 @@ ParameterSlide;
 	}
 }
 
-- (void) updateLFO1
+- (void) updateLFO2
 {
-	if(_trackIdx == 0)
+	_lfo2.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.SPEED)];
+	_lfo2.multiplier = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.MULTIPLIER)];
+	_lfo2.startPhase = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.SPEED)];
+	_lfo2.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.SPEED)];
+	_lfo2.shape = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.WAVEFORM)];
+	_lfo2.mode = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.MODE)];
+	
+	if(_trackIdx == 2)
 	{
-		_lfo1.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
-		_lfo1.multiplier = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.MULTIPLIER)];
-		_lfo1.startPhase = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
-		_lfo1.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
-		_lfo1.shape = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.WAVEFORM)];
-		
-		A4TrackerParam_t depth = _lfo1.lfoValue;
-		
-		A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_A];
-		A4Param target = pval.coarse;
-		A4TrackerParam_t modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.DEPTH_A)];
-		[self applyModulationsWithDepth: modDepth * depth / 2 target:target];
-		
-		pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_B];
-		target = pval.coarse;
-		modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.DEPTH_B)];
-		[self applyModulationsWithDepth: modDepth * depth / 2 target:target];
-		
-		
-		printf("phase: %f\n", _lfo1.phase);
-		
+		DLog(@"lol");
 	}
 	
+	
+	A4TrackerParam_t depth = _lfo2.lfoValue;
+	
+	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO2.DESTINATION_A];
+	A4Param target = pval.coarse;
+	A4TrackerParam_t modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.DEPTH_A)];
+	modDepth -= 64;
+	
+	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
+	
+	pval = [_currentSourceSound valueForParam:A4PARAMS_LFO2.DESTINATION_B];
+	target = pval.coarse;
+	modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.DEPTH_B)];
+	modDepth -= 64;
+	
+	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
 }
+
+- (void) updateLFO1
+{
+	_lfo1.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
+	_lfo1.multiplier = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.MULTIPLIER)];
+	_lfo1.startPhase = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
+	_lfo1.speed = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.SPEED)];
+	_lfo1.shape = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.WAVEFORM)];
+	_lfo1.mode = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.MODE)];
+	
+	A4TrackerParam_t depth = _lfo1.lfoValue;
+	
+	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_A];
+	A4Param target = pval.coarse;
+	A4TrackerParam_t modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.DEPTH_A)];
+	modDepth -= 64;
+	
+	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
+	
+	pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_B];
+	target = pval.coarse;
+	modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.DEPTH_B)];
+	modDepth -= 64;
+	
+	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
+}
+
+
 
 - (void) updateAccent
 {
@@ -556,7 +595,7 @@ ParameterSlide;
 }
 
 
-- (void) updateEnvelopesWithTime:(A4TrackerParam_t)time
+- (void) updateEnvelope2WithTime:(A4TrackerParam_t)time
 {
 	if(!_currentSourceSound) return;
 	
@@ -565,12 +604,6 @@ ParameterSlide;
 	_envelope2.decayVal =	_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV2.ENV_DECAY)];
 	_envelope2.sustainVal = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV2.ENV_SUSTAIN)];
 	_envelope2.releaseVal = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV2.ENV_RELEASE)];
-	
-	_envelope1.shape =		_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.SHAPE)];
-	_envelope1.attackVal =	_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_ATTACK)];
-	_envelope1.decayVal =	_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_DECAY)];
-	_envelope1.sustainVal = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_SUSTAIN)];
-	_envelope1.releaseVal = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_RELEASE)];
 	
 	// TODO: update env values when ADSR params change!
 	// TODO: custom gate length!
@@ -587,15 +620,29 @@ ParameterSlide;
 	target = pval.coarse;
 	depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV2.DEPTH_B)] - 64) * 2 * envval;
 	[self applyModulationsWithDepth:depthVal target:target];
+}
+
+- (void) updateEnvelope1WithTime:(A4TrackerParam_t)time
+{
+	if(!_currentSourceSound) return;
+	
+	_envelope1.shape =		_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.SHAPE)];
+	_envelope1.attackVal =	_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_ATTACK)];
+	_envelope1.decayVal =	_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_DECAY)];
+	_envelope1.sustainVal = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_SUSTAIN)];
+	_envelope1.releaseVal = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.ENV_RELEASE)];
+	
+	// TODO: update env values when ADSR params change!
+	// TODO: custom gate length!
 	
 	[_envelope1 updateWithTime:time];
-	envval = _envelope1.normalizedValue;
-
-	pval = [_currentSourceSound valueForParam:A4PARAMS_ENV1.DESTINATION_A];
-	target = pval.coarse;
-	depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.DEPTH_A)] - 64) * 2 * envval;
+	A4TrackerParam_t envval = _envelope1.normalizedValue;
+	
+	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_ENV1.DESTINATION_A];
+	A4Param target = pval.coarse;
+	A4TrackerParam_t depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.DEPTH_A)] - 64) * 2 * envval;
 	[self applyModulationsWithDepth:depthVal target:target];
-
+	
 	pval = [_currentSourceSound valueForParam:A4PARAMS_ENV1.DESTINATION_B];
 	target = pval.coarse;
 	depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.DEPTH_B)] - 64) * 2 * envval;
