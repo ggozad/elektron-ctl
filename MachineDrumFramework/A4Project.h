@@ -11,8 +11,17 @@
 #import "A4Kit.h"
 #import "A4SysexMessage.h"
 
+@class A4Project;
+
+@protocol A4ProjectDelegate <NSObject>
+- (BOOL) a4Project:(A4Project *)project shouldStoreReceivedKit:(A4Kit *)kit;
+- (BOOL) a4Project:(A4Project *)project shouldStoreReceivedSound:(A4Sound *)sound;
+- (BOOL) a4Project:(A4Project *)project shouldStoreReceivedPattern:(A4Pattern *)pattern;
+@end
+
 @interface A4Project : A4SysexMessage
 @property (nonatomic) BOOL autoReceiveEnabled;
+@property (nonatomic, weak) id<A4ProjectDelegate>delegate;
 
 + (instancetype)defaultProject;
 

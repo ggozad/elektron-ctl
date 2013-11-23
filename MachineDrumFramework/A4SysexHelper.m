@@ -80,6 +80,9 @@
 
 + (BOOL)pattern:(A4Pattern *)patternA isEqualToPattern:(A4Pattern *)patternB
 {
+	if(!patternA && ! patternB) return YES;
+	if(!patternA || !patternB) return NO;
+	
 	return [[MDSysexUtil md5StringFromData:[self patternDataBlankingKitAndTrackNotesFromPatternData:[patternA.payloadData mutableCopy]]] isEqualToString:
 			[MDSysexUtil md5StringFromData:[self patternDataBlankingKitAndTrackNotesFromPatternData:[patternB.payloadData mutableCopy]]]];
 }

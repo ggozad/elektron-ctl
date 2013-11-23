@@ -11,11 +11,40 @@
 
 
 @interface A4Sequencer ()
+{
+	A4Pattern *_pattern;
+}
 @property (nonatomic, strong) A4Pattern *queuedPattern;
 @property (nonatomic) NSInteger clock;
 @end
 
 @implementation A4Sequencer
+
+- (BOOL)a4Project:(A4Project *)project shouldStoreReceivedKit:(A4Kit *)kit
+{
+	return [_delegate a4Project:project shouldStoreReceivedKit:kit];
+}
+
+- (BOOL)a4Project:(A4Project *)project shouldStoreReceivedSound:(A4Sound *)sound
+{
+	return [_delegate a4Project:project shouldStoreReceivedSound:sound];
+}
+
+- (BOOL)a4Project:(A4Project *)project shouldStoreReceivedPattern:(A4Pattern *)pattern
+{
+	if([_delegate a4Project:project shouldStoreReceivedPattern:pattern])
+	{
+		if (! _pattern || _pattern.position == pattern.position)
+		{
+			if(! [_pattern isEqualToPattern:pattern])
+			{
+				[self setPattern:pattern mode:A4SequencerModeJump];
+			}
+		}
+		return YES;
+	}
+	return NO;
+}
 
 - (void)a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didOpenGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt
 {
@@ -166,10 +195,12 @@
 	}
 }
 
-- (void) setPattern:(A4Pattern *)pattern
+- (BOOL) setPattern:(A4Pattern *)pattern
 {
 	@synchronized(self)
 	{
+		if([pattern isEqualToPattern:_pattern]) return NO;
+		
 		_pattern = [A4Pattern messageWithSysexData:pattern.sysexData];
 		switch(_pattern.timeScale)
 		{
@@ -190,7 +221,13 @@
 		}
 		
 		[self.delegate a4SequencerDidChangePattern:self];
+		return YES;
 	}
+}
+
+- (A4Pattern *)pattern
+{
+	return _pattern;
 }
 
 - (id)init
@@ -198,6 +235,7 @@
 	if(self = [super init])
 	{
 		self.project = [A4Project defaultProject];
+		self.project.delegate = self;
 		self.tracks = @[].mutableCopy;
 		for(int i = 0; i < 6; i++)
 		{

@@ -145,17 +145,19 @@ void SetMIDISysExSpeed(MIDIEndpointRef ep, SInt32 speed)
 - (void)midiSourceRemoved:(PGMidiSource *)source
 {
 	DLog(@"source removed: %@", source.name);
-	[self performSelector:@selector(reconnectToKnownMidiEndpoints) withObject:nil];
 	
-	if(source == self.a4MidiSource) self.a4MidiSource = nil;
-	if(source == self.machinedrumMidiSource) self.machinedrumMidiSource = nil;
-	if(source == self.externalInputSource) self.externalInputSource = nil;
 	
 	for (id<PGMidiDelegate> observer in self.midiConnectionObservers)
 	{
 		if([observer respondsToSelector:@selector(midiSourceRemoved:)])
 			[observer performSelector:@selector(midiSourceRemoved:) withObject:source];
 	}
+	
+	[self performSelector:@selector(reconnectToKnownMidiEndpoints) withObject:nil];
+	
+	if(source == self.a4MidiSource) self.a4MidiSource = nil;
+	if(source == self.machinedrumMidiSource) self.machinedrumMidiSource = nil;
+	if(source == self.externalInputSource) self.externalInputSource = nil;
 }
 
 

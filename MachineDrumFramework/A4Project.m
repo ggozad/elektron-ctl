@@ -67,19 +67,22 @@ static NSInteger payloadOffsetForPatternPosition(uint8_t i)
 		case A4SysexMessageID_Pattern:
 		{
 			A4Pattern *p = [A4Pattern messageWithSysexData:d];
-			if(p)[self copyPattern:p toPosition:p.position];
+			if(p && [_delegate a4Project:self shouldStoreReceivedPattern:p])
+				[self copyPattern:p toPosition:p.position];
 			break;
 		}
 		case A4SysexMessageID_Kit:
 		{
 			A4Kit *k = [A4Kit messageWithSysexData:d];
-			if(k)[self copyKit:k toPosition:k.position];
+			if(k && [_delegate a4Project:self shouldStoreReceivedKit:k])
+				[self copyKit:k toPosition:k.position];
 			break;
 		}
 		case A4SysexMessageID_Sound:
 		{
 			A4Sound *s = [A4Sound messageWithSysexData:d];
-			if(s)[self copySound:s toPosition:s.position];
+			if(s && [_delegate a4Project:self shouldStoreReceivedSound:s])
+				[self copySound:s toPosition:s.position];
 			break;
 		}
 		default:

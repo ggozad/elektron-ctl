@@ -102,8 +102,19 @@ ParameterSlide;
 
 - (void)setSourceKit:(A4Kit *)sourceKit immediately:(BOOL)immediately
 {
-	self.queuedSourceKit = sourceKit;
-	if(immediately) [self applyQueuedSourceKit];
+	BOOL doIt = NO;
+	if(! _sourceKit) doIt = YES;
+	if(! doIt && memcmp(_sourceKit.payload + 0x20 + _trackIdx * A4MessagePayloadLengthSound,
+					  sourceKit.payload + 0x20 + _trackIdx * A4MessagePayloadLengthSound, A4MessagePayloadLengthSound))
+	{
+		
+		doIt = YES;
+	}
+	if(doIt)
+	{
+		self.queuedSourceKit = sourceKit;
+		if(immediately) [self applyQueuedSourceKit];
+	}
 }
 
 - (void) applyQueuedSourceKit
@@ -481,7 +492,6 @@ ParameterSlide;
 	for(int i = 0; i < _parameterSlidesLen; i++)
 	{
 		ParameterSlide slide = _parameterSlides[i];
-//		if(time >= slide.startTime && time < slide.startTime + slide.duration)
 		if(time >= slide.startTime)
 		{
 			A4TrackerParam_t progressNormalized = (time - slide.startTime) / slide.duration;

@@ -249,19 +249,29 @@
 	free(self.targetParams);
 }
 
-- (void)setPattern:(A4Pattern *)pattern
+- (BOOL)setPattern:(A4Pattern *)pattern
 {
+	BOOL b = [super setPattern:pattern];
+	if(b)
+	{
+		dispatch_async(dispatch_get_main_queue(), ^{
+			
+			if(!_trackerTracks.count) return;
+			DLog(@"setting pattern");
+			for(int i = 0; i < 4; i++)
+			{
+				A4TrackerTrack *trackerTrack = _trackerTracks[i];
+				trackerTrack.sourceTrack = [pattern track:i];
+			}
+			
+		});
+	}
+	
 	uint8_t kitIdx = pattern.kit;
 	if(kitIdx < 0 || kitIdx > 127) kitIdx = 0;
 	self.sourceKit = [self.project kitAtPosition:kitIdx copy:YES];
 	
-	for(int i = 0; i < 4; i++)
-	{
-		A4TrackerTrack *trackerTrack = _trackerTracks[i];
-		trackerTrack.sourceTrack = [pattern track:i];
-	}
-	
-	[super setPattern:pattern];
+	return b;
 }
 
 - (void)handleClock
@@ -330,14 +340,22 @@
 {
 	printf("kit pos: %d\n", sourceKit.position);
 	_sourceKit = sourceKit;
-	for(int i = 0; i < 4; i++)
-	{
-		A4TrackerTrack *track = _trackerTracks[i];
-		char *payload = malloc(A4MessagePayloadLengthKit);
-		memmove(payload, _sourceKit.payload, A4MessagePayloadLengthKit);
-		A4Kit *kit = [A4Kit messageWithPayloadAddress:payload];
-		[track setSourceKit:kit immediately: ! self.playing];
-	}
+	dispatch_async(dispatch_get_main_queue(), ^{
+		
+		if(!_trackerTracks.count) return;
+		
+		for(int i = 0; i < 4; i++)
+		{
+			A4TrackerTrack *track = _trackerTracks[i];
+				char *payload = malloc(A4MessagePayloadLengthKit);
+				memmove(payload, _sourceKit.payload, A4MessagePayloadLengthKit);
+				A4Kit *kit = [A4Kit messageWithPayloadAddress:payload];
+				[track setSourceKit:kit immediately: ! self.playing];
+				
+			
+		}
+		
+	});
 }
 
 - (void)setProject:(A4Project *)project
