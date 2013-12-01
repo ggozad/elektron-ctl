@@ -135,7 +135,8 @@ typedef struct A4SoundSettings
 	uint8_t portamento;
 	uint8_t legatoMode;
 	uint8_t velocityMode;
-	uint8_t reserved[4];
+	uint8_t filterBoost;
+	uint8_t reserved[3];
 	A4SoundModTargets modulations;
 }
 A4SoundSettings;
@@ -153,5 +154,7 @@ A4SoundSettings;
 - (A4PVal) valueForParam:(A4Param)param;
 - (void) addTag:(A4SoundTags)tag;
 - (void) removeTag:(A4SoundTags)tag;
+- (void) convertParamsToBigEndian;
+- (void) convertParamsToHost;
 
 @end

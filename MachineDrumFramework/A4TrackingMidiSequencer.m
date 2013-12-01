@@ -29,6 +29,11 @@
 	self.performanceMacroHandler.inputSource = inputDevice;
 }
 
+- (void)a4VoiceAllocator:(A4VoiceAllocator *)allocator willStealVoice:(A4TrackVoicePair)voicePair
+{
+	DLog(@"track: %d, voice: %d", voicePair.track, voicePair.voice);
+}
+
 - (void)a4PerformanceMacroHandler:(A4PerformanceMacroHandler *)handler knob:(uint8_t)knob didChangeValue:(uint8_t)value
 {
 	_sourceKit.macros[knob].value = value;

@@ -124,7 +124,7 @@
 
 + (NSString *)a4PValDescriptionForPVal:(A4PVal)pVal
 {
-	return [NSString stringWithFormat:@"{param: 0x%02X coarse: 0x%02X fine: 0x%02X}", pVal.param, pVal.coarse, pVal.fine];
+	return [NSString stringWithFormat:@"{param: 0x%02X value: %d}", pVal.param, pVal.value];
 }
 
 + (void)setName:(NSString *)name inPayloadLocation:(void *)location

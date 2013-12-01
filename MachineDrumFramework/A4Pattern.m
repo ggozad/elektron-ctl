@@ -87,12 +87,16 @@ BOOL A4LocksForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t track, A4P
 		if(row.parameterID == A4NULL) break;
 		if(row.track == track && row.pattern[step] != A4NULL)
 		{
-			A4PVal val = A4PValMake8(row.parameterID, row.pattern[step]);
+			int16_t rowval = row.pattern[step];
+			
 			if(A4ParamIs16Bit(row.parameterID))
 			{
 				A4LockRow fineRow = pattern->_locks->row[i+1];
-				val.fine = fineRow.pattern[step];
+				rowval |= fineRow.pattern[step] << 8;
 			}
+			
+			rowval = CFSwapInt16BigToHost(rowval);
+			A4PVal val = A4PValMakeI(row.parameterID, rowval);
 			val = A4PValTranslateForSound(val);
 			locks[num++] = val;
 		}
@@ -113,12 +117,16 @@ BOOL A4LocksCreateForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t trac
 		if(row.parameterID == A4NULL) break;
 		if(row.track == track && row.pattern[step] != A4NULL)
 		{
-			A4PVal val = A4PValMake8(row.parameterID, row.pattern[step]);
+			int16_t rowval = row.pattern[step];
+			
 			if(A4ParamIs16Bit(row.parameterID))
 			{
 				A4LockRow fineRow = pattern->_locks->row[i+1];
-				val.fine = fineRow.pattern[step];
+				rowval |= fineRow.pattern[step] << 8;
 			}
+			
+			rowval = CFSwapInt16BigToHost(rowval);
+			A4PVal val = A4PValMakeI(row.parameterID, rowval);
 			val = A4PValTranslateForSound(val);
 			tmpVals[num++] = val;
 		}
@@ -569,10 +577,10 @@ void A4LocksRelease(A4PVal **locks)
 		if(row->track == track && row->parameterID == param)
 		{
 			if(row->pattern[step] == A4NULL) return A4PValMakeInvalid();
-			A4PVal lock = A4PValMake8(param, row->pattern[step]);
+			A4PVal lock = A4PValMakeI(param, row->pattern[step]);
 			if(A4ParamIs16Bit(param) && (row+1)->parameterID == 0x80)
 			{
-				lock.fine = (row+1)->pattern[step] << 1;
+				lock.value = (row+1)->pattern[step] << 1;
 			}
 			return A4PValTranslateForSound(lock);
 		}
@@ -599,7 +607,7 @@ void A4LocksRelease(A4PVal **locks)
 		
 		if(row->parameterID == 0x80) continue;
 		
-		if(row->parameterID == 0xFF && lock.coarse != 0xFF)
+		if(row->parameterID == 0xFF && lock.value != 0xFF)
 		{
 			if(is16Bit)
 			{
@@ -607,33 +615,33 @@ void A4LocksRelease(A4PVal **locks)
 				{
 					InitRow(self, i, lock.param, track, 0xFF);
 					InitRow(self, i+1, 0x80, 0x80, 0xFF);
-					row->pattern[step] = lock.coarse;
+					row->pattern[step] = lock.value >> 8;
 					A4LockRow *fineRow = row+1;
-					fineRow->pattern[step] = lock.fine;
+					fineRow->pattern[step] = lock.value & 0xFF;
 					return i;
 				}
 			}
 			else
 			{
 				InitRow(self, i, lock.param, track, 0xFF);
-				row->pattern[step] = lock.coarse;
+				row->pattern[step] = lock.value & 0xFF;
 				return i;
 			}
 		}
 		if(row->parameterID == lock.param && row->track == track) // lock exists
 		{
-			row->pattern[step] = lock.coarse;
+			row->pattern[step] = lock.value >> 8;
 			
 			if(is16Bit)
 			{
 				A4LockRow *fineRow = row+1;
 				if(fineRow->parameterID == 0x80)
 				{
-					(row+1)->pattern[step] = lock.fine;
+					(row+1)->pattern[step] = lock.value & 0xFF;
 				}
 			}
 			
-			if(lock.coarse == 0xFF && IsRowOccupiedButEmpty(self, i))
+			if(lock.value == A4NULL && IsRowOccupiedButEmpty(self, i))
 			{
 				EraseAndCleanupLock(self, i);
 				if(is16Bit && i < 127 && (row+1)->parameterID == 0x80)
@@ -651,15 +659,15 @@ void A4LocksRelease(A4PVal **locks)
 			{
 				InitRow(self, i, lock.param, track, 0xFF);
 				InitRow(self, i+1, 0x80, 0x80, 0xFF);
-				row->pattern[step] = lock.coarse;
+				row->pattern[step] = lock.value >> 8;
 				A4LockRow *fineRow = row+1;
-				fineRow->pattern[step] = lock.fine;
+				fineRow->pattern[step] = lock.value & 0xFF;
 				return i;
 			}
 			else if (!is16Bit && PushRow(self, i, 1))
 			{
 				InitRow(self, i, lock.param, track, 0xFF);
-				row->pattern[step] = lock.coarse;
+				row->pattern[step] = lock.value >> 8;
 				return i;
 			}
 		}

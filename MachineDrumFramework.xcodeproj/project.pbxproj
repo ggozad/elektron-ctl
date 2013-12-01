@@ -186,6 +186,8 @@
 		36CA752217F26F2500BEC865 /* A4Params.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D7317EF929C001C9132 /* A4Params.m */; };
 		36CA752417F271D800BEC865 /* MDMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3643BD2A17E7B17900AA8663 /* MDMath.m */; };
 		36CA752517F271DF00BEC865 /* MDMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3643BD2A17E7B17900AA8663 /* MDMath.m */; };
+		36CEBAD1184969BD00849925 /* A4VoiceAllocator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */; };
+		36CEBAD2184969BD00849925 /* A4VoiceAllocator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */; };
 		36E1ED2E183DB1BF001A9498 /* A4PerformanceMacroHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED2D183DB1BF001A9498 /* A4PerformanceMacroHandler.m */; };
 		36E1ED2F183DB1BF001A9498 /* A4PerformanceMacroHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED2D183DB1BF001A9498 /* A4PerformanceMacroHandler.m */; };
 		36E1ED32183E8EE0001A9498 /* A4LFO.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED31183E8EE0001A9498 /* A4LFO.m */; };
@@ -400,6 +402,8 @@
 		36C69110183542AE0085CA59 /* A4Envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Envelope.h; sourceTree = "<group>"; };
 		36C69111183542AE0085CA59 /* A4Envelope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Envelope.m; sourceTree = "<group>"; };
 		36CA752317F2705C00BEC865 /* MDMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMath.h; sourceTree = "<group>"; };
+		36CEBACF184969BD00849925 /* A4VoiceAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4VoiceAllocator.h; sourceTree = "<group>"; };
+		36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4VoiceAllocator.m; sourceTree = "<group>"; };
 		36E1ED2C183DB1BF001A9498 /* A4PerformanceMacroHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4PerformanceMacroHandler.h; sourceTree = "<group>"; };
 		36E1ED2D183DB1BF001A9498 /* A4PerformanceMacroHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4PerformanceMacroHandler.m; sourceTree = "<group>"; };
 		36E1ED30183E8EE0001A9498 /* A4LFO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4LFO.h; sourceTree = "<group>"; };
@@ -650,6 +654,8 @@
 				36E1ED2D183DB1BF001A9498 /* A4PerformanceMacroHandler.m */,
 				36E1ED30183E8EE0001A9498 /* A4LFO.h */,
 				36E1ED31183E8EE0001A9498 /* A4LFO.m */,
+				36CEBACF184969BD00849925 /* A4VoiceAllocator.h */,
+				36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */,
 			);
 			name = A4;
 			sourceTree = "<group>";
@@ -1067,6 +1073,7 @@
 				3631A86F1646C3E3008DB7E5 /* MDProcedureTrigGenerator.m in Sources */,
 				3631A8701646C3E3008DB7E5 /* MDProcedureCondition.m in Sources */,
 				3631A8711646C3E3008DB7E5 /* MDProcedureArpeggiator.m in Sources */,
+				36CEBAD2184969BD00849925 /* A4VoiceAllocator.m in Sources */,
 				3631A8721646C3E3008DB7E5 /* MDProcedureScaleFilter.m in Sources */,
 				36871BDF182F150900750F0F /* A4TrackerTrack.m in Sources */,
 				3631A8731646C3E3008DB7E5 /* MDPatternCopiPasta.m in Sources */,
@@ -1154,6 +1161,7 @@
 				362A7EDD159A15D3007478D7 /* MDProc.m in Sources */,
 				362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */,
 				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
+				36CEBAD1184969BD00849925 /* A4VoiceAllocator.m in Sources */,
 				362A7F06159A7B89007478D7 /* MDProcedureArpeggiator.m in Sources */,
 				36871BDE182F150900750F0F /* A4TrackerTrack.m in Sources */,
 				362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */,

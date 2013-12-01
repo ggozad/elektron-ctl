@@ -539,14 +539,14 @@ ParameterSlide;
 	A4TrackerParam_t depth = [_lfo2 lfoValueWithTime:time];
 	
 	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO2.DESTINATION_A];
-	A4Param target = pval.coarse;
+	A4Param target = pval.value;
 	A4TrackerParam_t modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.DEPTH_A)];
 	modDepth -= 64;
 	
 	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
 	
 	pval = [_currentSourceSound valueForParam:A4PARAMS_LFO2.DESTINATION_B];
-	target = pval.coarse;
+	target = pval.value;
 	modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO2.DEPTH_B)];
 	modDepth -= 64;
 	
@@ -565,14 +565,14 @@ ParameterSlide;
 	A4TrackerParam_t depth = [_lfo1 lfoValueWithTime:time];
 	
 	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_A];
-	A4Param target = pval.coarse;
+	A4Param target = pval.value;
 	A4TrackerParam_t modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.DEPTH_A)];
 	modDepth -= 64;
 	
 	[self applyModulationsWithDepth: modDepth * depth * 2 target:target];
 	
 	pval = [_currentSourceSound valueForParam:A4PARAMS_LFO1.DESTINATION_B];
-	target = pval.coarse;
+	target = pval.value;
 	modDepth = _paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_LFO1.DEPTH_B)];
 	modDepth -= 64;
 	
@@ -622,12 +622,12 @@ ParameterSlide;
 	A4TrackerParam_t envval = _envelope2.normalizedValue;
 	
 	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_ENV2.DESTINATION_A];
-	A4Param target = pval.coarse;
+	A4Param target = pval.value;
 	A4TrackerParam_t depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV2.DEPTH_A)] - 64) * 2 * envval;
 	[self applyModulationsWithDepth:depthVal target:target];
 	
 	pval = [_currentSourceSound valueForParam:A4PARAMS_ENV2.DESTINATION_B];
-	target = pval.coarse;
+	target = pval.value;
 	depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV2.DEPTH_B)] - 64) * 2 * envval;
 	[self applyModulationsWithDepth:depthVal target:target];
 }
@@ -649,12 +649,12 @@ ParameterSlide;
 	A4TrackerParam_t envval = _envelope1.normalizedValue;
 	
 	A4PVal pval = [_currentSourceSound valueForParam:A4PARAMS_ENV1.DESTINATION_A];
-	A4Param target = pval.coarse;
+	A4Param target = pval.value;
 	A4TrackerParam_t depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.DEPTH_A)] - 64) * 2 * envval;
 	[self applyModulationsWithDepth:depthVal target:target];
 	
 	pval = [_currentSourceSound valueForParam:A4PARAMS_ENV1.DESTINATION_B];
-	target = pval.coarse;
+	target = pval.value;
 	depthVal = (_paramsPostModulations[A4ParamIndexOfParamLockableParams(A4PARAMS_ENV1.DEPTH_B)] - 64) * 2 * envval;
 	[self applyModulationsWithDepth:depthVal target:target];
 }

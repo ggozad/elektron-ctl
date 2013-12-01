@@ -26,6 +26,7 @@
 	if(instance)
 	{
 		[instance initStructs];
+		[instance convertParamsToHost];
 	}
 	return instance;
 }
@@ -35,8 +36,25 @@
 	A4Sound *instance = [self new];
 	[instance allocPayload];
 	[instance initStructs];
+	[instance convertParamsToHost];
 	[instance clear];
 	return instance;
+}
+
+- (void)convertParamsToBigEndian
+{
+	for(int i = 0; i < A4ParamLayoutCount; i++)
+	{
+		_params->param[i] = CFSwapInt16HostToBig(_params->param[i]);
+	}
+}
+
+- (void)convertParamsToHost
+{
+	for(int i = 0; i < A4ParamLayoutCount; i++)
+	{
+		_params->param[i] = CFSwapInt16BigToHost(_params->param[i]);
+	}
 }
 
 - (BOOL)isDefaultSound
@@ -105,18 +123,13 @@
 	}
 }
 
-- (void)setParamValue:(A4PVal)value
+- (void)setParamValue:(A4PVal)lock
 {
 	if(!_payload) return;
-	if(value.param == A4NULL) return;
-	value = A4PValSanitizeClamp(value);
-	
-	uint8_t i = A4SoundOffsetForParam(value.param);
+	if(lock.param == A4NULL) return;
+	uint8_t i = A4SoundOffsetForParam(lock.param);
 	if(i == A4NULL) return;
-	
-	int16_t intval = value.coarse;
-	if(A4ParamIs16Bit(value.param)) intval |= (value.fine << 8);
-	_params->param[i] = intval;
+	_params->param[i] = lock.value;
 }
 
 - (A4PVal)valueForParam:(A4Param)param
@@ -126,9 +139,7 @@
 	if(offset == A4NULL) return A4PValMakeInvalid();
 	
 	int16_t intval = _params->param[offset];
-	char coarse = intval & 0xFF;
-	char  fine  = (intval<<8) & 0xFF;
-	return A4PValMake16(param, coarse, fine);
+	return A4PValMakeI(param, intval);
 }
 
 - (void)setName:(NSString *)name
@@ -169,6 +180,14 @@
 	A4SoundTagBitmask mask = self.tags;
 	mask &= ~tag;
 	self.tags = mask;
+}
+
+- (NSData *)sysexData
+{
+	[self convertParamsToBigEndian];
+	NSData *d = [super sysexData];
+	[self convertParamsToHost];
+	return d;
 }
 
 @end

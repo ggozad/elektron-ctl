@@ -21,6 +21,7 @@
 	A4Kit *kit = [super messageWithPayloadAddress:payload];
 	[kit initSounds];
 	[kit initMacros];
+	[kit initPolyphony];
 	return kit;
 }
 
@@ -29,6 +30,8 @@
 	A4Kit *instance = [super messageWithSysexData:data];
 	[instance initSounds];
 	[instance initMacros];
+	[instance initPolyphony];
+	[instance convertParamsToHost];
 	return instance;
 }
 
@@ -38,8 +41,31 @@
 	[kit allocPayload];
 	[kit initSounds];
 	[kit initMacros];
+	[kit initPolyphony];
+	[kit convertParamsToHost];
 	[kit clear];
 	return kit;
+}
+
+
+- (void) convertParamsToHost
+{
+	for(A4Sound *s in _sounds)
+	{
+		[s convertParamsToHost];
+	}
+	
+	// TODO: FX params
+}
+
+- (void) convertParamsToBigEndian
+{
+	for(A4Sound *s in _sounds)
+	{
+		[s convertParamsToBigEndian];
+	}
+	
+	// TODO: FX params
 }
 
 - (BOOL)isDefaultKit
@@ -78,6 +104,7 @@
 	{
 		[self initSounds];
 		[self initMacros];
+		[self initPolyphony];
 	}
 }
 
@@ -112,7 +139,6 @@
 	{
 		NSUInteger offset = 0x20 + A4MessagePayloadLengthSound * track;
 		A4Sound *s = [A4Sound messageWithPayloadAddress:self.payload + offset];
-
 		[self.sounds addObject:s];
 	}
 }
@@ -120,6 +146,11 @@
 - (void) initMacros
 {
 	self.macros = (A4PerformanceMacro *)(_payload + 0x7B0);
+}
+
+- (void) initPolyphony
+{
+	self.polyphony = (A4PolySettings *)(_payload + 0x92C);
 }
 
 - (A4Sound *)copySound:(A4Sound *)sound toTrack:(uint8_t)track
@@ -165,6 +196,7 @@
 	return [A4SysexHelper nameAtPayloadLocation:bytes];
 }
 
+/*
 - (void) setFxParamValue:(A4PVal)value
 {
 	if(!_payload) return;
@@ -185,6 +217,7 @@
 	uint8_t  fine  = _payload[offset+1];
 	return A4PValFxMake16(param, coarse, fine);
 }
+*/
 
 - (uint8_t)levelForTrack:(uint8_t)t
 {
@@ -199,5 +232,19 @@
 	_payload[0x14 + t*2] = level;
 }
 
+
+- (NSData *)sysexData
+{
+	for(A4Sound *s in _sounds)
+	{
+		[s convertParamsToBigEndian];
+	}
+	NSData *d = [super sysexData];
+	for(A4Sound *s in _sounds)
+	{
+		[s convertParamsToHost];
+	}
+	return d;
+}
 
 @end

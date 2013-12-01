@@ -12,6 +12,7 @@
 #import "A4Project.h"
 #import "A4TrackerTrack.h"
 #import "A4PerformanceMacroHandler.h"
+#import "A4VoiceAllocator.h"
 
 
 typedef enum A4TrackingMidiSequencerTrackingMode
@@ -27,7 +28,8 @@ A4TrackingMidiSequencerTrackingMode;
 - (void) a4TrackingMidiSequencerDidUpdateContinuousValues:(A4TrackingMidiSequencer *)sequencer;
 @end
 
-@interface A4TrackingMidiSequencer : A4MidiSequencer <A4PerformanceMacroHandlerDelegate>
+@interface A4TrackingMidiSequencer : A4MidiSequencer <A4PerformanceMacroHandlerDelegate, A4VoiceAllocatorDelegate>
+@property (nonatomic, strong) A4VoiceAllocator *voiceAllocator;
 @property (nonatomic, weak) id<A4TrackingMidiSequencerDelegate> delegate;
 @property (nonatomic) A4TrackingMidiSequencerTrackingMode trackingMode;
 @property (nonatomic, strong) A4Kit *sourceKit;

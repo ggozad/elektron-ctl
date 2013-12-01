@@ -61,11 +61,6 @@ ArpState;
 
 GateEvent gateEventNull();
 
-@interface NSValue(GateEvent)
-+ (instancetype) valueWithGateEvent:(GateEvent)gateEvent;
-- (GateEvent) gateEventValue;
-@end
-
 @protocol A4SequencerTrackDelegate <NSObject>
 - (void) a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didOpenGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt;
 - (void) a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didCloseGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt;

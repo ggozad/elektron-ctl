@@ -11,20 +11,21 @@
 #import "MDMath.h"
 
 #define INT16_MAX_MINUS_ONE (INT16_MAX - 1)
+#define A4PARAM_16BIT_MAX 32638
 
 A4PVal A4PValSanitizeClamp(A4PVal val)
 {
 	if(val.param == 0xFF) return A4PValMakeInvalid();
-	if(val.coarse == 0xFF || val.fine == (int8_t)A4NULL) return A4PValMakeInvalid();
-	val.coarse = mdmath_clamp(val.coarse, A4ParamMin(val.param), A4ParamMaxi(val.param));
+	if(val.value == A4NULL) return A4PValMakeInvalid();
+	val.value = mdmath_clamp(val.value, A4ParamMin(val.param), A4ParamMaxi(val.param));
 	return val;
 }
 
 A4PVal A4PValSanitizeWrap(A4PVal val)
 {
 	if(val.param == (uint8_t)A4NULL) return A4PValMakeInvalid();
-	if(val.coarse == (uint8_t)A4NULL || val.fine == (int8_t)A4NULL) return A4PValMakeInvalid();
-	val.coarse = mdmath_wrap(val.coarse, A4ParamMin(val.param), A4ParamMaxi(val.param));
+	if(val.value == A4NULL) return A4PValMakeInvalid();
+	val.value = mdmath_wrap(val.value, A4ParamMin(val.param), A4ParamMaxi(val.param));
 	return val;
 }
 
@@ -32,9 +33,8 @@ A4PVal A4PValSanitizeWrap(A4PVal val)
 A4PVal A4PValMakeInvalid()
 {
 	A4PVal lock;
-	lock.param = 0xFF;
-	lock.coarse = 0xFF;
-	lock.fine = 0xFF;
+	lock.param = A4NULL;
+	lock.value = A4NULL;
 	return lock;
 }
 
@@ -42,11 +42,19 @@ A4PVal A4PValMakeClear(A4Param param)
 {
 	A4PVal lock;
 	lock.param = param;
-	lock.coarse = 0xFF;
-	lock.fine = 0xFF;
+	lock.value = A4NULL;
 	return lock;
 }
 
+A4PVal A4PValMakeI(A4Param param, int16_t value)
+{
+	A4PVal lock;
+	lock.param = param;
+	lock.value = value;
+	return lock;
+}
+
+/*
 A4PVal A4PValMake8(A4Param param, uint8_t coarse)
 {
 	A4PVal lockVal;
@@ -64,7 +72,7 @@ A4PVal A4PValMake16(A4Param param, uint8_t coarse, int8_t fine)
 	lockVal.fine = fine;
 	return A4PValSanitizeClamp(lockVal);
 }
-
+*/
 
 
 A4PVal A4PValMin(A4Param param)
@@ -97,8 +105,7 @@ A4PVal A4PValMake(A4Param param, double doubleValue)
 		{
 			return A4PValMakeInvalid();
 		}
-		lockVal.fine = 0;
-		lockVal.coarse = dst;
+		lockVal.value = dst;
 		return lockVal;
 	}
 	
@@ -106,38 +113,34 @@ A4PVal A4PValMake(A4Param param, double doubleValue)
 	
 	if(A4ParamIs16Bit(param))
 	{
-		int16_t i = mdmath_map(doubleValue, 0, 128, 0, INT16_MAX_MINUS_ONE);
-		i = CFSwapInt16HostToBig(i);
-		lockVal.coarse = i & 0xFF;
-		lockVal.fine = (i & 0xFF00) >> 8;
+		int16_t i = mdmath_map(doubleValue, 0, 127.5, 0, A4PARAM_16BIT_MAX);
+		lockVal.value = i;
 	}
 	else
 	{
-		lockVal.coarse = (uint8_t) doubleValue;
-		lockVal.fine = 0;
+		lockVal.value = (uint8_t) doubleValue;
 	}
 	return lockVal;
 }
 
-double A4PValDoubleVal(A4PVal lockValue)
+double A4PValDoubleVal(A4PVal lock)
 {
-	if(lockValue.param == A4NULL || lockValue.coarse == (uint8_t)A4NULL) return -1;
+	if(lock.param == A4NULL || lock.value == A4NULL) return A4NULL;
 	
-	if(A4ParamIsModulatorDestination(lockValue.param))
+	if(A4ParamIsModulatorDestination(lock.param))
 	{
-		uint8_t idx = A4ParamIndexOfModTargetInModSource(lockValue.coarse, lockValue.param);
-		if(idx == A4NULL) return -1;
-		uint8_t len = A4ParamModTargetCountInModSource(lockValue.param);
+		uint8_t idx = A4ParamIndexOfModTargetInModSource(lock.value, lock.param);
+		if(idx == A4NULL) return A4NULL;
+		uint8_t len = A4ParamModTargetCountInModSource(lock.param);
 		return mdmath_map(idx, 0, len-1, 0, 128);
 	}
-	else if(A4ParamIs16Bit(lockValue.param))
+	else if(A4ParamIs16Bit(lock.param))
 	{
-		int16_t i = CFSwapInt16BigToHost(lockValue.fine << 8 | lockValue.coarse);
-		return mdmath_map(i, 0, INT16_MAX_MINUS_ONE, 0, 128);
+		return mdmath_map(lock.value, 0, A4PARAM_16BIT_MAX, 0, 127.5);
 	}
 	else
 	{
-		return lockValue.coarse;
+		return lock.value;
 	}
 }
 
@@ -159,36 +162,38 @@ A4PVal A4PValMakeNormalized(A4Param param, double normalizedDoubleValue)
 
 
 
-double A4PValDoubleValNormalized(A4PVal lockValue)
+double A4PValDoubleValNormalized(A4PVal lock)
 {
-	if(A4ParamIsModulatorDestination(lockValue.param))
+	if(A4ParamIsModulatorDestination(lock.param))
 	{
-		int idx = A4ParamIndexOfModTargetInModSource(lockValue.coarse, lockValue.param);
-		int len = A4ParamModTargetCountInModSource(lockValue.param);
+		int idx = A4ParamIndexOfModTargetInModSource(lock.value, lock.param);
+		int len = A4ParamModTargetCountInModSource(lock.param);
 		if(idx == A4NULL || len <= 1 || len == A4NULL) return -1;
 		double doubleVal = mdmath_map(idx, 0, len-1, 0, 1);
 		return mdmath_clamp(doubleVal, 0, 1);
 	}
 	
-	double val = A4PValDoubleVal(lockValue);
-	return mdmath_clamp( mdmath_map(val, A4ParamMin(lockValue.param), A4ParamMax(lockValue.param), 0, 1), 0, 1);
+	double val = A4PValDoubleVal(lock);
+	return mdmath_clamp( mdmath_map(val, A4ParamMin(lock.param), A4ParamMax(lock.param), 0, 1), 0, 1);
 }
 
 A4PVal A4PValTranslateForLock(A4PVal val)
 {
-	if(val.fine == (int8_t)A4NULL) return val;
-	val.fine = (val.fine >> 1) & 0x7F;
+	// TODO: do this
+//	if(val.fine == (int8_t)A4NULL) return val;
+//	val.fine = (val.fine >> 1) & 0x7F;
 	return val;
 }
 
 A4PVal A4PValTranslateForSound(A4PVal val)
 {
-	if(val.fine == (int8_t)A4NULL) return val;
-	val.fine = (val.fine << 1) & 0xFE;
+	// TODO: do this
+//	if(val.fine == (int8_t)A4NULL) return val;
+//	val.fine = (val.fine << 1) & 0xFE;
 	return val;
 }
 
-
+/*
 A4PVal A4PValFxMin(A4Param param)
 {
 	return A4PValFxMakeNormalized(param, 0);
@@ -289,3 +294,4 @@ double A4PValFxDoubleValNormalized(A4PVal lockValue)
 	return mdmath_map(val, A4ParamFxMin(lockValue.param), A4ParamFxMax(lockValue.param), 0, 1);
 	return mdmath_clamp(val, 0, 1);
 }
+*/
