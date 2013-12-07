@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 Jakob Penca. All rights reserved.
 //
 
-#import "A4PerformanceMacroHandler.h"
+#import "A4ControllerdataHandler.h"
 #import "MDMIDI.h"
 
-@interface A4PerformanceMacroHandler ()
+@interface A4ControllerdataHandler ()
 {
 	uint8_t *NRPNBuf;
 	uint8_t nextExpectedControllerParam;
@@ -18,16 +18,16 @@
 @end
 
 
-@implementation A4PerformanceMacroHandler
+@implementation A4ControllerdataHandler
 
 - (void) dealWithPerformanceMacroCC
 {
-	[self.delegate a4PerformanceMacroHandler:self knob:performanceCCKnob didChangeValue:performanceCCValue];
+	[self.delegate a4ControllerdataHandler:self knob:performanceCCKnob didChangeValue:performanceCCValue];
 }
 
 - (void) dealWithPerformanceMacroNRPN
 {
-	[self.delegate a4PerformanceMacroHandler:self knob:NRPNBuf[1] didChangeValue:NRPNBuf[2]];
+	[self.delegate a4ControllerdataHandler:self knob:NRPNBuf[1] didChangeValue:NRPNBuf[2]];
 }
 
 - (void)midiReceivedControlChange:(MidiControlChange)controlChange fromSource:(PGMidiSource *)source
@@ -183,11 +183,10 @@
 	_inputSource = inputSource;
 }
 
-+ (instancetype)performanceMacroHandlerWithDelegate:(id<A4PerformanceMacroHandlerDelegate>)delegate
-										inputSource:(PGMidiSource *)source
-											channel:(uint8_t)channel
++ (instancetype)controllerdataHandlerWithDelegate:(id<A4ControllerdataHandlerDelegate>)delegate
+									  inputSource:(PGMidiSource *)source channel:(uint8_t)channel
 {
-	A4PerformanceMacroHandler *handler = [self new];
+	A4ControllerdataHandler *handler = [self new];
 	
 	handler.delegate = delegate;
 	handler.channel = channel;
