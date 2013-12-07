@@ -238,7 +238,7 @@ static NSInteger payloadOffsetForPatternPosition(uint8_t i)
 {
 	NSInteger offset = payloadOffsetForSoundPosition(i);
 	if(offset != -1) memmove(_payload + offset, sound.payload, A4MessagePayloadLengthSound);
-	DLog(@"%d",i);
+//	DLog(@"%d",i);
 	return [self soundAtPosition:i];
 }
 
@@ -256,7 +256,7 @@ static NSInteger payloadOffsetForPatternPosition(uint8_t i)
 {
 	NSInteger offset = payloadOffsetForKitPosition(i);
 	if(offset != -1) memmove(_payload + offset, kit.payload, A4MessagePayloadLengthKit);
-	DLog(@"%d",i);
+//	DLog(@"%d",i);
 	return [self kitAtPosition:i];
 }
 
@@ -274,7 +274,7 @@ static NSInteger payloadOffsetForPatternPosition(uint8_t i)
 {
 	NSInteger offset = payloadOffsetForPatternPosition(i);
 	if(offset != -1) memmove(_payload + offset, pattern.payload, A4MessagePayloadLengthPattern);
-	DLog(@"%d",i);
+//	DLog(@"%d",i);
 	return [self patternAtPosition:i];
 }
 

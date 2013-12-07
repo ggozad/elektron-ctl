@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		36074C601823C93600006650 /* A4SequencerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36074C5F1823C93600006650 /* A4SequencerTrack.m */; };
 		36074C611823C93600006650 /* A4SequencerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36074C5F1823C93600006650 /* A4SequencerTrack.m */; };
-		36181D6E17EF68E3001C9132 /* PatternTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D6D17EF68E3001C9132 /* PatternTranslate.m */; };
-		36181D6F17EF68E3001C9132 /* PatternTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D6D17EF68E3001C9132 /* PatternTranslate.m */; };
 		36181D7617F102D5001C9132 /* A4Trig.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D7517F102D5001C9132 /* A4Trig.m */; };
 		36181D7717F102D5001C9132 /* A4Trig.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D7517F102D5001C9132 /* A4Trig.m */; };
 		361C1FD917DFF71000C3E02C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 361C1FD717DFF71000C3E02C /* AudioUnit.framework */; };
@@ -144,6 +142,8 @@
 		36A1919B1626405200DA8A38 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36A1919A1626405200DA8A38 /* AudioToolbox.framework */; };
 		36AAE6D51832FDFD008F85AA /* A4Timepiece.m in Sources */ = {isa = PBXBuildFile; fileRef = 36AAE6D41832FDFD008F85AA /* A4Timepiece.m */; };
 		36AAE6D61832FDFD008F85AA /* A4Timepiece.m in Sources */ = {isa = PBXBuildFile; fileRef = 36AAE6D41832FDFD008F85AA /* A4Timepiece.m */; };
+		36AD3386184C0F4B0001E036 /* A4SequencerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 36AD3385184C0F4B0001E036 /* A4SequencerHelper.m */; };
+		36AD3387184C0F4B0001E036 /* A4SequencerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 36AD3385184C0F4B0001E036 /* A4SequencerHelper.m */; };
 		36AE3F57173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 36AE3F56173EFC7E00D7EAF1 /* MDAudioRecorder.m */; };
 		36AE3F58173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 36AE3F56173EFC7E00D7EAF1 /* MDAudioRecorder.m */; };
 		36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B4B0B6158F9263009CFC0A /* MDSysexRouter.m */; };
@@ -223,8 +223,6 @@
 /* Begin PBXFileReference section */
 		36074C5E1823C93600006650 /* A4SequencerTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4SequencerTrack.h; sourceTree = "<group>"; };
 		36074C5F1823C93600006650 /* A4SequencerTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4SequencerTrack.m; sourceTree = "<group>"; };
-		36181D6C17EF68E3001C9132 /* PatternTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PatternTranslate.h; sourceTree = "<group>"; };
-		36181D6D17EF68E3001C9132 /* PatternTranslate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PatternTranslate.m; sourceTree = "<group>"; };
 		36181D7317EF929C001C9132 /* A4Params.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Params.m; sourceTree = "<group>"; };
 		36181D7417EF92DA001C9132 /* A4Trig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Trig.h; sourceTree = "<group>"; };
 		36181D7517F102D5001C9132 /* A4Trig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Trig.m; sourceTree = "<group>"; };
@@ -339,6 +337,8 @@
 		36A1919A1626405200DA8A38 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		36AAE6D31832FDFD008F85AA /* A4Timepiece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Timepiece.h; sourceTree = "<group>"; };
 		36AAE6D41832FDFD008F85AA /* A4Timepiece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Timepiece.m; sourceTree = "<group>"; };
+		36AD3384184C0F4B0001E036 /* A4SequencerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4SequencerHelper.h; sourceTree = "<group>"; };
+		36AD3385184C0F4B0001E036 /* A4SequencerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4SequencerHelper.m; sourceTree = "<group>"; };
 		36AE3F55173EFC7E00D7EAF1 /* MDAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDAudioRecorder.h; sourceTree = "<group>"; };
 		36AE3F56173EFC7E00D7EAF1 /* MDAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDAudioRecorder.m; sourceTree = "<group>"; };
 		36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumPublic.h; sourceTree = "<group>"; };
@@ -474,8 +474,6 @@
 		36181D6B17EF6868001C9132 /* Integration */ = {
 			isa = PBXGroup;
 			children = (
-				36181D6C17EF68E3001C9132 /* PatternTranslate.h */,
-				36181D6D17EF68E3001C9132 /* PatternTranslate.m */,
 			);
 			name = Integration;
 			sourceTree = "<group>";
@@ -636,6 +634,8 @@
 				3623ED5F17F7197F00387DC8 /* A4Project.m */,
 				3639847817FC6EAF00E071F3 /* A4PVal.h */,
 				3639847917FC6EBE00E071F3 /* A4PVal.m */,
+				36AD3384184C0F4B0001E036 /* A4SequencerHelper.h */,
+				36AD3385184C0F4B0001E036 /* A4SequencerHelper.m */,
 				36074C5E1823C93600006650 /* A4SequencerTrack.h */,
 				36074C5F1823C93600006650 /* A4SequencerTrack.m */,
 				36871BCB182DA17400750F0F /* A4Sequencer.h */,
@@ -1066,7 +1066,6 @@
 				3631A8671646C3E3008DB7E5 /* MDPatternParameterLocks.m in Sources */,
 				3631A8681646C3E3008DB7E5 /* MDPatternParser.m in Sources */,
 				3631A86A1646C3E3008DB7E5 /* MDSysexRouter.m in Sources */,
-				36181D6F17EF68E3001C9132 /* PatternTranslate.m in Sources */,
 				3631A86C1646C3E3008DB7E5 /* MDPitch.m in Sources */,
 				3631A86D1646C3E3008DB7E5 /* MDProcessingPipeline.m in Sources */,
 				3631A86E1646C3E3008DB7E5 /* MDProc.m in Sources */,
@@ -1117,6 +1116,7 @@
 				3639847B17FC6EBE00E071F3 /* A4PVal.m in Sources */,
 				363D9C86175A3C7E00DC1ADF /* MDPattern.m in Sources */,
 				36871BD2182DC5B700750F0F /* A4MidiSequencer.m in Sources */,
+				36AD3387184C0F4B0001E036 /* A4SequencerHelper.m in Sources */,
 				363D9C88175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
 				363D9C8E175A99CB00DC1ADF /* MDKitDiffs.m in Sources */,
 				363D9C90175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
@@ -1155,7 +1155,6 @@
 				36B92133158F82CC0025F0B3 /* MDPatternParameterLocks.m in Sources */,
 				36B92134158F82CC0025F0B3 /* MDPatternParser.m in Sources */,
 				36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */,
-				36181D6E17EF68E3001C9132 /* PatternTranslate.m in Sources */,
 				36814F041594CD8700220C88 /* MDPitch.m in Sources */,
 				36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */,
 				362A7EDD159A15D3007478D7 /* MDProc.m in Sources */,
@@ -1205,6 +1204,7 @@
 				3639847A17FC6EBE00E071F3 /* A4PVal.m in Sources */,
 				363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */,
 				36871BD1182DC5B700750F0F /* A4MidiSequencer.m in Sources */,
+				36AD3386184C0F4B0001E036 /* A4SequencerHelper.m in Sources */,
 				363D9C87175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
 				363D9C8D175A99CB00DC1ADF /* MDKitDiffs.m in Sources */,
 				363D9C8F175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,

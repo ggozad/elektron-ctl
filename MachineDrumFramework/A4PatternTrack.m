@@ -87,7 +87,7 @@
 		trig.flags |= A4TRIGFLAGS.NOTE;
 	}
 	
-	if(trig.flags & A4TRIGFLAGS.NOTE) note = trig.note;
+	if(trig.flags & A4TRIGFLAGS.NOTE) note = trig.notes[0];
 	
 	if(!(trig.flags & A4TRIGFLAGS.TRIGLESS ||
 		 trig.flags & A4TRIGFLAGS.TRIG))
@@ -104,6 +104,13 @@
 	
 	_flags[step]		= CFSwapInt16HostToBig(trig.flags);
 	_notes[step]		= note;
+	
+	for(int i = 1; i < 4; i++)
+	{
+		uint8_t note = trig.notes[i];
+		_arp->noteLocks[i-1][step] = note;
+	}
+	
 	_velocities[step]	= trig.velocity;
 	_lengths[step]		= trig.length;
 	_soundLocks[step]	= trig.soundLock;
@@ -116,11 +123,17 @@
 	
 	A4Trig trig;
 	trig.flags		 = CFSwapInt16BigToHost(_flags[step]);
-	trig.note		 = _notes[step];
+	trig.notes[0]	 = _notes[step];
 	trig.velocity	 = _velocities[step];
 	trig.length		 = _lengths[step];
 	trig.soundLock   = _soundLocks[step];
 	trig.microTiming = _microtimes[step];
+	
+	for(int i = 1; i < 4; i++)
+	{
+		trig.notes[i] = _arp->noteLocks[i-1][step];
+	}
+	
 	return trig;
 }
 

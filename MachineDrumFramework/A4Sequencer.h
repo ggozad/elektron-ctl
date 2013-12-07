@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "A4SequencerTrack.h"
 #import "A4Project.h"
+#import "A4VoiceAllocator.h"
 
 @class A4Sequencer;
 
@@ -27,13 +28,14 @@ A4SequencerMode;
 - (void) a4SequencerDidContinue:(A4Sequencer *)sequencer;
 - (void) a4SequencerDidStart:(A4Sequencer *)sequencer;
 - (void) a4SequencerDidReset:(A4Sequencer *)sequencer;
-- (void) a4Sequencer: (A4Sequencer *) sequencer didOpenGateInTrack:(uint8_t)trackIdx withTrig:(A4Trig)trig atStep:(uint8_t)step context:(TrigContext) context;
-- (void) a4Sequencer: (A4Sequencer *) sequencer didCloseGateInTrack:(uint8_t)trackIdx withTrig:(A4Trig)trig atStep:(uint8_t)step context:(TrigContext) context;
-- (void) a4Sequencer: (A4Sequencer *) sequencer didOpenTriglessGateInTrack:(uint8_t)trackIdx withTrig:(A4Trig)trig atStep:(uint8_t)step;
-- (void) a4Sequencer: (A4Sequencer *) sequencer didCloseTriglessGateInTrack:(uint8_t)trackIdx withTrig:(A4Trig)trig atStep:(uint8_t)step;
+- (void) a4Sequencer: (A4Sequencer *) sequencer didOpenGate:(GateEvent)gateEvent;
+- (void) a4Sequencer: (A4Sequencer *) sequencer didCloseGate:(GateEvent)gateEvent;
+- (void) a4Sequencer: (A4Sequencer *) sequencer didStealVoice:(uint8_t)voice noteIdx:(uint8_t)noteIdx gate:(GateEvent)event;
 @end
 
-@interface A4Sequencer : NSObject <A4SequencerTrackDelegate, A4ProjectDelegate>
+@interface A4Sequencer : NSObject <A4ProjectDelegate, A4VoiceAllocatorDelegate>
+@property (nonatomic, strong) A4VoiceAllocator *voiceAllocator;
+@property (nonatomic, strong) A4Kit *kit;
 @property (nonatomic, readonly) BOOL playing;
 @property (strong, nonatomic) A4Project *project;
 @property (nonatomic, strong) NSMutableArray *tracks;

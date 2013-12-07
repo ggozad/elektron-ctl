@@ -98,7 +98,7 @@
 	}
 }
 
-
+/*
 - (void)a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didOpenGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt
 {
 	if(_outputDevice)
@@ -120,7 +120,7 @@
 		[_outputDevice sendNoteOn:on];
 	}
 
-	[super a4SequencerTrack:sequencerTrack didOpenGateWithTrig:trig step:step context:ctxt];
+//	[super a4SequencerTrack:sequencerTrack didOpenGateWithTrig:trig step:step context:ctxt];
 }
 
 - (void)a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didCloseGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt
@@ -139,8 +139,9 @@
 		[_outputDevice sendNoteOn:on];
 	}
 	
-	[super a4SequencerTrack:sequencerTrack didCloseGateWithTrig:trig step:step context:ctxt];
+//	[super a4SequencerTrack:sequencerTrack didCloseGateWithTrig:trig step:step context:ctxt];
 }
+ */
 
 - (void)setOutputDevice:(PGMidiDestination *)outputDevice
 {

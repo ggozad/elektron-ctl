@@ -23,7 +23,6 @@ TrigContext;
 
 typedef enum GateEventType
 {
-	GateEventTypeUndefined,
 	GateEventTypeTrig,
 	GateEventTypeTrigless
 }
@@ -31,12 +30,17 @@ GateEventType;
 
 typedef struct GateEvent
 {
-	NSInteger step;
+	int8_t track;
+	int8_t step;
 	NSInteger clockOn;
 	NSInteger clockLen;
 	NSInteger clocksPassed;
 	NSInteger clockOff;
 	GateEventType type;
+	TrigContext context;
+	A4Trig trig;
+	uint8_t voices[4];
+	NSInteger id;
 }
 GateEvent;
 
@@ -56,32 +60,33 @@ typedef struct ArpState
 	NSInteger noteLengthClocks;
 	NSInteger gateClockCount;
 	NSInteger clock;
+	GateEvent event;
 }
 ArpState;
 
 GateEvent gateEventNull();
 
-@protocol A4SequencerTrackDelegate <NSObject>
-- (void) a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didOpenGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt;
-- (void) a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didCloseGateWithTrig:(A4Trig)trig step:(uint8_t)step context:(TrigContext)ctxt;
-- (void) a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didOpenTriglessGateWithTrig:(A4Trig)trig step:(uint8_t)step;
-- (void) a4SequencerTrack:(A4SequencerTrack *)sequencerTrack didCloseTriglessGateWithTrig:(A4Trig)trig step:(uint8_t)step;
+@interface NSValue(GateEvent)
++(instancetype)valueWithGateEvent:(GateEvent)gateEvent;
+- (GateEvent)gateEventValue;
 @end
 
 @interface A4SequencerTrack : NSObject
-@property (nonatomic, readonly) GateEvent currentOpenGate, nextGate;
-@property (nonatomic, readonly) GateEvent currentOpenTriglessGate, nextTriglessGate;
-@property (nonatomic, readonly) GateEvent nextProperGate;
 @property (nonatomic) ArpState arp;
 @property (nonatomic) NSInteger clock;
 @property (nonatomic) BOOL mute;
 @property (nonatomic, weak) A4PatternTrack *track;
 @property (nonatomic) uint8_t trackIdx;
-@property (nonatomic, weak) id<A4SequencerTrackDelegate> delegate;
 @property (nonatomic) NSInteger clockMultiplier, clockInterpolationFactor;
+@property (nonatomic) GateEvent *onEventsForThisTick, *offEventsForThisTick;
+@property (nonatomic) NSUInteger onEventsLength, offEventsLength;
+@property (nonatomic) GateEvent *openGates;
+@property (nonatomic) NSUInteger numberOfOpenGates;
 - (void) clockTick;
 - (void) start;
 - (void) stop;
 - (void) reset;
 - (void) continue;
+- (GateEvent) openGate:(GateEvent)event;
+- (GateEvent) closeGate:(GateEvent)event;
 @end

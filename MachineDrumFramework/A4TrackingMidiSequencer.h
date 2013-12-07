@@ -28,8 +28,7 @@ A4TrackingMidiSequencerTrackingMode;
 - (void) a4TrackingMidiSequencerDidUpdateContinuousValues:(A4TrackingMidiSequencer *)sequencer;
 @end
 
-@interface A4TrackingMidiSequencer : A4MidiSequencer <A4PerformanceMacroHandlerDelegate, A4VoiceAllocatorDelegate>
-@property (nonatomic, strong) A4VoiceAllocator *voiceAllocator;
+@interface A4TrackingMidiSequencer : A4MidiSequencer <A4PerformanceMacroHandlerDelegate>
 @property (nonatomic, weak) id<A4TrackingMidiSequencerDelegate> delegate;
 @property (nonatomic) A4TrackingMidiSequencerTrackingMode trackingMode;
 @property (nonatomic, strong) A4Kit *sourceKit;

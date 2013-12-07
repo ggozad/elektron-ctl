@@ -30,7 +30,10 @@ A4Trig A4TrigMakeEmpty()
 	A4Trig trig;
 	
 	trig.flags						= 0x00;
-	trig.note						= 0xFF;
+	trig.notes[0]					= 0xFF;
+	trig.notes[1]					= 0xFF;
+	trig.notes[2]					= 0xFF;
+	trig.notes[3]					= 0xFF;
 	trig.velocity					= 0xFF;
 	trig.length						= 0xFF;
 	trig.microTiming				= 0x00;
@@ -43,7 +46,10 @@ A4Trig A4TrigMakeTrigless()
 	A4Trig trig;
 	
 	trig.flags =					A4TRIGFLAGS.TRIGLESS;
-	trig.note						= 0xFF;
+	trig.notes[0]					= 0xFF;
+	trig.notes[1]					= 0xFF;
+	trig.notes[2]					= 0xFF;
+	trig.notes[3]					= 0xFF;
 	trig.velocity					= 0xFF;
 	trig.length						= 0xFF;
 	trig.microTiming				= 0x00;
@@ -57,7 +63,10 @@ A4Trig A4TrigMakeDefault()
 	A4Trig trig;
 	
 	trig.flags =					A4TRIGFLAGS.DEFAULT;
-	trig.note						= 0xFF;
+	trig.notes[0]					= 0xFF;
+	trig.notes[1]					= 0xFF;
+	trig.notes[2]					= 0xFF;
+	trig.notes[3]					= 0xFF;
 	trig.velocity					= 0xFF;
 	trig.length						= 0xFF;
 	trig.microTiming				= 0x00;
@@ -70,7 +79,10 @@ A4Trig A4TrigMakeWithFlags(UInt16 flags)
 	A4Trig trig;
 	
 	trig.flags =					flags;
-	trig.note						= 0xFF;
+	trig.notes[0]					= 0xFF;
+	trig.notes[1]					= 0xFF;
+	trig.notes[2]					= 0xFF;
+	trig.notes[3]					= 0xFF;
 	trig.velocity					= 0xFF;
 	trig.length						= 0xFF;
 	trig.microTiming				= 0x00;
@@ -81,7 +93,10 @@ A4Trig A4TrigMakeWithFlags(UInt16 flags)
 A4Trig A4TrigMakeDefaultWithNote(uint8_t note)
 {
 	A4Trig trig = A4TrigMakeDefault();
-	trig.note = note;
+	trig.notes[0]					= note;
+	trig.notes[1]					= 0xFF;
+	trig.notes[2]					= 0xFF;
+	trig.notes[3]					= 0xFF;
 	return trig;
 }
 
@@ -89,7 +104,10 @@ A4Trig A4TrigMake(UInt16 flags, uint8_t note, uint8_t velocity, uint8_t length, 
 {
 	A4Trig trig;
 	trig.flags = flags;
-	trig.note = note;
+	trig.notes[0]					= note;
+	trig.notes[1]					= 0xFF;
+	trig.notes[2]					= 0xFF;
+	trig.notes[3]					= 0xFF;
 	trig.velocity = velocity;
 	trig.length = length;
 	trig.microTiming = microtime;

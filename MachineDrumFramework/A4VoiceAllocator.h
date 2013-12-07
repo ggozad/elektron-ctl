@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "A4Pattern.h"
+#import "A4SequencerTrack.h"
 
 typedef enum A4VoiceAllocationMode
 {
@@ -18,36 +19,23 @@ typedef enum A4VoiceAllocationMode
 }
 A4VoiceAllocationMode;
 
-
-typedef struct A4TrackVoicePair
-{
-	int8_t track;
-	int8_t voice;
-}
-A4TrackVoicePair;
-
-A4TrackVoicePair A4TrackVoicePairMake(uint8_t track, uint8_t voice);
-
 @class A4VoiceAllocator;
-
 @protocol A4VoiceAllocatorDelegate <NSObject>
-- (void) a4VoiceAllocator:(A4VoiceAllocator *) allocator willStealVoice:(A4TrackVoicePair)voicePair;
+- (void) a4VoiceAllocator:(A4VoiceAllocator *)allocator didStealVoice:(uint8_t)voice noteIdx:(uint8_t) noteIdx gate:(GateEvent)event;
+- (void) a4VoiceAllocator:(A4VoiceAllocator *)allocator didNullifyGate:(GateEvent)event;
 @end
 
-
 @interface A4VoiceAllocator : NSObject
+
 @property (nonatomic) A4VoiceAllocationMode mode;
+@property (nonatomic, weak) id<A4VoiceAllocatorDelegate> delegate;
 @property (nonatomic) uint8_t polyphonicVoices; // lower nibble bitmask;
 @property (nonatomic) uint8_t freeVoices; // lower nibble bitmask;
-@property (nonatomic, readonly) A4TrackVoicePair oldestVoice;
-@property (nonatomic, readonly) A4TrackVoicePair newestVoice;
-@property (nonatomic, weak) id<A4VoiceAllocatorDelegate>delegate;
 
+- (void) reset;
 - (void) setVoice:(uint8_t) voiceIdx polyphonic:(BOOL) active;
 - (BOOL) isVoicePolyphonic:(uint8_t) voiceIdx;
 - (BOOL) isVoiceFree:(uint8_t) voiceIdx;
-- (int8_t)openGateAtTrack:(uint8_t)trackIdx withTrig:(A4Trig)trig;
-- (void) closeGateAtTrack:(uint8_t)trackIdx;
-- (int8_t)openTriglessGateAtTrack:(uint8_t)trackIdx withTrig:(A4Trig)trig;
-- (void) closeTriglessGateAtTrack:(uint8_t)trackIdx;
+- (void) handleOffRequests:(GateEvent *)gates len:(NSUInteger)len;
+- (void) handleOnRequests:(GateEvent *)gates len:(NSUInteger)len;
 @end

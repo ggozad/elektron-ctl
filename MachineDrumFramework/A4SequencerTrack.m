@@ -34,9 +34,31 @@ GateEvent gateEventNull()
 	event.clockOn = -1;
 	event.clockOff = -1;
 	event.clocksPassed = 0;
-	event.type = GateEventTypeUndefined;
+	event.context = TrigContextProperTrig;
+	event.type = GateEventTypeTrig;
+	event.trig = A4TrigMakeEmpty();
+	event.voices[0] = A4NULL;
+	event.voices[1] = A4NULL;
+	event.voices[2] = A4NULL;
+	event.voices[3] = A4NULL;
+	event.id = -1;
 	return event;
 }
+
+
+static NSInteger GateEventIDGenerate()
+{
+	static NSInteger id;
+	id++;
+	if(id == NSIntegerMax) id = 0;
+	return id;
+}
+
+static void GateEventSetID(GateEvent *event)
+{
+	event->id = GateEventIDGenerate();
+}
+
 
 @implementation NSValue(GateEvent)
 +(instancetype)valueWithGateEvent:(GateEvent)gateEvent
@@ -51,16 +73,17 @@ GateEvent gateEventNull()
 @end
 
 @interface A4SequencerTrack()
-@property (nonatomic, strong) NSMutableArray *gateEventValues, *gateEventValuesTrigless;
-@property (nonatomic) BOOL playing, noteGateIsOpen, triglessGateIsOpen;
-@property (nonatomic) A4Trig currentTrig, currentTriglessTrig;
+@property (nonatomic, strong) NSMutableArray *gateEventValues;
+@property (nonatomic) BOOL playing;
 @property (nonatomic) NSInteger trackLength;
-@property (nonatomic) TrigContext currentTrigContext;
 @property (nonatomic) uint8_t step;
-- (void) notifyDelegateGateOn;
-- (void) notifyDelegateGateOff;
-- (void) notifyDelegateTriglessGateOn;
-- (void) notifyDelegateTriglessGateOff;
+
+#define kMaxOpenGates 128
+
+@property (nonatomic) GateEvent nextGate;
+
+
+
 @end
 
 @implementation A4SequencerTrack
@@ -69,18 +92,82 @@ GateEvent gateEventNull()
 {
 	if(self = [super init])
 	{
+		_openGates = malloc(sizeof(GateEvent) * kMaxOpenGates);
+		_onEventsForThisTick = malloc(sizeof(GateEvent) * kMaxOpenGates);
+		_offEventsForThisTick = malloc(sizeof(GateEvent) * kMaxOpenGates);
 		_gateEventValues = @[].mutableCopy;
-		_gateEventValuesTrigless = @[].mutableCopy;
-		_nextGate = gateEventNull();
-		_nextTriglessGate = gateEventNull();
-		_nextProperGate = gateEventNull();
-		_currentOpenGate = gateEventNull();
-		_currentOpenTriglessGate = gateEventNull();
 		_clockInterpolationFactor = 1;
 		_arp.speed = 1;
 	}
 	return self;
 }
+
+- (void)dealloc
+{
+	free(_openGates);
+	free(_onEventsForThisTick);
+	free(_offEventsForThisTick);
+}
+
+
+- (GateEvent)openGate:(GateEvent)event
+{
+	return [self addGateEvent:event];
+}
+
+- (GateEvent)closeGate:(GateEvent)event
+{
+	return [self removeGateEvent:event];
+}
+
+- (GateEvent) addGateEvent:(GateEvent) event
+{
+	if(_numberOfOpenGates == kMaxOpenGates) return gateEventNull();
+	
+	for(int i = 0; i < _numberOfOpenGates; i++)
+	{
+		if(_openGates[i].id == event.id) return gateEventNull();
+	}
+	
+	_openGates[_numberOfOpenGates++] = event;
+	return event;
+}
+
+- (GateEvent) removeGateEvent:(GateEvent) event
+{
+	if(!_numberOfOpenGates) return gateEventNull();
+	
+	for(int i = _numberOfOpenGates-1; i >= 0; i--)
+	{
+		GateEvent currEvent = _openGates[i];
+		if(event.id == currEvent.id)
+		{
+			int numGatesToMove = (_numberOfOpenGates-1)-i;
+			if(numGatesToMove >= 1)
+			{
+				memmove(&_openGates[i], &_openGates[i+1], sizeof(GateEvent) * numGatesToMove);
+			}
+			_numberOfOpenGates--;
+			return currEvent;
+		}
+	}
+	return gateEventNull();
+}
+
+- (GateEvent) lastUsedGateEventWithType:(GateEventType)type
+{
+	GateEvent event = gateEventNull();
+	for(int i = _numberOfOpenGates-1 ; i >= 0; i--)
+	{
+		GateEvent openEvent = _openGates[i];
+		if(openEvent.clockOn == _clock && openEvent.type == type)
+		{
+			event = openEvent; break;
+		}
+	}
+	return event;
+}
+
 
 - (void)setClockInterpolationFactor:(NSInteger)clockInterpolationFactor
 {
@@ -93,10 +180,9 @@ GateEvent gateEventNull()
 	_track = track;
 	[self refreshTrackEvents];
 	[self refreshNextGateEventWithStrtClk:_clock];
-	
-	
-	
 }
+
+
 
 - (void) refreshArpNotesForStep:(uint8_t)step
 {
@@ -144,7 +230,6 @@ GateEvent gateEventNull()
 {
 	if(!_track) return;
 	
-	_currentTrigContext = TrigContextProperTrig;
 	_arp.isActive = _track.arp->mode > 0;
 	_arp.speed = (_track.arp->speed + 1) * _clockInterpolationFactor;
 	_arp.patternLength = _track.arp->patternLength+1;
@@ -175,15 +260,17 @@ GateEvent gateEventNull()
 	int clockupperBound = _trackLength * _clockInterpolationFactor * _clockMultiplier - 1;
 	
 	[_gateEventValues removeAllObjects];
-	[_gateEventValuesTrigless removeAllObjects];
 	
-	GateEvent event;
+	GateEvent event = gateEventNull();
 	
 	for (NSInteger stepIdx = 0; stepIdx < _trackLength; stepIdx++)
 	{
 		A4Trig trig = [_track trigAtStep:stepIdx];
 		if(((trig.flags & A4TRIGFLAGS.TRIG) ^ (trig.flags & A4TRIGFLAGS.TRIGLESS)) && !(trig.flags & A4TRIGFLAGS.MUTE))
 		{
+			if(trig.length == A4NULL) trig.length = _track.settings->trigLength;
+			if(trig.velocity == A4NULL) trig.velocity = _track.settings->trigVelocity;
+			
 			uint8_t len = trig.length;
 			if(len == A4NULL) len = _track.settings->trigLength;
 			int8_t mTim = trig.microTiming;
@@ -201,17 +288,20 @@ GateEvent gateEventNull()
 			event.clockLen = eventLengthClockTicks;
 			event.clocksPassed = 0;
 			event.step = stepIdx;
+			event.trig = trig;
+			event.context = TrigContextProperTrig;
+			event.track = _trackIdx;
 			
 			if(trig.flags & A4TRIGFLAGS.TRIG)
 			{
 				event.type = GateEventTypeTrig;
-				[_gateEventValues addObject:[NSValue valueWithGateEvent:event]];
 			}
 			else
 			{
 				event.type = GateEventTypeTrigless;
-				[_gateEventValuesTrigless addObject:[NSValue valueWithGateEvent:event]];
 			}
+			
+			[_gateEventValues addObject:[NSValue valueWithGateEvent:event]];
 		}
 	}
 	
@@ -234,13 +324,10 @@ GateEvent gateEventNull()
 	};
 
 	[_gateEventValues sortUsingComparator:comparator];
-	[_gateEventValuesTrigless sortUsingComparator:comparator];
 }
 
 - (void)start
 {
-	_noteGateIsOpen = NO;
-	_triglessGateIsOpen = NO;
 	_arp.gateIsOpen = NO;
 	_arp.gateClockCount = 0;
 	_arp.clock = 0;
@@ -254,134 +341,64 @@ GateEvent gateEventNull()
 	_step = 0;
 	
 	[self refreshNextGateEventWithStrtClk:0];
-	[self refreshNextGateEventTriglessWithStrtClk:0];
 }
 
 - (void)stop
 {
-	if(_arp.gateIsOpen || _noteGateIsOpen)
-	{
-		[self notifyDelegateGateOff];
-	}
-	if(_triglessGateIsOpen)
-	{
-		[self notifyDelegateTriglessGateOff];
-	}
-	
 	_playing = NO;
-	_noteGateIsOpen = NO;
-	_triglessGateIsOpen = NO;
 	_arp.gateIsOpen = NO;
 	_arp.step = 0;
 	_arp.octave = 0;
 	_arp.notesIdx = 0;
 	_arp.clock = 0;
 	_arp.notesStep = 0;
+	
+	for(int i = 0; i < _numberOfOpenGates; i++)
+	{
+		if(i >= _numberOfOpenGates) break;
+		_offEventsForThisTick[_offEventsLength++] = _openGates[i];
+	}
 }
 
 - (void)continue
 {
-	_noteGateIsOpen = NO;
-	_triglessGateIsOpen = NO;
 	_arp.gateIsOpen = NO;
 	_arp.step = 0;
 	_arp.octave = 0;
 	_arp.notesIdx = 0;
 	_arp.clock = 0;
 	_playing = YES;
+	
+	[self refreshNextGateEventWithStrtClk:_clock];
 }
+
+
 
 - (void)clockTick
 {
+	_onEventsLength = 0;
+	_offEventsLength = 0;
+	
+	for(int i = 0; i < _numberOfOpenGates; i++)
+	{
+		if(i >= _numberOfOpenGates) break;
+		_openGates[i].clocksPassed++;
+		if(_openGates[i].clocksPassed == _openGates[i].clockLen)
+		{
+			_offEventsForThisTick[_offEventsLength++] = _openGates[i];
+		}
+	}
+	
 	if(_playing)
 	{
-//		DLog(@"tick %d", _clockInTrack);
-		
-		
-		if(_clock == _nextTriglessGate.clockOn)
-		{
-			_triglessGateIsOpen = YES;
-			
-			if(_gateEventValuesTrigless.count)
-			{
-				_currentOpenTriglessGate = _nextTriglessGate;
-				[self refreshNextGateEventTriglessWithStrtClk:_clock+1];
-			}
-			
-			[self updateCurrentTriglessTrig];
-			[self notifyDelegateTriglessGateOn];
-		}
-		
 		if(_clock == _nextGate.clockOn)
 		{
-			_noteGateIsOpen = YES;
-		
-			if(_gateEventValues.count)
-			{
-				_currentOpenGate = _nextGate;
-				[self refreshNextGateEventWithStrtClk:_clock+1];
-			}
-			
-			if(_arp.isActive)
-			{
-				[self refreshArpNotesForStep:_currentOpenGate.step];
-				_arp.clock = 0;
-				_currentTrigContext = TrigContextProperTrig;
-				_arp.step = 0;
-				_arp.notesStep = 0;
-			}
-			else
-			{
-				[self updateCurrentTrig];
-				[self notifyDelegateGateOn];
-			}
+			GateEvent e = _nextGate;
+			GateEventSetID(&e);
+			printf("req gate id: %d\n", e.id);
+			_onEventsForThisTick[_onEventsLength++] = e;
+			[self refreshNextGateEventWithStrtClk:_clock+1];
 		}
-		
-		if(_arp.isActive)
-		{
-			if(_noteGateIsOpen && _arp.clock % _arp.speed == 0)
-			{
-				if([_track arpPatternStateAtStep: _arp.step % _arp.patternLength])
-				{
-					if(_arp.clock > 0) _currentTrigContext = TrigContextArpTrig;
-					_arp.gateIsOpen= YES;
-					_arp.gateClockCount = 0;
-					[self updateCurrentTrig];
-					[self notifyDelegateGateOn];
-				}
-				_arp.step++;
-			}
-			if(_arp.gateIsOpen)
-			{
-				_arp.gateClockCount++;
-				if(_arp.gateClockCount == _arp.noteLengthClocks)
-				{
-					_arp.gateIsOpen = NO;
-					[self notifyDelegateGateOff];
-				}
-			}
-			
-			_arp.clock++;
-			if(_arp.clock == NSIntegerMax) _arp.clock -= NSIntegerMax;
-		}
-		
-		if(_noteGateIsOpen && _currentOpenGate.clocksPassed == _currentOpenGate.clockLen)
-		{
-			_noteGateIsOpen = NO;
-			if(!_arp.gateIsOpen)
-			{
-				[self notifyDelegateGateOff];
-			}
-		}
-		if(_triglessGateIsOpen && _currentOpenTriglessGate.clocksPassed == _currentOpenTriglessGate.clockLen)
-		{
-			_triglessGateIsOpen = NO;
-			[self notifyDelegateTriglessGateOff];
-		}
-		
-		if(_noteGateIsOpen) _currentOpenGate.clocksPassed++;
-		if(_triglessGateIsOpen) _currentOpenTriglessGate.clocksPassed++;
-		
 		
 		[self incrementClock];
 	}
@@ -435,102 +452,6 @@ GateEvent gateEventNull()
 	{
 		_nextGate = [_gateEventValues[idx] gateEventValue];
 	}
-	
-	[self refreshNextProperGateEvent];
-}
-
-- (void)refreshNextGateEventTriglessWithStrtClk:(NSInteger)strtClk;
-{
-	NSInteger idx = -1;
-	NSInteger i = 0;
-	for(NSValue *val in _gateEventValuesTrigless)
-	{
-		GateEvent event = [val gateEventValue];
-		if(event.clockOn >= strtClk)
-		{
-			idx = i; break;
-		}
-		i++;
-	}
-	
-	if(idx == -1)
-	{
-		i = 0;
-		for(NSValue *val in _gateEventValuesTrigless)
-		{
-			GateEvent event = [val gateEventValue];
-			if(event.clockOn >= 0)
-			{
-				idx = i; break;
-			}
-			i++;
-			
-			if(event.clockOn == strtClk) break;
-		}
-	}
-	
-	if(idx == -1)
-	{
-		_nextTriglessGate = gateEventNull();
-	}
-	else
-	{
-		_nextTriglessGate = [_gateEventValuesTrigless[idx] gateEventValue];
-	}
-	
-	[self refreshNextProperGateEvent];
-}
-
-- (void) refreshNextProperGateEvent
-{
-	GateEvent nextGateEvent = _nextGate;
-	GateEvent nextTriglessGateEvent = _nextTriglessGate;
-	int numClocksToNextGate = -1;
-	int numClocksToNextTriglessGate = -1;
-	NSInteger trackLenClocks = _clockMultiplier * _trackLength;
-	
-	if(nextGateEvent.clockOn > -1)
-	{
-		if(_clock < nextGateEvent.clockOn)
-			numClocksToNextGate = nextGateEvent.clockOn - _clock;
-		else
-		{
-			int lenClocks = trackLenClocks - _clock;
-			lenClocks += nextGateEvent.step;
-			numClocksToNextGate = lenClocks;
-		}
-	}
-	if(nextTriglessGateEvent.clockOn > -1)
-	{
-		if(_clock < nextTriglessGateEvent.clockOn)
-			numClocksToNextTriglessGate = nextTriglessGateEvent.clockOn - _clock;
-		else
-		{
-			int lenClocks = trackLenClocks - _clock;
-			lenClocks += nextTriglessGateEvent.step;
-			numClocksToNextTriglessGate = lenClocks;
-		}
-	}
-	if(numClocksToNextTriglessGate != -1 && numClocksToNextGate != -1)
-	{
-		if(numClocksToNextTriglessGate < numClocksToNextGate)
-		{
-			_nextProperGate =  nextTriglessGateEvent;
-		}
-		else
-		{
-			_nextProperGate = nextGateEvent;
-		}
-	}
-	else if (numClocksToNextTriglessGate != -1)
-	{
-		_nextProperGate = nextTriglessGateEvent;
-	}
-	else if (numClocksToNextGate != -1)
-	{
-		_nextProperGate = nextGateEvent;
-	}
-	else _nextProperGate = gateEventNull();
 }
 
 - (void)reset
@@ -538,25 +459,13 @@ GateEvent gateEventNull()
 	_clock = 0;
 	[self refreshTrackEvents];
 	[self refreshNextGateEventWithStrtClk:_clock];
-	[self refreshNextGateEventTriglessWithStrtClk:_clock];
 }
 
-- (void) updateCurrentTriglessTrig
+/*
+- (void) updateArp
 {
-	A4Trig trig = [_track trigAtStep:_currentOpenTriglessGate.step];
-	_currentTriglessTrig = trig;
-	if(_currentTriglessTrig.note != A4NULL && _track.settings->keyScale > 0)
-	{
-		[self constrainKeyInCurrentTriglessTrig];
-	}
-}
-
-- (void) updateCurrentTrig
-{
-	A4Trig trig = [_track trigAtStep:_currentOpenGate.step];
-	if(trig.note == A4NULL) trig.note = _track.settings->trigNote;
-	if(trig.length == A4NULL) trig.length = _track.settings->trigLength;
-	if(trig.velocity == A4NULL) trig.velocity = _track.settings->trigVelocity;
+	if(!_arp.isActive) return;
+	A4Trig trig = _arp.event.trig;
 	int note = trig.note;
 	BOOL arpPatternStepActive = [_track arpPatternStateAtStep:_arp.step % _arp.patternLength];
 	A4ArpMode arpMode = _track.arp->mode;
@@ -651,43 +560,27 @@ GateEvent gateEventNull()
 		}
 	}
 	
-	_currentTrig = trig;
 	if(_track.settings->keyScale > 0)
 	{
 		[self constrainKeyInCurrentTrig];
 	}
 }
+*/
 
 
-
-- (void) constrainKeyInCurrentTrig
+- (void) updateCurrentTrig
 {
-	_currentTrig.note = [A4PatternTrack constrainKeyInTrack:_track note:_currentTrig.note];
+	
 }
 
-- (void) constrainKeyInCurrentTriglessTrig
-{
-	_currentTriglessTrig.note = [A4PatternTrack constrainKeyInTrack:_track note:_currentTriglessTrig.note];
-}
 
-- (void)notifyDelegateGateOn
-{
-	[_delegate a4SequencerTrack:self didOpenGateWithTrig:_currentTrig step:_currentOpenGate.step context:_currentTrigContext];
-}
 
-- (void)notifyDelegateGateOff
+- (void) constrainKeyInTrig:(A4Trig *)trig
 {
-	[_delegate a4SequencerTrack:self didCloseGateWithTrig:_currentTrig step:_currentOpenGate.step context:_currentTrigContext];
-}
-
-- (void)notifyDelegateTriglessGateOn
-{
-	[_delegate a4SequencerTrack:self didOpenTriglessGateWithTrig:_currentTriglessTrig step:_currentOpenTriglessGate.step];
-}
-
-- (void)notifyDelegateTriglessGateOff
-{
-	[_delegate a4SequencerTrack:self didCloseTriglessGateWithTrig:_currentTriglessTrig step:_currentOpenTriglessGate.step];
+	for(int i = 0; i < 4; i++)
+	{
+		trig->notes[i] = [A4PatternTrack constrainKeyInTrack:_track note:trig->notes[i]];
+	}
 }
 
 @end

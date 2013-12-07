@@ -197,7 +197,7 @@ ParameterSlide;
 	_currentTrig = trig;
 	_currentTrigContext = context;
 	
-	if(trig.note != A4NULL) _lastNote = trig.note;
+//	if(trig.note != A4NULL) _lastNote = trig.note;
 	
 
 	if(trig.soundLock != A4NULL)
@@ -248,7 +248,7 @@ ParameterSlide;
 	_triglessGateIsOpen = YES;
 	_currentTriglessTrig = trig;
 	_locksBufLen = 0;
-	if(trig.note != A4NULL) _lastNote = trig.note;
+//	if(trig.note != A4NULL) _lastNote = trig.note;
 	
 	if(A4LocksForTrackAndStep(_sourceTrack.pattern, step, _trackIdx, _locksBuf, &_locksBufLen))
 	{

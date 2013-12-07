@@ -16,6 +16,8 @@
 @implementation A4TrackingMidiSequencer
 
 
+/*
+
 + (instancetype)trackingSequencerWithDelegate:(id<A4TrackingMidiSequencerDelegate>)delegate outputDevice:(PGMidiDestination *)dst inputDevice:(PGMidiSource *)src
 {
 	A4TrackingMidiSequencer *instance = [self sequencerWithDelegate:delegate outputDevice:dst inputDevice:src];
@@ -392,5 +394,5 @@
 		[track updateContinuousValuesWithTime:_time];
 	}
 }
-
+*/
 @end

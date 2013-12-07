@@ -32,7 +32,7 @@ A4TrigFlagsStruct;
 typedef struct A4Trig
 {
 	UInt16	flags;
-	uint8_t note;
+	uint8_t notes[4];
 	uint8_t velocity;
 	uint8_t length;
 	int8_t  microTiming;
