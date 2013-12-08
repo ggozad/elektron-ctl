@@ -12,6 +12,7 @@
 @interface A4ControllerdataHandler ()
 {
 	uint8_t *NRPNBuf;
+	uint8_t lastNRPNChannel;
 	uint8_t nextExpectedControllerParam;
 	uint8_t performanceCCKnob, performanceCCValue;
 }
@@ -22,17 +23,26 @@
 
 - (void) dealWithPerformanceMacroCC
 {
-	[self.delegate a4ControllerdataHandler:self knob:performanceCCKnob didChangeValue:performanceCCValue];
+	[self.delegate a4ControllerdataHandler:self performanceKnob:performanceCCKnob didChangeValue:performanceCCValue];
 }
 
-- (void) dealWithPerformanceMacroNRPN
+- (void) dealWithNRPN
 {
-	[self.delegate a4ControllerdataHandler:self knob:NRPNBuf[1] didChangeValue:NRPNBuf[2]];
+	if( NRPNBuf[0] == 0 && lastNRPNChannel == _performanceChannel)
+	{
+		[self.delegate a4ControllerdataHandler:self performanceKnob:NRPNBuf[1] didChangeValue:NRPNBuf[2]];
+	}
+	else if (NRPNBuf[0] == 1 && NRPNBuf[1] == 101)
+	{
+		[self.delegate a4ControllerdataHandler:self track:lastNRPNChannel wasMuted:NRPNBuf[2]];
+	}
 }
 
 - (void)midiReceivedControlChange:(MidiControlChange)controlChange fromSource:(PGMidiSource *)source
 {
-	if(source == self.inputSource && controlChange.channel == 0x07)
+//	printf("cc chn: %d ctrl: %d val: %d\n", controlChange.channel, controlChange.parameter, controlChange.value);
+	
+	if(source == _inputSource)
 	{
 		switch (controlChange.parameter)
 		{
@@ -65,86 +75,104 @@
 				if(nextExpectedControllerParam == 0x26)
 				{
 					NRPNBuf[3] = controlChange.value;
-					[self dealWithPerformanceMacroNRPN];
+					lastNRPNChannel = controlChange.channel;
+					[self dealWithNRPN];
 				}
 				break;
 			}
-			case 0x03:
-			{
-				performanceCCKnob = 0;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x04:
-			{
-				performanceCCKnob = 1;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x08:
-			{
-				performanceCCKnob = 2;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x09:
-			{
-				performanceCCKnob = 3;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x0B:
-			{
-				performanceCCKnob = 4;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x40:
-			{
-				performanceCCKnob = 5;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x41:
-			{
-				performanceCCKnob = 6;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x42:
-			{
-				performanceCCKnob = 7;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x43:
-			{
-				performanceCCKnob = 8;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-			case 0x44:
-			{
-				performanceCCKnob = 9;
-				performanceCCValue = controlChange.value;
-				[self dealWithPerformanceMacroCC];
-				break;
-			}
-				
-				
+			
 			default:
 				break;
 		}
+		
+		if(controlChange.channel == _performanceChannel)
+		{
+			switch (controlChange.parameter)
+			{
+				case 0x03:
+				{
+					performanceCCKnob = 0;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x04:
+				{
+					performanceCCKnob = 1;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x08:
+				{
+					performanceCCKnob = 2;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x09:
+				{
+					performanceCCKnob = 3;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x0B:
+				{
+					performanceCCKnob = 4;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x40:
+				{
+					performanceCCKnob = 5;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x41:
+				{
+					performanceCCKnob = 6;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x42:
+				{
+					performanceCCKnob = 7;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x43:
+				{
+					performanceCCKnob = 8;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+				case 0x44:
+				{
+					performanceCCKnob = 9;
+					performanceCCValue = controlChange.value;
+					[self dealWithPerformanceMacroCC];
+					break;
+				}
+					
+				default: break;
+			}
+			
+		}
+		else
+		{
+			if(controlChange.channel < 6 && controlChange.parameter == 94)
+			{
+				[self.delegate a4ControllerdataHandler:self track:controlChange.channel wasMuted:controlChange.value];
+			}
+		}
 	}
+	
 }
 
 - (id)init
@@ -161,9 +189,9 @@
 	free(NRPNBuf);
 }
 
-- (void)setChannel:(uint8_t)channel
+- (void)setPerformanceChannel:(uint8_t)performanceChannel
 {
-	if(channel < 16) _channel = channel;
+	if(performanceChannel < 16) _performanceChannel = performanceChannel;
 }
 
 - (void)setInputSource:(PGMidiSource *)inputSource
@@ -184,13 +212,10 @@
 }
 
 + (instancetype)controllerdataHandlerWithDelegate:(id<A4ControllerdataHandlerDelegate>)delegate
-									  inputSource:(PGMidiSource *)source channel:(uint8_t)channel
 {
 	A4ControllerdataHandler *handler = [self new];
 	
 	handler.delegate = delegate;
-	handler.channel = channel;
-	handler.inputSource = source;
 	handler.enabled = YES;
 	
 	return handler;

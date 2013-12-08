@@ -74,13 +74,6 @@ typedef struct A4PatternSettings
 }
 A4PatternSettings;
 
-/*
- *
- *	Create a list of Locks for a specific step in a pattern
- *	needs to be freed manually
- *
- */
-
 BOOL A4LocksForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t track, A4PVal *locks, uint8_t *len);
 BOOL A4LocksCreateForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t track, A4PVal **locks, uint8_t *len);
 void A4LocksRelease(A4PVal **locks);

@@ -42,6 +42,7 @@ A4SequencerMode;
 @property (nonatomic) NSInteger clockMultiplier, clockInterpolationFactor;
 @property (nonatomic, weak) id<A4SequencerDelegate>delegate;
 + (instancetype) sequencerWithDelegate:(id<A4SequencerDelegate>)delegate;
+- (void) setTrack:(uint8_t)track muted:(BOOL)muted;
 - (BOOL) setPattern:(A4Pattern *)pattern;
 - (A4Pattern *)pattern;
 - (void) setPattern:(A4Pattern *)pattern mode:(A4SequencerMode)mode;

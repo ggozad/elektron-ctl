@@ -33,6 +33,13 @@
 
 - (void) addGate:(GateEvent)gate
 {
+	printf("adding gate with voices:\n%d\n%d\n%d\n%d\n",
+		   gate.voices[0],
+		   gate.voices[1],
+		   gate.voices[2],
+		   gate.voices[3]);
+	
+	
 	if(_gatesLen == kNumMaxGates) return;
 	for(int i = 0; i < _gatesLen; i++)
 	{
@@ -50,6 +57,7 @@
 			for(int j = 0; j < 4; j++)
 			{
 				uint8_t voice = _gates[i].voices[j];
+				
 				[self freeVoice:voice];
 			}
 			
@@ -91,6 +99,7 @@
 
 - (BOOL) freeVoice:(uint8_t)voice
 {
+	printf("freeing voice %d\n", voice);
 	if(voice == A4NULL) return NO;
 	
 	for(uint8_t i = 0; i < _usedVoicesLen; i++)
@@ -278,7 +287,8 @@
 {
 	int num = [self totalRequestedVoicesInGates:gates len:len];
 	if(num > 4) num = 4;
-	DLog(@"num: %d", num);
+	
+	DLog(@"handle on requests: %d", num);
 	
 	int allocatedVoices = 0;
 	for(int noteIdx = 0; noteIdx < 4; noteIdx++)
@@ -291,14 +301,14 @@
 				{
 					uint8_t voice = [self allocateSingleVoiceForGate:gates[gateIdx]];
 					
+					
 					printf("allocating voice %d to track %d note %d\n",
 						   voice, gates[gateIdx].track, noteIdx);
-					
+	
 					gates[gateIdx].voices[noteIdx] = voice;
 					
-					[self addGate:gates[gateIdx]];
-					
 					allocatedVoices++;
+					if(allocatedVoices == num || noteIdx == 3) [self addGate:gates[gateIdx]];
 					if(allocatedVoices == num) break;
 				}
 			}
@@ -313,7 +323,7 @@
 		if(allocatedVoices == num) break;
 	}
 	
-	printf("gates len: %d\n", _gatesLen);
+//	printf("gates len: %d\n", _gatesLen);
 }
 
 - (void)handleOffRequests:(GateEvent *)gates len:(NSUInteger)len

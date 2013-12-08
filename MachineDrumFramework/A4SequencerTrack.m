@@ -109,6 +109,21 @@ static void GateEventSetID(GateEvent *event)
 	free(_offEventsForThisTick);
 }
 
+- (void)setMuted:(BOOL)muted
+{
+	if(_muted != muted)
+	{
+		if(muted)
+		{
+			[self cancelActiveGatesAndArp];
+		}
+		else
+		{
+			[self refreshNextGateEventWithStrtClk:_clock];
+		}
+		_muted = muted;
+	}
+}
 
 - (GateEvent)openGate:(GateEvent)event
 {
@@ -326,6 +341,23 @@ static void GateEventSetID(GateEvent *event)
 	[_gateEventValues sortUsingComparator:comparator];
 }
 
+- (void) cancelActiveGatesAndArp
+{
+	_arp.gateIsOpen = NO;
+	_arp.step = 0;
+	_arp.octave = 0;
+	_arp.notesIdx = 0;
+	_arp.clock = 0;
+	_arp.notesStep = 0;
+	_offEventsLength = 0;
+	
+	for(int i = 0; i < _numberOfOpenGates; i++)
+	{
+		if(i >= _numberOfOpenGates) break;
+		_offEventsForThisTick[_offEventsLength++] = _openGates[i];
+	}
+}
+
 - (void)start
 {
 	_arp.gateIsOpen = NO;
@@ -346,18 +378,7 @@ static void GateEventSetID(GateEvent *event)
 - (void)stop
 {
 	_playing = NO;
-	_arp.gateIsOpen = NO;
-	_arp.step = 0;
-	_arp.octave = 0;
-	_arp.notesIdx = 0;
-	_arp.clock = 0;
-	_arp.notesStep = 0;
-	
-	for(int i = 0; i < _numberOfOpenGates; i++)
-	{
-		if(i >= _numberOfOpenGates) break;
-		_offEventsForThisTick[_offEventsLength++] = _openGates[i];
-	}
+	[self cancelActiveGatesAndArp];
 }
 
 - (void)continue
@@ -391,13 +412,15 @@ static void GateEventSetID(GateEvent *event)
 	
 	if(_playing)
 	{
-		if(_clock == _nextGate.clockOn)
+		if(!_muted)
 		{
-			GateEvent e = _nextGate;
-			GateEventSetID(&e);
-			printf("req gate id: %d\n", e.id);
-			_onEventsForThisTick[_onEventsLength++] = e;
-			[self refreshNextGateEventWithStrtClk:_clock+1];
+			if(_clock == _nextGate.clockOn)
+			{
+				GateEvent e = _nextGate;
+				GateEventSetID(&e);
+				_onEventsForThisTick[_onEventsLength++] = e;
+				[self refreshNextGateEventWithStrtClk:_clock+1];
+			}
 		}
 		
 		[self incrementClock];
@@ -446,7 +469,14 @@ static void GateEventSetID(GateEvent *event)
 	
 	if(idx == -1)
 	{
-		_nextGate = gateEventNull();
+		if(_gateEventValues.count)
+		{
+			_nextGate = [_gateEventValues[0] gateEventValue];
+		}
+		else
+		{
+			_nextGate = gateEventNull();
+		}
 	}
 	else
 	{

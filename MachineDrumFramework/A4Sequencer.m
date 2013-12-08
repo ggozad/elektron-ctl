@@ -18,6 +18,7 @@
 @property (nonatomic) NSInteger clock;
 @property (nonatomic) GateEvent *requestedOnEvents, *requestedOffEvents;
 @property (nonatomic) NSUInteger requestedOnEventsLen, requestedOffEventsLen;
+@property (nonatomic) uint8_t tracksToMuteOnNextTick, tracksToUnMuteOnNextTick;
 @end
 
 @implementation A4Sequencer
@@ -50,15 +51,18 @@
 
 - (void)clockTick
 {
+	[self handleMutes];
+	
 	if(_playing)
 	{
+		_clock++;
+		_requestedOnEventsLen = 0;
+		_requestedOffEventsLen = 0;
+		
 		for(A4SequencerTrack *trk in _tracks)
 		{
 			[trk clockTick];
 		}
-		_clock++;
-		_requestedOnEventsLen = 0;
-		_requestedOffEventsLen = 0;
 		
 		[self accumulateClosedGatesFromTracksToFreedVoices];
 		[self handleOffRequests];
@@ -67,6 +71,42 @@
 		
 		[self checkEndOfPattern];
 	}
+}
+
+- (void)setTrack:(uint8_t)track muted:(BOOL)muted
+{
+	if(track > 5) return;
+	if(muted) _tracksToMuteOnNextTick |= 1 << track;
+	else _tracksToUnMuteOnNextTick |= 1 << track;
+}
+
+- (void) handleMutes
+{
+	for(int i = 0; i < 6; i++)
+	{
+		BOOL unMute = NO;
+		BOOL mute = NO;
+		
+		if(_tracksToMuteOnNextTick & (1 << i)) mute = YES;
+		if(_tracksToUnMuteOnNextTick & (1 << i)) unMute = YES;
+		
+		if(unMute && !mute)
+		{
+			A4SequencerTrack *trk = _tracks[i];
+			trk.muted = NO;
+		}
+		else if (mute)
+		{
+			A4SequencerTrack *trk = _tracks[i];
+			trk.muted = YES;
+			[self accumulateClosedGatesFromTracksToFreedVoices];
+			[self handleOffRequests];
+		}
+		
+	}
+	
+	_tracksToMuteOnNextTick = 0;
+	_tracksToUnMuteOnNextTick = 0;
 }
 
 - (void) accumulateClosedGatesFromTracksToFreedVoices
@@ -299,8 +339,10 @@
 - (void)setKit:(A4Kit *)kit
 {
 	_kit = kit;
+	DLog(@"name: %d", kit.name);
 	self.voiceAllocator.mode = kit.polyphony->allocationMode;
-	self.voiceAllocator.polyphonicVoices = (kit.polyphony->activeVoices) & 0x0F;
+	uint8_t voices = kit.polyphony->activeVoices;
+	self.voiceAllocator.polyphonicVoices = voices;
 }
 
 - (BOOL) setPattern:(A4Pattern *)pattern
@@ -328,7 +370,7 @@
 			seqTrack.track = _pattern.tracks[i];
 		}
 		
-		self.kit = [self.project kitAtPosition:_pattern.position];
+		self.kit = [self.project kitAtPosition:_pattern.kit copy:YES];
 		[self.delegate a4SequencerDidChangePattern:self];
 		return YES;
 	}

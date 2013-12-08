@@ -14,13 +14,14 @@
 
 
 @protocol A4ControllerdataHandlerDelegate <NSObject>
-- (void) a4ControllerdataHandler:(A4ControllerdataHandler *)handler knob:(uint8_t)knob didChangeValue:(uint8_t)value;
+- (void) a4ControllerdataHandler:(A4ControllerdataHandler *)handler performanceKnob:(uint8_t)knob didChangeValue:(uint8_t)value;
+- (void) a4ControllerdataHandler:(A4ControllerdataHandler *)handler track:(uint8_t) trackIdx wasMuted:(BOOL)muted;
 @end
 
 @interface A4ControllerdataHandler : NSObject <MidiInputDelegate, PGMidiDelegate>
 @property (nonatomic, weak) id<A4ControllerdataHandlerDelegate> delegate;
 @property (nonatomic, weak) PGMidiSource *inputSource;
-@property (nonatomic) uint8_t channel;
+@property (nonatomic) uint8_t performanceChannel;
 @property (nonatomic) BOOL enabled;
-+ (instancetype) controllerdataHandlerWithDelegate:(id<A4ControllerdataHandlerDelegate>)delegate inputSource:(PGMidiSource *)source channel:(uint8_t)channel;
++ (instancetype) controllerdataHandlerWithDelegate:(id<A4ControllerdataHandlerDelegate>)delegate;
 @end

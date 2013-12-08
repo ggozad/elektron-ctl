@@ -11,7 +11,7 @@
 #import "A4Kit.h"
 #import "A4Project.h"
 #import "A4TrackerTrack.h"
-#import "A4PerformanceMacroHandler.h"
+#import "A4ControllerdataHandler.h"
 #import "A4VoiceAllocator.h"
 
 
@@ -28,13 +28,12 @@ A4TrackingMidiSequencerTrackingMode;
 - (void) a4TrackingMidiSequencerDidUpdateContinuousValues:(A4TrackingMidiSequencer *)sequencer;
 @end
 
-@interface A4TrackingMidiSequencer : A4MidiSequencer <A4PerformanceMacroHandlerDelegate>
+@interface A4TrackingMidiSequencer : A4MidiSequencer
 @property (nonatomic, weak) id<A4TrackingMidiSequencerDelegate> delegate;
 @property (nonatomic) A4TrackingMidiSequencerTrackingMode trackingMode;
 @property (nonatomic, strong) A4Kit *sourceKit;
 @property (nonatomic) A4TrackerParam_t **targetParams;
 @property (nonatomic, strong) A4Project *project;
-@property (nonatomic, strong) A4PerformanceMacroHandler *performanceMacroHandler;
 @property (nonatomic) double time;
 + (instancetype)trackingSequencerWithDelegate:(id<A4TrackingMidiSequencerDelegate>)delegate outputDevice:(PGMidiDestination *)dst inputDevice:(PGMidiSource *)src;
 - (void) updateContinuousValues;

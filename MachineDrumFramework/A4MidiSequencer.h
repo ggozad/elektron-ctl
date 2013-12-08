@@ -10,6 +10,7 @@
 #import "A4Sequencer.h"
 #import "PGMidi.h"
 #import "MDMIDI.h"
+#import "A4ControllerdataHandler.h"
 
 @class A4MidiSequencer;
 
@@ -17,9 +18,10 @@
 - (void) a4MidiSequencer:(A4MidiSequencer *)sequencer didReceiveProgramChange:(MidiProgramChange)programChange;
 @end
 
-@interface A4MidiSequencer : A4Sequencer <MidiInputDelegate, PGMidiDelegate>
+@interface A4MidiSequencer : A4Sequencer <MidiInputDelegate, PGMidiDelegate, A4ControllerdataHandlerDelegate>
 @property (nonatomic, weak) PGMidiSource *inputDevice;
 @property (nonatomic, weak) PGMidiDestination *outputDevice;
+@property (nonatomic, strong) A4ControllerdataHandler *controllerdataHandler;
 @property (nonatomic, weak) id<A4MidiSequencerDelegate>delegate;
 + (instancetype)sequencerWithDelegate:(id<A4MidiSequencerDelegate>)delegate outputDevice:(PGMidiDestination *)dst inputDevice:(PGMidiSource *)src;
 - (void) setOutputChannel:(uint8_t)channel forTrack:(uint8_t)track;

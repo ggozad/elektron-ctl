@@ -74,7 +74,7 @@ GateEvent gateEventNull();
 @interface A4SequencerTrack : NSObject
 @property (nonatomic) ArpState arp;
 @property (nonatomic) NSInteger clock;
-@property (nonatomic) BOOL mute;
+@property (nonatomic) BOOL muted;
 @property (nonatomic, weak) A4PatternTrack *track;
 @property (nonatomic) uint8_t trackIdx;
 @property (nonatomic) NSInteger clockMultiplier, clockInterpolationFactor;

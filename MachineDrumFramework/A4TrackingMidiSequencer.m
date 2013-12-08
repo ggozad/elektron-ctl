@@ -28,7 +28,6 @@
 - (void)setInputDevice:(PGMidiSource *)inputDevice
 {
 	[super setInputDevice:inputDevice];
-	self.performanceMacroHandler.inputSource = inputDevice;
 }
 
 - (void)a4VoiceAllocator:(A4VoiceAllocator *)allocator willStealVoice:(A4TrackVoicePair)voicePair
@@ -239,7 +238,6 @@
 			track.trackIdx = i;
 			track.sequencer = self;
 			[self.trackerTracks addObject:track];
-			self.performanceMacroHandler = [A4PerformanceMacroHandler performanceMacroHandlerWithDelegate:self inputSource:nil channel:7];
 		}
 		
 		self.project = self.project;

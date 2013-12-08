@@ -38,6 +38,19 @@
 	
 }
 
+- (void)a4ControllerdataHandler:(A4ControllerdataHandler *)handler performanceKnob:(uint8_t)knob didChangeValue:(uint8_t)value
+{
+	printf("perf knob %c was set to %d\n", 'A' + knob, value);
+}
+
+- (void)a4ControllerdataHandler:(A4ControllerdataHandler *)handler track:(uint8_t)trackIdx wasMuted:(BOOL)muted
+{
+	[self setTrack:trackIdx muted:muted];	
+	printf("track %d was %s\n", trackIdx, muted ? "muted" : "unmuted");
+}
+
+
+
 - (void)midiReceivedProgramChange:(MidiProgramChange)programChange fromSource:(PGMidiSource *)source
 {
 //	DLog(@"lul?");
@@ -174,6 +187,7 @@
 		}
 		_inputDevice = inputDevice;
 		self.clockInterpolationFactor = _inputDevice.parser.interpolationDivisions;
+		self.controllerdataHandler.inputSource = inputDevice;
 	}
 }
 
@@ -223,6 +237,8 @@
 		_outputChannels = calloc(6, sizeof(uint8_t));
 		_noteOn = calloc(6, sizeof(MidiNoteOn));
 		_holdingNote = calloc(6, sizeof(BOOL));
+		self.controllerdataHandler = [A4ControllerdataHandler controllerdataHandlerWithDelegate:self];
+		self.controllerdataHandler.performanceChannel = 7;
 	}
 	return self;
 }
