@@ -8,6 +8,23 @@
 
 #import "A4SysexMessage.h"
 
-@interface A4Global : A4SysexMessage
+typedef struct A4MultimapEntry
+{
+	uint8_t bytes[16];
+}
+A4MultimapEntry;
 
+typedef struct A4Multimap
+{
+	A4MultimapEntry entries[128];
+}
+A4Multimap;
+
+@interface A4Global : A4SysexMessage
+@property (nonatomic) A4Multimap *multimap;
+@property (nonatomic) double masterTune;
+@property (nonatomic) BOOL quantizeLiveRecording;
+@property (nonatomic) BOOL kitReloadOnChange;
+
+@property (nonatomic) BOOL midiClockReceive, midiClockSend;
 @end

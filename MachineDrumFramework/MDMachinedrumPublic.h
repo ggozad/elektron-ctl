@@ -53,7 +53,9 @@
 #import "A4Sound.h"
 #import "A4Song.h"
 #import "A4Global.h"
+#import "A4Settings.h"
 #import "A4Project.h"
+#import "A4Request.h"
 
 #import "A4SequencerTrack.h"
 #import "A4Sequencer.h"

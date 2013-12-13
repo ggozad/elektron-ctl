@@ -10,7 +10,7 @@
 #import "MDConstants.h"
 #import <mach/mach_time.h>
 #import <QuartzCore/QuartzCore.h>
-
+#import "A4Queues.h"
 
 
 #define kMidiInputParserBufferSize (1024*1024)
@@ -28,35 +28,6 @@
 	BOOL interpolationTimerIsSuspended;
 }
 @end
-
-static dispatch_queue_t sysexQueue, realtimeQueue, voiceQueue;
-
-static dispatch_queue_t getSysexQueue()
-{
-	if(sysexQueue == NULL)
-	{
-		sysexQueue = dispatch_queue_create("sysex", NULL);
-	}
-	return sysexQueue;
-}
-
-static dispatch_queue_t getRealtimeQueue()
-{
-	if(realtimeQueue == NULL)
-	{
-		realtimeQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-	}
-	return realtimeQueue;
-}
-
-static dispatch_queue_t getVoiceQueue()
-{
-	if(voiceQueue == NULL)
-	{
-		voiceQueue = dispatch_queue_create("voice", NULL);
-	}
-	return voiceQueue;
-}
 
 
 @implementation MidiInputParser
@@ -165,7 +136,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 			
 			if(interpolationTimer == NULL)
 			{
-				dispatch_source_t timer = CreateDispatchTimer(delta, 0, getRealtimeQueue(), ^{
+				dispatch_source_t timer = CreateDispatchTimer(delta, 0, [A4Queues realtimeQueue], ^{
 					
 					[self handleInterpolationTimer];
 					
@@ -234,7 +205,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 							}
 							
 							MIDITimeStamp timeStamp = currentPacket->timeStamp;
-							dispatch_async(getRealtimeQueue(), ^{
+							dispatch_async([A4Queues realtimeQueue], ^{
 								
 								@synchronized(self)
 								{
@@ -258,7 +229,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 								[_softThruDestination sendBytes:&byte size:1];
 							}
 							
-							dispatch_async(getRealtimeQueue(), ^{
+							dispatch_async([A4Queues realtimeQueue], ^{
 								
 								if([_delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
 								{
@@ -276,7 +247,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 								[_softThruDestination sendBytes:&byte size:1];
 							}
 							
-							dispatch_async(getRealtimeQueue(), ^{
+							dispatch_async([A4Queues realtimeQueue], ^{
 								
 								if([_delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
 								{
@@ -297,7 +268,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 								[_softThruDestination sendBytes:&byte size:1];
 							}
 							
-							dispatch_async(getRealtimeQueue(), ^{
+							dispatch_async([A4Queues realtimeQueue], ^{
 								
 								if([_delegate respondsToSelector:@selector(midiReceivedTransport:fromSource:)])
 								{
@@ -324,7 +295,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 							@autoreleasepool
 							{
 								NSData *d = [NSData dataWithBytes:_buffer length:sysexDataLength];
-								dispatch_async(getSysexQueue(), ^{
+								dispatch_async([A4Queues sysexQueue], ^{
 									
 									if([_delegate respondsToSelector:@selector(midiReceivedSysexData:fromSource:)])
 									{
@@ -352,7 +323,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									pc.channel = _buffer[0] & 0x0f;
 									pc.program = _buffer[1] & 0x7f;
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedProgramChange:fromSource:)])
 										{
@@ -368,7 +339,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									pressure.channel =	_buffer[0] & 0x0f;
 									pressure.pressure = _buffer[1] & 0x7f;
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedChannelPressure:fromSource:)])
 										{
@@ -394,7 +365,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									noteOn.velocity = _buffer[2] & 0x7f;
 									
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedNoteOn:fromSource:)])
 										{
@@ -412,7 +383,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									noteOff.note =		_buffer[1] & 0x7f;
 									noteOff.velocity =	_buffer[2] & 0x7f;
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedNoteOff:fromSource:)])
 										{
@@ -430,7 +401,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									cc.parameter =	_buffer[1] & 0x7f;
 									cc.value =		_buffer[2] & 0x7f;
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedControlChange:fromSource:)])
 										{
@@ -448,7 +419,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									aftertouch.note =		_buffer[1] & 0x7f;
 									aftertouch.pressure =	_buffer[2] & 0x7f;
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedAftertouch:fromSource:)])
 										{
@@ -466,7 +437,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									UInt16 pitch = (_buffer[2] & 0x7F) << 7 | (_buffer[1] & 0x7F);
 									pw.pitch = pitch;
 									
-									dispatch_async(getVoiceQueue(), ^{
+									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedPitchWheel:fromSource:)])
 										{

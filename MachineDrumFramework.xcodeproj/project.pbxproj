@@ -194,6 +194,12 @@
 		36E1ED33183E8EE0001A9498 /* A4LFO.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED31183E8EE0001A9498 /* A4LFO.m */; };
 		36E23CB017DDF6CB00259EDC /* A4SysexHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E23CAF17DDF6CB00259EDC /* A4SysexHelper.m */; };
 		36E23CB117DDF6CB00259EDC /* A4SysexHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E23CAF17DDF6CB00259EDC /* A4SysexHelper.m */; };
+		36E4BFCA18561B0D00F0E245 /* A4Request.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4BFC918561B0C00F0E245 /* A4Request.m */; };
+		36E4BFCB18561B0D00F0E245 /* A4Request.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4BFC918561B0C00F0E245 /* A4Request.m */; };
+		36E4BFCE18563F6E00F0E245 /* A4Queues.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4BFCD18563F6E00F0E245 /* A4Queues.m */; };
+		36E4BFCF18563F6E00F0E245 /* A4Queues.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4BFCD18563F6E00F0E245 /* A4Queues.m */; };
+		36E4C0311857B2F800F0E245 /* A4Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4C0301857B2F800F0E245 /* A4Settings.m */; };
+		36E4C0321857B2F800F0E245 /* A4Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4C0301857B2F800F0E245 /* A4Settings.m */; };
 		36EC2340174145B30053E8AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36EC233F174145B30053E8AF /* AVFoundation.framework */; };
 		36FE349715CEB55100695E38 /* MDUserParameterValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 36FE349615CEB55100695E38 /* MDUserParameterValue.m */; };
 		36FE349A15CEB57200695E38 /* MDUserParameterLimit.m in Sources */ = {isa = PBXBuildFile; fileRef = 36FE349915CEB57200695E38 /* MDUserParameterLimit.m */; };
@@ -410,6 +416,12 @@
 		36E1ED31183E8EE0001A9498 /* A4LFO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4LFO.m; sourceTree = "<group>"; };
 		36E23CAE17DDF6CA00259EDC /* A4SysexHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4SysexHelper.h; sourceTree = "<group>"; };
 		36E23CAF17DDF6CB00259EDC /* A4SysexHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4SysexHelper.m; sourceTree = "<group>"; };
+		36E4BFC818561B0C00F0E245 /* A4Request.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Request.h; sourceTree = "<group>"; };
+		36E4BFC918561B0C00F0E245 /* A4Request.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Request.m; sourceTree = "<group>"; };
+		36E4BFCC18563F6E00F0E245 /* A4Queues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Queues.h; sourceTree = "<group>"; };
+		36E4BFCD18563F6E00F0E245 /* A4Queues.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Queues.m; sourceTree = "<group>"; };
+		36E4C02F1857B2F800F0E245 /* A4Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Settings.h; sourceTree = "<group>"; };
+		36E4C0301857B2F800F0E245 /* A4Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Settings.m; sourceTree = "<group>"; };
 		36EC233D174145A50053E8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		36EC233F174145B30053E8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		36FE349515CEB55100695E38 /* MDUserParameterValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDUserParameterValue.h; sourceTree = "<group>"; };
@@ -656,6 +668,12 @@
 				36E1ED31183E8EE0001A9498 /* A4LFO.m */,
 				36CEBACF184969BD00849925 /* A4VoiceAllocator.h */,
 				36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */,
+				36E4BFC818561B0C00F0E245 /* A4Request.h */,
+				36E4BFC918561B0C00F0E245 /* A4Request.m */,
+				36E4BFCC18563F6E00F0E245 /* A4Queues.h */,
+				36E4BFCD18563F6E00F0E245 /* A4Queues.m */,
+				36E4C02F1857B2F800F0E245 /* A4Settings.h */,
+				36E4C0301857B2F800F0E245 /* A4Settings.m */,
 			);
 			name = A4;
 			sourceTree = "<group>";
@@ -1077,6 +1095,7 @@
 				36871BDF182F150900750F0F /* A4TrackerTrack.m in Sources */,
 				3631A8731646C3E3008DB7E5 /* MDPatternCopiPasta.m in Sources */,
 				3631A8741646C3E3008DB7E5 /* MDPatternNode.m in Sources */,
+				36E4BFCF18563F6E00F0E245 /* A4Queues.m in Sources */,
 				3631A8751646C3E3008DB7E5 /* MDPatternNodePosition.m in Sources */,
 				3631A8761646C3E3008DB7E5 /* MDPatternRegion.m in Sources */,
 				3631A8771646C3E3008DB7E5 /* MDUserParameterValue.m in Sources */,
@@ -1091,6 +1110,7 @@
 				36CA752417F271D800BEC865 /* MDMath.m in Sources */,
 				3631A87D1646C3E3008DB7E5 /* MDSysexTransactionController.m in Sources */,
 				3631A87E1646C3E3008DB7E5 /* PGMidi.m in Sources */,
+				36E4C0321857B2F800F0E245 /* A4Settings.m in Sources */,
 				3631A87F1646C3E3008DB7E5 /* PGMidiFind.m in Sources */,
 				3631A8801646C3E3008DB7E5 /* MidiInputParser.m in Sources */,
 				3631A8811646C3E3008DB7E5 /* MDMachinedrumGlobalSettingsParser.m in Sources */,
@@ -1101,6 +1121,7 @@
 				3631A8841646C3E3008DB7E5 /* MDValuePair.m in Sources */,
 				36BEA64917E8AED600932018 /* A4RandomizerPreset.m in Sources */,
 				3631A8851646C3E3008DB7E5 /* MDSDS.m in Sources */,
+				36E4BFCB18561B0D00F0E245 /* A4Request.m in Sources */,
 				3631495116F7000500FAF523 /* WaveEditor.m in Sources */,
 				36181D7717F102D5001C9132 /* A4Trig.m in Sources */,
 				3631499A16F722BE00FAF523 /* NPair.m in Sources */,
@@ -1165,6 +1186,7 @@
 				36871BDE182F150900750F0F /* A4TrackerTrack.m in Sources */,
 				362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */,
 				36BBC1A815C0617F0087886B /* MDPatternCopiPasta.m in Sources */,
+				36E4BFCE18563F6E00F0E245 /* A4Queues.m in Sources */,
 				36BBC1A915C0617F0087886B /* MDPatternNode.m in Sources */,
 				36BBC1AA15C0617F0087886B /* MDPatternNodePosition.m in Sources */,
 				36BBC1AD15C0617F0087886B /* MDPatternRegion.m in Sources */,
@@ -1179,6 +1201,7 @@
 				3699DF8E15F38DDF004C9D83 /* MDSysexTransaction.m in Sources */,
 				3699DF8F15F38DDF004C9D83 /* MDSysexTransactionController.m in Sources */,
 				3699DF9715F38E76004C9D83 /* PGMidi.m in Sources */,
+				36E4C0311857B2F800F0E245 /* A4Settings.m in Sources */,
 				36CA752517F271DF00BEC865 /* MDMath.m in Sources */,
 				3699DF9815F38E76004C9D83 /* PGMidiFind.m in Sources */,
 				3699DF9915F38E76004C9D83 /* MidiInputParser.m in Sources */,
@@ -1189,6 +1212,7 @@
 				364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */,
 				364CD2C715F5169F00CA49A9 /* MDValuePair.m in Sources */,
 				36BEA64817E8AED600932018 /* A4RandomizerPreset.m in Sources */,
+				36E4BFCA18561B0D00F0E245 /* A4Request.m in Sources */,
 				365F419C1619EA5500E4231D /* MDSDS.m in Sources */,
 				3631495016F7000500FAF523 /* WaveEditor.m in Sources */,
 				3631499916F722BE00FAF523 /* NPair.m in Sources */,

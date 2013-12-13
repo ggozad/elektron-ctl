@@ -10,6 +10,28 @@
 #import "MDSysexUtil.h"
 #import "MDMIDI.h"
 
+static A4SysexMessageID A4SysexMessageIDConvertToTemp(A4SysexMessageID id)
+{
+	if(id == A4SysexMessageID_Kit)		return A4SysexMessageID_Kit_X;
+	if(id == A4SysexMessageID_Pattern)	return A4SysexMessageID_Pattern_X;
+	if(id == A4SysexMessageID_Sound)	return A4SysexMessageID_Sound_X;
+	if(id == A4SysexMessageID_Song)		return A4SysexMessageID_Song_X;
+	if(id == A4SysexMessageID_Settings) return A4SysexMessageID_Settings_X;
+	if(id == A4SysexMessageID_Global)	return A4SysexMessageID_Global_X;
+	return id;
+}
+
+static A4SysexMessageID A4SysexMessageIDConvertToSave(A4SysexMessageID id)
+{
+	if(id == A4SysexMessageID_Kit_X)		return A4SysexMessageID_Kit;
+	if(id == A4SysexMessageID_Pattern_X)	return A4SysexMessageID_Pattern;
+	if(id == A4SysexMessageID_Sound_X)		return A4SysexMessageID_Sound;
+	if(id == A4SysexMessageID_Song_X)		return A4SysexMessageID_Song;
+	if(id == A4SysexMessageID_Settings_X)	return A4SysexMessageID_Settings;
+	if(id == A4SysexMessageID_Global_X)		return A4SysexMessageID_Global;
+	return id;
+}
+
 @implementation A4SysexMessage
 
 + (instancetype)messageWithPayloadAddress:(char *)payload
@@ -28,7 +50,7 @@
 		A4SysexMessage *instance = [self new];
 		
 		const char *bytes = data.bytes;
-		instance.type = bytes[0x06];
+		instance.type = A4SysexMessageIDConvertToSave(bytes[0x06]);
 		instance.ownsPayload = YES;
 		instance.sysexData = data;
 		return instance;
@@ -57,12 +79,15 @@
 - (void)setSysexData:(NSData *)data
 {
 	const char *bytes = data.bytes;
-	if(_type != bytes[0x06]) return;
+	if(_type != A4SysexMessageIDConvertToSave(bytes[0x06])) return;
 	_position = bytes[0x09];
 	
-	if(_type == A4SysexMessageID_Sound) _payloadLength = A4MessagePayloadLengthSound;
-	else if(_type == A4SysexMessageID_Kit) _payloadLength = A4MessagePayloadLengthKit;
-	else if(_type == A4SysexMessageID_Pattern) _payloadLength = A4MessagePayloadLengthPattern;
+		 if(_type == A4SysexMessageID_Sound)	_payloadLength = A4MessagePayloadLengthSound;
+	else if(_type == A4SysexMessageID_Kit)		_payloadLength = A4MessagePayloadLengthKit;
+	else if(_type == A4SysexMessageID_Pattern)	_payloadLength = A4MessagePayloadLengthPattern;
+	else if(_type == A4SysexMessageID_Settings) _payloadLength = A4MessagePayloadLengthSettings;
+	else if(_type == A4SysexMessageID_Global)	_payloadLength = A4MessagePayloadLengthGlobal;
+	else if(_type == A4SysexMessageID_Song)		_payloadLength = A4MessagePayloadLengthSong;
 	
 	NSData *packedPayload = [data subdataWithRange:NSMakeRange(0xA, data.length - 0xA - 0x5)];
 	NSData *unpackedPayload = [MDSysexUtil dataUnpackedFrom7BitSysexEncoding:packedPayload];
@@ -89,9 +114,12 @@
 	_payload = payload;
 	if(_payload)
 	{
-		if(_type == A4SysexMessageID_Sound) _payloadLength = A4MessagePayloadLengthSound;
-		else if(_type == A4SysexMessageID_Kit) _payloadLength = A4MessagePayloadLengthKit;
-		else if(_type == A4SysexMessageID_Pattern) _payloadLength = A4MessagePayloadLengthPattern;
+		if(_type == A4SysexMessageID_Sound)			_payloadLength = A4MessagePayloadLengthSound;
+		else if(_type == A4SysexMessageID_Kit)		_payloadLength = A4MessagePayloadLengthKit;
+		else if(_type == A4SysexMessageID_Pattern)	_payloadLength = A4MessagePayloadLengthPattern;
+		else if(_type == A4SysexMessageID_Settings) _payloadLength = A4MessagePayloadLengthSettings;
+		else if(_type == A4SysexMessageID_Global)	_payloadLength = A4MessagePayloadLengthGlobal;
+		else if(_type == A4SysexMessageID_Song)		_payloadLength = A4MessagePayloadLengthSong;
 	}
 	else
 	{
@@ -102,23 +130,35 @@
 
 - (NSData *)sysexData
 {
+	return [self sysexDataWithType:_type position:_position];
+}
+
+
+- (NSData *)sysexDataWithType:(A4SysexMessageID)type position:(uint8_t)pos
+{
 	static uint8_t A4MessageTransportHead[] = {0xF0, 0x00, 0x20, 0x3C, 0x06, 0x00, 0x00, 0x01, 0x01, 0x00};
 	static uint8_t A4MessageTransportTail[] = {0x00, 0x00, 0x00, 0x00, 0xF7};
 	
-	A4MessageTransportHead[0x06] = _type;
+	A4MessageTransportHead[0x06] = type;
 	A4MessageTransportHead[0x07] = _version;
 	A4MessageTransportHead[0x08] = _revision;
-	A4MessageTransportHead[0x09] = _position;
+	A4MessageTransportHead[0x09] = pos;
 	
 	NSMutableData *d = [NSMutableData dataWithBytes:A4MessageTransportHead length:10];
 	[d appendData:[MDSysexUtil dataPackedWith7BitSysexEncoding:[NSData dataWithBytes:_payload length:_payloadLength]]];
 	[d appendBytes:A4MessageTransportTail length:5];
 	
-	
 	[[self class] updateChecksumInSysexData:d];
 	[[self class] updateMessageLengthInSysexData:d];
 	return d;
 }
+
+- (NSData *)sysexDataForTempSend
+{
+	A4SysexMessageID id = A4SysexMessageIDConvertToTemp(_type);
+	return [self sysexDataWithType:id position:_position];
+}
+
 
 + (void) updateChecksumInSysexData:(NSMutableData *)data
 {
@@ -201,6 +241,19 @@
 - (void)send
 {
 	[[[MDMIDI sharedInstance] a4MidiDestination] sendSysexData:self.sysexData];
+}
+
+- (void)sendWithMode:(A4Sendmode)mode
+{
+	if(mode == A4SendSave)
+	{
+		[self send];
+	}
+	else
+	{
+		NSData *d = [self sysexDataForTempSend];
+		[[[MDMIDI sharedInstance] a4MidiDestination] sendSysexData:d];
+	}
 }
 
 - (NSData *)payloadData
