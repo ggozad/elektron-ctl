@@ -124,7 +124,9 @@
 
 + (NSString *)a4PValDescriptionForPVal:(A4PVal)pVal
 {
-	return [NSString stringWithFormat:@"{param: 0x%02X value: %d}", pVal.param, pVal.value];
+	int16_t intVal = pVal.coarse | pVal.fine << 8;
+	intVal = CFSwapInt16BigToHost(intVal);
+	return [NSString stringWithFormat:@"{param: 0x%02X i: %d coarse: 0x%X fine: 0x%X (%d) double: %f normalized: %f}", pVal.param, intVal, pVal.coarse, (uint8_t)pVal.fine, pVal.fine, A4PValDoubleVal(pVal), A4PValDoubleValNormalized(pVal)];
 }
 
 + (void)setName:(NSString *)name inPayloadLocation:(void *)location

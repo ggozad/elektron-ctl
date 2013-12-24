@@ -243,6 +243,11 @@ static A4SysexMessageID A4SysexMessageIDConvertToSave(A4SysexMessageID id)
 	[[[MDMIDI sharedInstance] a4MidiDestination] sendSysexData:self.sysexData];
 }
 
+- (void)sendTemp
+{
+	[self sendWithMode:A4SendTemp];
+}
+
 - (void)sendWithMode:(A4Sendmode)mode
 {
 	if(mode == A4SendSave)

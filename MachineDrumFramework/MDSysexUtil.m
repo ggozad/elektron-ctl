@@ -168,6 +168,7 @@
 {
 	const signed char *inBytes = inData.bytes;
 	NSUInteger inLength = inData.length;
+	if( ! inLength) return nil;
 	
 	NSUInteger cnt;
 	NSUInteger cnt2 = 0;

@@ -31,7 +31,6 @@
 	[instance initSounds];
 	[instance initMacros];
 	[instance initPolyphony];
-	[instance convertParamsToHost];
 	return instance;
 }
 
@@ -42,30 +41,8 @@
 	[kit initSounds];
 	[kit initMacros];
 	[kit initPolyphony];
-	[kit convertParamsToHost];
 	[kit clear];
 	return kit;
-}
-
-
-- (void) convertParamsToHost
-{
-	for(A4Sound *s in _sounds)
-	{
-		[s convertParamsToHost];
-	}
-	
-	// TODO: FX params
-}
-
-- (void) convertParamsToBigEndian
-{
-	for(A4Sound *s in _sounds)
-	{
-		[s convertParamsToBigEndian];
-	}
-	
-	// TODO: FX params
 }
 
 - (BOOL)isDefaultKit
@@ -196,6 +173,15 @@
 	return [A4SysexHelper nameAtPayloadLocation:bytes];
 }
 
+- (void)copyFXSettingsFromKit:(A4Kit *)kit
+{
+	if(self == kit) return;
+	size_t offset = 0x5DC;
+	size_t len = 0x92;
+	
+	memmove(self.payload + offset, kit.payload + offset, len);
+}
+
 /*
 - (void) setFxParamValue:(A4PVal)value
 {
@@ -230,21 +216,6 @@
 	if(t > 5) return;
 	if(level > 127) level = 127;
 	_payload[0x14 + t*2] = level;
-}
-
-
-- (NSData *)sysexData
-{
-	for(A4Sound *s in _sounds)
-	{
-		[s convertParamsToBigEndian];
-	}
-	NSData *d = [super sysexData];
-	for(A4Sound *s in _sounds)
-	{
-		[s convertParamsToHost];
-	}
-	return d;
 }
 
 @end

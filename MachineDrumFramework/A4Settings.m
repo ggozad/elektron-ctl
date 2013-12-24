@@ -7,10 +7,21 @@
 //
 
 #import "A4Settings.h"
-#import "MDMath.m"
+#import "MDMath.h"
 
 
 @implementation A4Settings
+
+- (int8_t)multimapOctave
+{
+	return _payload[0x1C];
+}
+
+- (void)setMultimapOctave:(int8_t)multimapOctave
+{
+	multimapOctave = mdmath_clamp(multimapOctave, -5, 5);
+	_payload[0x1C] = multimapOctave;
+}
 
 - (int8_t)transpose
 {
@@ -57,35 +68,35 @@
 
 - (uint8_t)selectedTrack
 {
-	return self.selectedTrackPrimary;
+	return self.selectedTrackParams;
 }
 
 - (void)setSelectedTrack:(uint8_t)selectedTrack
 {
-	self.selectedTrackPrimary = selectedTrack;
-	self.selectedTrackSecondary = selectedTrack;
+	self.selectedTrackParams = selectedTrack;
+	self.selectedTrackTrack = selectedTrack;
 }
 
-- (void)setSelectedTrackPrimary:(uint8_t)selectedTrackPrimary
+- (void)setSelectedTrackParams:(uint8_t)selectedTrackPrimary
 {
 	if(selectedTrackPrimary > 5) return;
 	if(selectedTrackPrimary != 4) _payload[0x07] = selectedTrackPrimary;
 	_payload[0x06] = selectedTrackPrimary;
 }
 
-- (void)setSelectedTrackSecondary:(uint8_t)selectedTrackSecondary
+- (void)setSelectedTrackTrack:(uint8_t)selectedTrackSecondary
 {
 	if(selectedTrackSecondary > 5) return;
 	if(selectedTrackSecondary != 4) _payload[0x06] = selectedTrackSecondary;
 	_payload[0x07] = selectedTrackSecondary;
 }
 
-- (uint8_t)selectedTrackPrimary
+- (uint8_t)selectedTrackParams
 {
 	return _payload[0x06];
 }
 
-- (uint8_t)selectedTrackSecondary
+- (uint8_t)selectedTrackTrack
 {
 	return _payload[0x07];
 }

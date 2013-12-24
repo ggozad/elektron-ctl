@@ -17,6 +17,55 @@
 #define A4RequestKeyStringSettings		@"set"
 #define A4RequestKeyStringSong			@"son"
 
+NSUInteger PayloadLenForRequestID(A4SysexRequestID id)
+{
+	NSUInteger len = 0;
+	
+	switch (id)
+	{
+		case A4SysexRequestID_Global:
+		case A4SysexRequestID_Global_X:
+		{
+			len = A4MessagePayloadLengthGlobal;
+			break;
+		}
+		case A4SysexRequestID_Settings:
+		case A4SysexRequestID_Settings_X:
+		{
+			len = A4MessagePayloadLengthSettings;
+			break;
+		}
+		case A4SysexRequestID_Sound:
+		case A4SysexRequestID_Sound_X:
+		{
+			len = A4MessagePayloadLengthSound;
+			break;
+		}
+		case A4SysexRequestID_Kit:
+		case A4SysexRequestID_Kit_X:
+		{
+			len = A4MessagePayloadLengthKit;
+			break;
+		}
+		case A4SysexRequestID_Pattern:
+		case A4SysexRequestID_Pattern_X:
+		{
+			len = A4MessagePayloadLengthPattern;
+			break;
+		}
+		case A4SysexRequestID_Song:
+		case A4SysexRequestID_Song_X:
+		{
+			len = A4MessagePayloadLengthSong;
+			break;
+		}
+		default:
+			break;
+	}
+	
+	return len;
+}
+
 A4SysexRequestID A4SysexRequestIDForResponseID(A4SysexMessageID id)
 {
 	switch (id)
@@ -61,7 +110,7 @@ A4SysexMessageID A4SysexResponseIDForRequestID(A4SysexRequestID id)
 
 NSInteger CreateIdent()
 {
-	static NSInteger i = 0;
+	static A4RequestHandle i = 0;
 	i++; if (i == NSIntegerMax) i -= NSIntegerMax-1;
 	return i;
 }
@@ -70,6 +119,7 @@ typedef struct Key
 {
 	A4SysexRequestID id;
 	uint8_t pos;
+	uint8_t activeSoundTracknumber;
 }
 Key;
 
@@ -78,6 +128,14 @@ Key KeyMake(A4SysexRequestID id, uint8_t pos)
 	Key key;
 	key.id = id;
 	key.pos = pos;
+	key.activeSoundTracknumber = A4NULL;
+	return key;
+}
+
+Key KeyMakeActiveSound(A4SysexRequestID id, uint8_t pos, uint8_t track)
+{
+	Key key = KeyMake(id, pos);
+	key.activeSoundTracknumber = track;
 	return key;
 }
 
@@ -86,6 +144,7 @@ Key KeyMakeInvalid()
 	Key key;
 	key.pos = A4NULL;
 	key.id = A4SysexRequestID_NULL;
+	key.activeSoundTracknumber = A4NULL;
 	return key;
 }
 
@@ -107,14 +166,15 @@ BOOL KeyIsValid(Key key)
 		key.id == A4SysexRequestID_Global_X ||
 		key.id == A4SysexRequestID_Settings_X)) return NO;
 	
-	if(key.pos > 3 && key.id == A4SysexRequestID_Sound_X) return NO;
+	if(key.id == A4SysexRequestID_Sound_X && key.activeSoundTracknumber > 3) return NO;
+	if(key.id == A4SysexRequestID_Sound_X && key.pos != A4NULL) return NO;
 	return YES;
 }
 
 BOOL KeysAreEqual(Key a, Key b)
 {
 	if( ! KeyIsValid(a) || ! KeyIsValid(b)) return NO;
-	if(a.id == b.id && a.pos == b.pos) return YES;
+	if(a.id == b.id && a.pos == b.pos && a.activeSoundTracknumber == b.activeSoundTracknumber) return YES;
 	return NO;
 }
 
@@ -143,7 +203,9 @@ BOOL KeysAreEqual(Key a, Key b)
 @property (nonatomic, copy) void (^errorHandler)(NSError *);
 @property (nonatomic, strong) NSMutableArray *keysToProcess;
 @property (nonatomic, strong) NSMutableDictionary *completedSubRequests;
-@property (nonatomic) NSInteger ident;
+@property (nonatomic) A4RequestHandle ident;
+@property (nonatomic, weak) id<A4RequestDelegate> delegate;
+@property (nonatomic) NSUInteger completedPayloadByteCount, totalPayloadByteCount;
 @end
 
 @implementation A4Transaction
@@ -243,34 +305,65 @@ static A4Request *_default = nil;
 }
 
 + (NSInteger)requestWithKeys:(NSArray *)keys
-				options:(A4RequestOptions)optionsBitmask
-	  completionHandler:(void (^)(NSDictionary *))completionHandler
-		   errorHandler:(void (^)(NSError *))errorHandler
+		   completionHandler:(void (^)(NSDictionary *))completionHandler
+				errorHandler:(void (^)(NSError *))errorHandler
 {
 	return [self requestWithKeys:keys
-				  options:optionsBitmask
-				 priority:A4RequestPriorityDefault
-		  completionQueue:dispatch_get_current_queue()
-		completionHandler:completionHandler
-			 errorHandler:errorHandler];
+						 options:0
+						delegate:nil
+			   completionHandler:completionHandler
+					errorHandler:errorHandler];
+}
+
++ (NSInteger)requestWithKeys:(NSArray *)keys
+					 options:(A4RequestOptions)optionsBitmask
+					delegate:(id<A4RequestDelegate>)delegate
+		   completionHandler:(void (^)(NSDictionary *))completionHandler
+				errorHandler:(void (^)(NSError *))errorHandler
+{
+	return [self requestWithKeys:keys
+						 options:optionsBitmask
+						priority:A4RequestPriorityDefault
+						delegate:delegate
+				 completionQueue:dispatch_get_current_queue()
+			   completionHandler:completionHandler
+					errorHandler:errorHandler];
 }
 
 
 + (NSInteger)requestWithKeys:(NSArray *)keys
-				options:(A4RequestOptions)options
-			   priority:(A4RequestPriority)priority
-		completionQueue:(dispatch_queue_t)queue
-	  completionHandler:(void (^)(NSDictionary *)) completionHandler
-		   errorHandler:(void (^)(NSError *)) errorHandler
+					 options:(A4RequestOptions)optionsBitmask
+					priority:(A4RequestPriority)priority
+					delegate:(id<A4RequestDelegate>)delegate
+			 completionQueue:(dispatch_queue_t)queue
+		   completionHandler:(void (^)(NSDictionary *))completionHandler
+				errorHandler:(void (^)(NSError *))errorHandler
 {
 	@synchronized(self)
 	{
+		if(! completionHandler) return 0;
+		if(! errorHandler) return 0;
+		if(! queue) return 0;
+		
 		NSMutableArray *allKeys = @[].mutableCopy;
 		if(keys.count)
 		{
 			NSArray *parsed = [self keysParsedFromUserKeyStringsArray:keys];
 			if(parsed)[allKeys addObjectsFromArray:parsed];
-			else return 0;
+			else
+			{
+				A4Transaction *transaction = [A4Transaction new];
+				transaction.completionQueue = queue;
+				transaction.completionHandler = completionHandler;
+				transaction.errorHandler = errorHandler;
+				transaction.options = optionsBitmask;
+				transaction.ident = 0;
+				transaction.delegate = delegate;
+				
+				[[self sharedInstance] dispatchErrorHandlerForTransaction:transaction
+																withError:[NSError errorWithDomain:@"keys are invalid" code:-1 userInfo:@{@"keys" : [keys copy]}]];
+				return 0;
+			}
 		}
 		
 		NSInteger handle = CreateIdent();
@@ -281,8 +374,10 @@ static A4Request *_default = nil;
 			transaction.completionQueue = queue;
 			transaction.completionHandler = completionHandler;
 			transaction.errorHandler = errorHandler;
-			transaction.options = options;
+			transaction.options = optionsBitmask;
 			transaction.ident = handle;
+			transaction.delegate = delegate;
+			
 			if(allKeys)
 			{
 				[transaction.keysToProcess addObjectsFromArray:allKeys];
@@ -465,6 +560,25 @@ static A4Request *_default = nil;
 	if(self.currentTransaction) return;
 	
 	self.currentTransaction = t;
+	
+	if(! [[MDMIDI sharedInstance] a4MidiDestination] ||
+	   ! [[MDMIDI sharedInstance] a4MidiSource])
+	{
+		[self cancelCurrentTransactionWithError:[NSError errorWithDomain:@"no connection" code:-1 userInfo:nil]];
+		return;
+	}
+	
+	if([self.currentTransaction.delegate respondsToSelector:@selector(a4requestDidBeginRequestWithHandle:)])
+	{
+		A4RequestHandle handle = self.currentTransaction.ident;
+		
+		dispatch_async(self.currentTransaction.completionQueue, ^{
+			
+			[self.currentTransaction.delegate a4requestDidBeginRequestWithHandle:handle];
+			
+		});
+	}
+	
 	[self inflateOptionsKeysInCurrentTransaction];
 	self.totalKeysForCurrentTransaction = self.currentTransaction.keysToProcess.mutableCopy;
 	self.currentTransactionKeysAddedDuringRequest = @[].mutableCopy;
@@ -481,6 +595,7 @@ static A4Request *_default = nil;
 		if(KeyIsValid(key))
 		{
 			[self requestObjectWithKey:key];
+			self.currentTransaction.totalPayloadByteCount += PayloadLenForRequestID(key.id);
 		}
 	}
 	
@@ -505,9 +620,11 @@ static A4Request *_default = nil;
 		return;
 	}
 	
-	if(key.pos == A4NULL) key.pos = 0;
-	uint8_t request[] = {0xF0, 0x00, 0x20, 0x3C, 0x06, 0x00, key.id, 0x01, 0x01, key.pos, 0x00, 0x00, 0x00, 0x05, 0xF7};
-	DLog(@"id: 0x%X", key.id);
+	uint8_t id = key.id;
+	uint8_t pos = key.pos;
+	if(pos == A4NULL) pos = 0;
+	if(key.id == A4SysexRequestID_Sound_X && key.activeSoundTracknumber < 4) pos = key.activeSoundTracknumber;
+	uint8_t request[] = {0xF0, 0x00, 0x20, 0x3C, 0x06, 0x00, id, 0x01, 0x01, pos, 0x00, 0x00, 0x00, 0x05, 0xF7};
 	[[[MDMIDI sharedInstance] a4MidiDestination] sendBytes:request size:15];
 }
 
@@ -551,10 +668,26 @@ static A4Request *_default = nil;
 + (Key) keyWithKeyString:(NSString *)str
 {
 	NSArray *tokens = [self tokensForKeyString:str];
-	if(! tokens || tokens.count < 2) return KeyMake(A4SysexRequestID_NULL, A4NULL);
-	uint8_t i = [tokens[1] intValue];
-	if(i == 0 && [tokens[1] isEqualToString:@"x"]) i = A4NULL;
-	return KeyMake([self requestIDWithKeyTypeString:tokens[0] temp: i == A4NULL], i);
+	if(! tokens ) return KeyMake(A4SysexRequestID_NULL, A4NULL);
+	uint8_t position = [tokens[1] intValue];
+	uint8_t activeSoundTrack = A4NULL;
+	
+	if(position == 0 && [tokens[1] isEqualToString:@"x"])
+	{
+		 position = A4NULL;
+		 if(tokens.count == 3)
+		 {
+			 activeSoundTrack = [tokens[2] intValue];
+		 }
+	}
+	if(activeSoundTrack != A4NULL)
+	{
+		return KeyMakeActiveSound([self requestIDWithKeyTypeString:tokens[0] temp:position == A4NULL], position, activeSoundTrack);
+	}
+	else
+	{
+		return KeyMake([self requestIDWithKeyTypeString:tokens[0] temp: position == A4NULL], position);
+	}
 }
 
 + (NSString *) keyStringWithKey:(Key)key
@@ -562,7 +695,14 @@ static A4Request *_default = nil;
 	if( ! KeyIsValid(key)) return nil;
 	if(key.pos == A4NULL)
 	{
-		return [NSString stringWithFormat:@"%@.x", [self keyTypeStringWithRequestID:key.id]];
+		if(key.id == A4SysexRequestID_Sound_X && key.activeSoundTracknumber != A4NULL)
+		{
+			return [NSString stringWithFormat:@"%@.x.%d", [self keyTypeStringWithRequestID:key.id], key.activeSoundTracknumber];
+		}
+		else
+		{
+			return [NSString stringWithFormat:@"%@.x", [self keyTypeStringWithRequestID:key.id]];
+		}
 	}
 	else
 	{
@@ -574,7 +714,7 @@ static A4Request *_default = nil;
 {
 	NSArray *tokens = [key componentsSeparatedByString:@"."];
 	if(! tokens) return nil;
-	if(! tokens.count || tokens.count > 2) return nil;
+	if(! tokens.count || tokens.count > 3) return nil;
 	NSMutableArray *parsed = @[].mutableCopy;
 	
 	BOOL typeOkay = NO;
@@ -599,6 +739,16 @@ static A4Request *_default = nil;
 		[parsed addObject:tokens[1]];
 		return parsed;
 	}
+	if(tokens.count == 3 && [tokens[0] isEqualToString:A4RequestKeyStringSound])
+	{
+		[parsed addObject:tokens[0]];
+		if(![tokens[1] isEqualToString:@"x"]) return nil;
+		[parsed addObject:tokens[1]];
+		int trk = [tokens[2] intValue];
+		if(trk > 3) return nil;
+		[parsed addObject:tokens[2]];
+		return parsed;
+	}
 	return nil;
 }
 
@@ -621,6 +771,7 @@ static A4Request *_default = nil;
 
 - (void) completeCurrentTransaction
 {
+	[self stopListeningForSysex];
 	[self cancelTimeout];
 //	DLog(@"completing transaction..");
 	A4Transaction *t = _currentTransaction;
@@ -677,7 +828,7 @@ static A4Request *_default = nil;
 - (void) stopListeningForSysex
 {
 	if(!_isListeningForSysex) return;
-	DLog(@"stop listening");
+//	DLog(@"stop listening");
 	_isListeningForSysex = NO;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:kA4SysexNotification object:nil];
 }
@@ -685,7 +836,7 @@ static A4Request *_default = nil;
 - (void) startListeningForSysex
 {
 	if(_isListeningForSysex) return;
-	DLog(@"start listening");
+//	DLog(@"start listening");
 	_isListeningForSysex = YES;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syx:) name:kA4SysexNotification object:nil];
 }
@@ -750,7 +901,14 @@ static A4Request *_default = nil;
 	Key key;
 	if(temp)
 	{
-		key = KeyMake(A4SysexRequestIDForResponseID(message.type + 6), A4NULL);
+		if(message.type == A4SysexMessageID_Sound)
+		{
+			key = KeyMakeActiveSound(A4SysexRequestIDForResponseID(message.type + 6), A4NULL, message.position);
+		}
+		else
+		{
+			key = KeyMake(A4SysexRequestIDForResponseID(message.type + 6), A4NULL);
+		}
 	}
 	else
 	{
@@ -762,8 +920,7 @@ static A4Request *_default = nil;
 		if([message isKindOfClass:[A4Pattern class]])
 		{
 			A4Pattern *pattern = (A4Pattern *) message;
-			if(self.currentTransaction.options & A4RequestOptionsPatternsWithKits ||
-			   self.currentTransaction.options & A4RequestOptionsPatternsWithKitsAndLockedSounds)
+			if(self.currentTransaction.options & A4RequestOptionsPatternsWithKits)
 			{
 				if( ! [pattern isDefaultPattern])
 				{
@@ -772,8 +929,7 @@ static A4Request *_default = nil;
 				}
 			}
 			
-			if(self.currentTransaction.options == A4RequestOptionsPatternsWithKitsAndLockedSounds ||
-			   self.currentTransaction.options == A4RequestOptionsPatternsWithLockedSounds)
+			if(self.currentTransaction.options == A4RequestOptionsPatternsWithLockedSounds)
 			{
 				if( ! [pattern isDefaultPattern])
 				{
@@ -797,9 +953,28 @@ static A4Request *_default = nil;
 			Key k = val.keyValue;
 			if(KeysAreEqual(k, key)) [remove addObject:val];
 		}
-		
-		[self.currentTransaction.keysToProcess removeObjectsInArray:remove];
-		[self.currentTransaction.completedSubRequests setObject:message forKey:[A4Request keyStringWithKey:key]];
+		if(remove.count)
+		{
+			[self.currentTransaction.keysToProcess removeObjectsInArray:remove];
+			[self.currentTransaction.completedSubRequests setObject:message forKey:[A4Request keyStringWithKey:key]];
+			
+			self.currentTransaction.completedPayloadByteCount += message.payloadLength;
+			
+			if([self.currentTransaction.delegate respondsToSelector:@selector(a4requestWithHandle:didUpdateProgress:)])
+			{
+				double progress = 1;
+				if(self.currentTransaction.totalPayloadByteCount > 0)
+				{
+					progress = self.currentTransaction.completedPayloadByteCount / (double) self.currentTransaction.totalPayloadByteCount;
+				}
+				
+				dispatch_async(self.currentTransaction.completionQueue, ^{
+					
+					[self.currentTransaction.delegate a4requestWithHandle:self.currentTransaction.ident didUpdateProgress:progress];
+					
+				});
+			}
+		}
 	}
 }
 
@@ -814,7 +989,7 @@ static A4Request *_default = nil;
 	if(d.length < 0x07) return;
 	const uint8_t *bytes = d.bytes;
 	
-	DLog(@"got syx with ID: 0x%X", bytes[0x06]);
+//	DLog(@"got syx with ID: 0x%X", bytes[0x06]);
 	
 	switch (bytes[0x06])
 	{
@@ -834,6 +1009,7 @@ static A4Request *_default = nil;
 		}
 		case A4SysexMessageID_Sound:
 		{
+//			DLog(@"sound ID");
 			A4Sound *sound = [A4Sound messageWithSysexData:d];
 			NSAssert(sound, @"no sound!");
 			[self currentTransactionAddReceivedObject:sound temp:NO];

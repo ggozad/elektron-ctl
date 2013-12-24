@@ -43,6 +43,8 @@ ParameterSlide;
 
 @implementation A4TrackerTrack
 
+/*
+
 - (void)setNextProperGateEvent:(GateEvent)nextProperGateEvent
 {
 	_lastProperGateEvent = _nextProperGateEvent;
@@ -731,6 +733,7 @@ ParameterSlide;
 	ampVal = mdmath_clamp(ampVal, 0, 128);
 	_paramsPostModulations[idx] = ampVal;
 }
+ */
 
 @end
 

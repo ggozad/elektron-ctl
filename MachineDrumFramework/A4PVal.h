@@ -14,7 +14,8 @@
 typedef struct A4PVal
 {
 	A4Param param;
-	int16_t value;
+	uint8_t coarse;
+	int8_t fine;
 }
 A4PVal;
 
@@ -25,9 +26,9 @@ A4PVal A4PValCentered(A4Param param);
 A4PVal A4PValSanitizeClamp(A4PVal val);
 A4PVal A4PValSanitizeWrap(A4PVal val);
 A4PVal A4PValMakeClear(A4Param param);
-A4PVal A4PValMakeI(A4Param param, int16_t value);
-//A4PVal A4PValMake8(A4Param param, uint8_t coarse);
-//A4PVal A4PValMake16(A4Param param, uint8_t coarse, int8_t fine);
+//A4PVal A4PValMakeI(A4Param param, int16_t value);
+A4PVal A4PValMake8(A4Param param, uint8_t coarse);
+A4PVal A4PValMake16(A4Param param, uint8_t coarse, int8_t fine);
 A4PVal A4PValMake(A4Param param, double val);
 A4PVal A4PValMakeNormalized(A4Param param, double normalizedDoubleValue);
 A4PVal A4PValTranslateForLock(A4PVal val);

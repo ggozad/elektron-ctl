@@ -26,7 +26,6 @@
 	if(instance)
 	{
 		[instance initStructs];
-		[instance convertParamsToHost];
 	}
 	return instance;
 }
@@ -36,25 +35,8 @@
 	A4Sound *instance = [self new];
 	[instance allocPayload];
 	[instance initStructs];
-	[instance convertParamsToHost];
 	[instance clear];
 	return instance;
-}
-
-- (void)convertParamsToBigEndian
-{
-	for(int i = 0; i < A4ParamLayoutCount; i++)
-	{
-		_params->param[i] = CFSwapInt16HostToBig(_params->param[i]);
-	}
-}
-
-- (void)convertParamsToHost
-{
-	for(int i = 0; i < A4ParamLayoutCount; i++)
-	{
-		_params->param[i] = CFSwapInt16BigToHost(_params->param[i]);
-	}
 }
 
 - (BOOL)isDefaultSound
@@ -129,7 +111,7 @@
 	if(lock.param == A4NULL) return;
 	uint8_t i = A4SoundOffsetForParam(lock.param);
 	if(i == A4NULL) return;
-	_params->param[i] = lock.value;
+	_params->param[i] = lock.coarse << 8 & lock.fine;
 }
 
 - (A4PVal)valueForParam:(A4Param)param
@@ -139,7 +121,7 @@
 	if(offset == A4NULL) return A4PValMakeInvalid();
 	
 	int16_t intval = _params->param[offset];
-	return A4PValMakeI(param, intval);
+	return A4PValMake16(param, intval & 0xFF, intval >> 8);
 }
 
 - (void)setName:(NSString *)name
@@ -180,14 +162,6 @@
 	A4SoundTagBitmask mask = self.tags;
 	mask &= ~tag;
 	self.tags = mask;
-}
-
-- (NSData *)sysexData
-{
-	[self convertParamsToBigEndian];
-	NSData *d = [super sysexData];
-	[self convertParamsToHost];
-	return d;
 }
 
 @end

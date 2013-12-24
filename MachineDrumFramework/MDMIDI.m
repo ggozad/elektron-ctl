@@ -244,9 +244,12 @@ void SetMIDISysExSpeed(MIDIEndpointRef ep, SInt32 speed)
 
 - (void)midiReceivedSysexData:(NSData *)sysexdata fromSource:(PGMidiSource *)source
 {
-	if(source == self.machinedrumMidiSource || source == self.a4MidiSource)
+	@synchronized(self)
 	{
-		[MDSysexRouter routeSysexData:sysexdata.copy];
+		if(source == self.machinedrumMidiSource || source == self.a4MidiSource)
+		{
+			[MDSysexRouter routeSysexData:sysexdata.copy];
+		}
 	}
 }
 

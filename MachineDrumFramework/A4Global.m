@@ -54,10 +54,10 @@
 
 - (void)setMasterTune:(double)masterTune
 {
-	masterTune -= 440;
-	masterTune *= 10;
+	masterTune = masterTune * 10 - 4400;
 	masterTune = mdmath_clamp(round(masterTune), -2200, 4400);
 	int16_t tune = masterTune;
+	DLog(@"tune: %d", tune);
 	_payload[0x28] = tune & 0xFF;
 	_payload[0x27] = (tune >> 8) & 0xFF;
 }
@@ -67,6 +67,7 @@
 	uint8_t tunLSB = _payload[0x28];
 	uint8_t tunMSB = _payload[0x27];
 	int16_t tune = tunLSB | tunMSB << 8;
+	DLog(@"tune: %d", tune);
 	return 440 + tune/10.0;
 }
 

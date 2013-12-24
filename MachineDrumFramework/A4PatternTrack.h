@@ -114,7 +114,7 @@ A4Arp;
 
 + (int) constrainKeyInTrack: (A4PatternTrack *)track note:(int)note;
 + (A4PatternTrack *)trackWithPayloadAddress:(char *)addr pattern:(A4Pattern *)pattern;
-- (void) clear;
+- (void) clearAllTrigs;
 - (void) setTrig:(A4Trig)trig atStep:(uint8_t)step;
 - (A4Trig) trigAtStep:(uint8_t)step;
 - (void) clearTrigAtStep:(uint8_t)step;

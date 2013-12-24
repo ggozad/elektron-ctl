@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		36074C601823C93600006650 /* A4SequencerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36074C5F1823C93600006650 /* A4SequencerTrack.m */; };
 		36074C611823C93600006650 /* A4SequencerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36074C5F1823C93600006650 /* A4SequencerTrack.m */; };
+		36121FD31869FBCE0078B9AF /* A4MorpherController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36121FD21869FBCD0078B9AF /* A4MorpherController.m */; };
+		36121FD41869FBCE0078B9AF /* A4MorpherController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36121FD21869FBCD0078B9AF /* A4MorpherController.m */; };
 		36181D7617F102D5001C9132 /* A4Trig.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D7517F102D5001C9132 /* A4Trig.m */; };
 		36181D7717F102D5001C9132 /* A4Trig.m in Sources */ = {isa = PBXBuildFile; fileRef = 36181D7517F102D5001C9132 /* A4Trig.m */; };
 		361C1FD917DFF71000C3E02C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 361C1FD717DFF71000C3E02C /* AudioUnit.framework */; };
@@ -92,6 +94,8 @@
 		3631A8881646C3E3008DB7E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36A1919A1626405200DA8A38 /* AudioToolbox.framework */; };
 		3631A8891646C3E3008DB7E5 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920EB158F81760025F0B3 /* CoreMIDI.framework */; };
 		3631A88A1646C3E3008DB7E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920DD158F81670025F0B3 /* Foundation.framework */; };
+		36371A13186A1FAA0019606E /* A4SoundMorph.m in Sources */ = {isa = PBXBuildFile; fileRef = 36371A12186A1FAA0019606E /* A4SoundMorph.m */; };
+		36371A14186A1FAA0019606E /* A4SoundMorph.m in Sources */ = {isa = PBXBuildFile; fileRef = 36371A12186A1FAA0019606E /* A4SoundMorph.m */; };
 		3639847A17FC6EBE00E071F3 /* A4PVal.m in Sources */ = {isa = PBXBuildFile; fileRef = 3639847917FC6EBE00E071F3 /* A4PVal.m */; };
 		3639847B17FC6EBE00E071F3 /* A4PVal.m in Sources */ = {isa = PBXBuildFile; fileRef = 3639847917FC6EBE00E071F3 /* A4PVal.m */; };
 		363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C82175A3C7D00DC1ADF /* MDPattern.m */; };
@@ -229,6 +233,8 @@
 /* Begin PBXFileReference section */
 		36074C5E1823C93600006650 /* A4SequencerTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4SequencerTrack.h; sourceTree = "<group>"; };
 		36074C5F1823C93600006650 /* A4SequencerTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4SequencerTrack.m; sourceTree = "<group>"; };
+		36121FD11869FBCD0078B9AF /* A4MorpherController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4MorpherController.h; sourceTree = "<group>"; };
+		36121FD21869FBCD0078B9AF /* A4MorpherController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4MorpherController.m; sourceTree = "<group>"; };
 		36181D7317EF929C001C9132 /* A4Params.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Params.m; sourceTree = "<group>"; };
 		36181D7417EF92DA001C9132 /* A4Trig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4Trig.h; sourceTree = "<group>"; };
 		36181D7517F102D5001C9132 /* A4Trig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Trig.m; sourceTree = "<group>"; };
@@ -277,6 +283,8 @@
 		3631499716F722BE00FAF523 /* NPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPair.h; sourceTree = "<group>"; };
 		3631499816F722BE00FAF523 /* NPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NPair.m; sourceTree = "<group>"; };
 		3631A8901646C3E4008DB7E5 /* libMachineDrumFramework-Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMachineDrumFramework-Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36371A11186A1FAA0019606E /* A4SoundMorph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4SoundMorph.h; sourceTree = "<group>"; };
+		36371A12186A1FAA0019606E /* A4SoundMorph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4SoundMorph.m; sourceTree = "<group>"; };
 		3639847817FC6EAF00E071F3 /* A4PVal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4PVal.h; sourceTree = "<group>"; };
 		3639847917FC6EBE00E071F3 /* A4PVal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4PVal.m; sourceTree = "<group>"; };
 		363D9C81175A3C7D00DC1ADF /* MDPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPattern.h; sourceTree = "<group>"; };
@@ -674,6 +682,10 @@
 				36E4BFCD18563F6E00F0E245 /* A4Queues.m */,
 				36E4C02F1857B2F800F0E245 /* A4Settings.h */,
 				36E4C0301857B2F800F0E245 /* A4Settings.m */,
+				36121FD11869FBCD0078B9AF /* A4MorpherController.h */,
+				36121FD21869FBCD0078B9AF /* A4MorpherController.m */,
+				36371A11186A1FAA0019606E /* A4SoundMorph.h */,
+				36371A12186A1FAA0019606E /* A4SoundMorph.m */,
 			);
 			name = A4;
 			sourceTree = "<group>";
@@ -1104,6 +1116,7 @@
 				3631A8791646C3E3008DB7E5 /* MDPatternTrigGenerator.m in Sources */,
 				3631A87A1646C3E3008DB7E5 /* MDMachinedrumGlobalSettings.m in Sources */,
 				36074C611823C93600006650 /* A4SequencerTrack.m in Sources */,
+				36371A14186A1FAA0019606E /* A4SoundMorph.m in Sources */,
 				3631A87B1646C3E3008DB7E5 /* MDMIDI.m in Sources */,
 				36E1ED2F183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */,
 				3631A87C1646C3E3008DB7E5 /* MDSysexTransaction.m in Sources */,
@@ -1143,6 +1156,7 @@
 				363D9C90175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
 				36871BDB182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */,
 				3672089717ED0B8B00323F2F /* A4PatternTrack.m in Sources */,
+				36121FD41869FBCE0078B9AF /* A4MorpherController.m in Sources */,
 				36431AA617804B3F007283A9 /* MDSongRow.m in Sources */,
 				36431AAA17804B51007283A9 /* MDSongParser.m in Sources */,
 				36871BCE182DA17400750F0F /* A4Sequencer.m in Sources */,
@@ -1195,6 +1209,7 @@
 				36FE349A15CEB57200695E38 /* MDUserParameterLimit.m in Sources */,
 				364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */,
 				36074C601823C93600006650 /* A4SequencerTrack.m in Sources */,
+				36371A13186A1FAA0019606E /* A4SoundMorph.m in Sources */,
 				362FE68715EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m in Sources */,
 				36E1ED2E183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */,
 				3699DF8D15F38DDF004C9D83 /* MDMIDI.m in Sources */,
@@ -1234,6 +1249,7 @@
 				363D9C8F175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
 				36871BDA182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */,
 				3672089617ED0B8B00323F2F /* A4PatternTrack.m in Sources */,
+				36121FD31869FBCE0078B9AF /* A4MorpherController.m in Sources */,
 				36431AA517804B3F007283A9 /* MDSongRow.m in Sources */,
 				36431AA917804B51007283A9 /* MDSongParser.m in Sources */,
 				36871BCD182DA17400750F0F /* A4Sequencer.m in Sources */,
@@ -1290,9 +1306,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "MachinedrumBundle/MachinedrumBundle-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "MachinedrumBundle-Mac";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -1320,9 +1337,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "MachinedrumBundle/MachinedrumBundle-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "MachinedrumBundle-Mac";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -1355,6 +1373,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "MachinedrumBundle-iOS";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -1385,6 +1404,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "MachinedrumBundle-iOS";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -1472,6 +1492,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = "";
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
 			};
 			name = Debug;
@@ -1494,6 +1515,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = "";
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
 				VALIDATE_PRODUCT = YES;
 			};

@@ -44,29 +44,11 @@
 	}
 }
 
-- (void)clear
+- (void)clearAllTrigs
 {
-	static dispatch_once_t onceToken;
-    static NSData *patternData = nil;
-    
-	dispatch_once(&onceToken, ^{
-        
-		patternData = [NSData dataFromMachinedrumBundleResourceWithName:@"defaultPattern" ofType:@"payload"];
-		
-    });
-	
-	if(patternData != nil)
+	for (int i = 0; i < 64; i++)
 	{
-		memmove(_payload, patternData.bytes + 4, A4MessagePayloadLengthTrack);
-	}
-	
-	if(self.pattern)
-	{
-		NSUInteger i = [self.pattern.tracks indexOfObject:self];
-		if(i != NSNotFound)
-		{
-			[self.pattern clearAllLocksInTrack:i];
-		}
+		[self clearTrigAtStep:i];
 	}
 }
 
@@ -143,15 +125,6 @@
 	
 	A4Trig trig = A4TrigMakeEmpty();
 	[self setTrig:trig atStep:step];
-	
-	if(self.pattern)
-	{
-		NSUInteger i = [self.pattern.tracks indexOfObject:self];
-		if(i != NSNotFound)
-		{
-			[self.pattern clearAllLocksAtStep:step inTrack:i];
-		}
-	}
 }
 
 - (void)setArpNoteLock:(uint8_t)n forNote:(uint8_t)i atStep:(uint8_t)step
@@ -166,11 +139,6 @@
 		[self setTrig:trig atStep:step];
 	}
 	_arp->noteLocks[i][step] = mdmath_clamp(n, 0, 0x7F);
-	
-	trig = [self trigAtStep:step];
-	
-	DLog(@"lol");
-
 }
 
 - (uint8_t)arpNoteLockForNote:(uint8_t)i atStep:(uint8_t)step

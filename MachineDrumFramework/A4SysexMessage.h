@@ -32,7 +32,7 @@ typedef enum A4MessagePayloadLength
 	A4MessagePayloadLengthKit		= 0x933,
 	A4MessagePayloadLengthPattern	= 0x30FE,
 	A4MessagePayloadLengthTrack		= 0x2A7,
-	A4MessagePayloadLengthSettings	= 0x3C,
+	A4MessagePayloadLengthSettings	= 0x3D,
 	A4MessagePayloadLengthGlobal	= 0x8DE,
 	A4MessagePayloadLengthSong		= 0x518,
 	A4MessagePayloadLengthProject	= 0x1DCF80
@@ -69,5 +69,6 @@ A4Sendmode;
 - (void) setByteValue:(char)byte inPayloadAtIndex:(NSUInteger)i;
 - (char) byteValueInPayloadAtIndex:(NSUInteger)i;
 - (void) send;
+- (void) sendTemp;
 - (void) sendWithMode:(A4Sendmode)mode;
 @end

@@ -11,15 +11,14 @@
 typedef enum A4RequestOptions
 {
 	A4RequestOptionsPatternsWithKits					= 1 << 0,
-	A4RequestOptionsPatternsWithKitsAndLockedSounds		= 1 << 1,
-	A4RequestOptionsPatternsWithLockedSounds			= 1 << 2,
-	A4RequestOptionsAllPatterns							= 1 << 3,
-	A4RequestOptionsAllSounds							= 1 << 4,
-	A4RequestOptionsAllKits								= 1 << 5,
-	A4RequestOptionsAllGlobals							= 1 << 6,
-	A4RequestOptionsAllSettings							= 1 << 7,
-	A4RequestOptionsAllSongs							= 1 << 8,
-	A4RequestOptionsSongsWithPatterns					= 1 << 9,
+	A4RequestOptionsPatternsWithLockedSounds			= 1 << 1,
+	A4RequestOptionsAllPatterns							= 1 << 2,
+	A4RequestOptionsAllSounds							= 1 << 3,
+	A4RequestOptionsAllKits								= 1 << 4,
+	A4RequestOptionsAllGlobals							= 1 << 5,
+	A4RequestOptionsAllSettings							= 1 << 6,
+	A4RequestOptionsAllSongs							= 1 << 7,
+	A4RequestOptionsSongsWithPatterns					= 1 << 8,
 }
 A4RequestOptions;
 
@@ -49,22 +48,38 @@ typedef enum A4RequestPriority
 }
 A4RequestPriority;
 
+
+#define A4RequestHandle NSInteger
+
+@protocol A4RequestDelegate <NSObject>
+@optional
+- (void) a4requestDidBeginRequestWithHandle:(A4RequestHandle) handle;
+- (void) a4requestWithHandle:(A4RequestHandle) handle didUpdateProgress:(double)progress;
+@end
+
 @interface A4Request : NSObject
 
 + (instancetype) sharedInstance;
 + (void) cancelAllRequests;
 + (BOOL) cancelRequest:(NSInteger)handle;
-+ (NSInteger)requestWithKeys:(NSArray *)keys
-				options:(A4RequestOptions)optionsBitmask
-			   priority:(A4RequestPriority)priority
-		completionQueue:(dispatch_queue_t)queue
-	  completionHandler:(void (^)(NSDictionary *)) completionHandler
-		   errorHandler:(void (^)(NSError *)) errorHandler;
 
-+ (NSInteger)requestWithKeys:(NSArray *)keys
-				options:(A4RequestOptions)optionsBitmask
-	  completionHandler:(void (^)(NSDictionary *))completionHandler
-		   errorHandler:(void (^)(NSError *))errorHandler;
++ (A4RequestHandle)requestWithKeys:(NSArray *)keys
+						   options:(A4RequestOptions)optionsBitmask
+						  priority:(A4RequestPriority)priority
+						  delegate:(id<A4RequestDelegate>)delegate
+				   completionQueue:(dispatch_queue_t)queue
+				 completionHandler:(void (^)(NSDictionary *)) completionHandler
+					  errorHandler:(void (^)(NSError *)) errorHandler;
+
++ (A4RequestHandle)requestWithKeys:(NSArray *)keys
+						   options:(A4RequestOptions)optionsBitmask
+						  delegate:(id<A4RequestDelegate>)delegate
+				 completionHandler:(void (^)(NSDictionary *))completionHandler
+					  errorHandler:(void (^)(NSError *))errorHandler;
+
++ (A4RequestHandle)requestWithKeys:(NSArray *)keys
+				 completionHandler:(void (^)(NSDictionary *))completionHandler
+					  errorHandler:(void (^)(NSError *))errorHandler;
 
 
 @end

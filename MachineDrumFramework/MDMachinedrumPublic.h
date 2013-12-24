@@ -64,7 +64,7 @@
 
 #import "A4SysexHelper.h"
 
-
+#import "A4MorpherController.h"
 #import "A4PolyMapper.h"
 #import "A4Randomizer.h"
 #import "A4RandomizerPreset.h"
