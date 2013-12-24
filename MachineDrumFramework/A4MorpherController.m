@@ -32,21 +32,14 @@
 	[self.delegate a4MorpherController:self morph:morph didUpdateProgress:progress];
 }
 
-- (void)a4SoundMorphDidApply:(A4SoundMorph *)morph
+- (void)a4SoundMorph:(A4SoundMorph *)morph didReachEndWithAction:(A4MorpherCompletionAction)action
 {
-	[self.delegate a4MorpherController:self morphDidApply:morph];
-	[self.morphs removeObject:morph];
+	[self.delegate a4MorpherController:self morph:morph didReachEndWithAction:action];
 }
 
 - (void)a4SoundMorphDidBegin:(A4SoundMorph *)morph
 {
 	[self.delegate a4MorpherController:self morphDidBegin:morph];
-}
-
-- (void)a4SoundMorphDidRevert:(A4SoundMorph *)morph
-{
-	[self.delegate a4MorpherController:self morphDidRevert:morph];
-	[self.morphs removeObject:morph];
 }
 
 - (id)init
@@ -58,48 +51,37 @@
 	return self;
 }
 
-- (void)revertMorphWithHandle:(A4MorpherMorphID)id
-{
-	for(A4SoundMorph *morph in self.morphs)
-	{
-		if(morph.id.handle == id.handle)
-		{
-			[morph revert];
-			return;
-		}
-	}
-}
 
-- (void)modifyMorphWithHandle:(A4MorpherMorphID)handle newTarget:(uint8_t)targetIdx additionalTime:(double)additionalTime
-{
-	for(A4SoundMorph *morph in self.morphs)
-	{
-		if(morph.id.handle == handle.handle)
-		{
-			[morph modifyNewTarget:targetIdx additionalTime:additionalTime];
-			return;
-		}
-	}
-}
-
-- (A4MorpherMorphID)beginMorphWithMode:(A4MorpherMorphMode)mode target:(uint8_t)targetIdx time:(double)t
+- (A4SoundMorph *)beginMorphWithMode:(A4MorpherMorphMode)mode target:(uint8_t)targetIdx time:(double)t completionAction:(A4MorpherCompletionAction)action
 {
 	A4SoundMorph *morph = [A4SoundMorph new];
 	morph.delegate = self;
-	A4MorpherMorphID id = [morph beginWithMode:morph target:targetIdx time:t];
-	if(id.handle)[ self.morphs addObject:morph];
-	return id;
+	[self.morphs addObject:morph];
+	[morph beginWithMode:mode target:targetIdx time:t completionAction:action];
+	return morph;
 }
 
-- (void)applyMorphWithHandle:(A4MorpherMorphID)id immediately:(BOOL)immediately
+- (void)setMorph:(A4SoundMorph *)morph completionAction:(A4MorpherCompletionAction)action applyImmediately:(BOOL)immediately
 {
-	for(A4SoundMorph *morph in self.morphs)
+	if([self.morphs containsObject:morph])
 	{
-		if(morph.id.handle == id.handle)
-		{
-			[morph applyImmediately:immediately];
-			return;
-		}
+		[morph setCompletionAction:action applyImmediately:immediately];
+	}
+}
+
+- (void)setMorph:(A4SoundMorph *)morph newTarget:(uint8_t)targetIdx additionalTime:(double)additionalTime
+{
+	if([self.morphs containsObject:morph])
+	{
+		[morph setNewTarget:targetIdx additionalTime:additionalTime];
+	}
+}
+
+- (void)setMorph:(A4SoundMorph *)morph newTarget:(uint8_t)targetIdx setTimeFromNow:(double)newTime
+{
+	if([self.morphs containsObject:morph])
+	{
+		[morph setNewTarget:targetIdx setTimeFromNow:newTime];
 	}
 }
 
