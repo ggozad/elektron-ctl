@@ -72,4 +72,7 @@
 #import "MDAudioRecorder.h"
 #import "MDMath.h"
 
+#import "NSMutableArray+Reverse.h"
+#import "NSArray+Reverse.h"
+
 #endif

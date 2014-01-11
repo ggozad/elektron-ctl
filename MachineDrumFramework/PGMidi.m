@@ -89,6 +89,67 @@ NSString *NameOfEndpoint(MIDIEndpointRef ref)
     return string;
 }
 
+static
+NSString *ManufacturerOfEndpoint(MIDIEndpointRef ref)
+{
+    NSString *string = nil;
+	
+    MIDIEntityRef entity = 0;
+    MIDIEndpointGetEntity(ref, &entity);
+	
+    //CFPropertyListRef properties = nil;
+	CFStringRef manufacturerStringRef = nil;
+	OSStatus s = MIDIObjectGetStringProperty(entity, kMIDIPropertyManufacturer, &manufacturerStringRef);
+    //OSStatus s = MIDIObjectGetProperties(entity, &properties, true);
+    if (s)
+    {
+		NSError *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:s userInfo:nil];
+		DLog(@"err: %@", error);
+        string = @"Unknown Manufacturer";
+    }
+    else
+    {
+        //NSLog(@"Properties = %@", properties);
+		//NSDictionary *dictionary = (__bridge NSDictionary *)properties;
+		string = (__bridge NSString *)manufacturerStringRef;
+#if TARGET_OS_IPHONE
+		if(IsNetworkSession(ref))
+			string = [NSString stringWithFormat:@"Network %@", string];
+#endif
+		
+        //string = [NSString stringWithFormat:@"%@",[dictionary valueForKey:@"displayname"]];
+        //CFRelease(properties);
+		CFRelease(manufacturerStringRef);
+    }
+	
+    return string;
+}
+
+id PropertiesOfEndpoint(MIDIEndpointRef ref)
+{
+	CFPropertyListRef pListRef;
+	OSStatus s = MIDIObjectGetProperties(ref, &pListRef, true);
+	if(s != noErr)
+	{
+		NSError *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:s userInfo:nil];
+		DLog(@"err: %@", error);
+	}
+	
+	CFTypeID type = CFGetTypeID(pListRef);
+	if(type == CFDictionaryGetTypeID())
+	{
+		NSDictionary *dictionary = (__bridge NSDictionary *) pListRef;
+		return dictionary;
+	}
+	else if(type == CFArrayGetTypeID())
+	{
+		NSArray *array = (__bridge NSArray *)pListRef;
+		return array;
+	}
+	
+	return nil;
+}
+
 //==============================================================================
 
 
@@ -103,8 +164,10 @@ NSString *NameOfEndpoint(MIDIEndpointRef ref)
         _midi                = m;
         _endpoint            = e;
         _name                = NameOfEndpoint(e);
+		_manufacturer		 = ManufacturerOfEndpoint(e);
+		_midiProperties		 = PropertiesOfEndpoint(e);
 #if TARGET_OS_IPHONE
-		 _isNetworkSession  = IsNetworkSession(e);
+		_isNetworkSession	 = IsNetworkSession(e);
 #endif
     }
     return self;
@@ -431,6 +494,31 @@ static inline uint64_t convertTimestampToNanoseconds(uint64_t time)
 
 //==============================================================================
 #pragma mark Connect/disconnect
+
+- (void) reset
+{
+	DLog(@"resetting MIDI...");
+	
+	/*
+	NSArray *tmpSources = self.sources.copy;
+	for(PGMidiSource *s in tmpSources)
+	{
+		[self disconnectSource:s.endpoint];
+	}
+	NSArray *tmpDestinations = self.destinations.copy;
+	for(PGMidiDestination *dst in tmpDestinations)
+	{
+		[self disconnectDestination:dst.endpoint];
+	}
+	*/
+	
+	MIDIRestart();
+//	[self scanExistingDevices];
+	if([self.delegate respondsToSelector:@selector(midiDidReset:)])
+	{
+		[self.delegate midiDidReset:self];
+	}
+}
 
 - (PGMidiSource*) getSource:(MIDIEndpointRef)source
 {

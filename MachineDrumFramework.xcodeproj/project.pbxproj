@@ -94,8 +94,6 @@
 		3631A8881646C3E3008DB7E5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36A1919A1626405200DA8A38 /* AudioToolbox.framework */; };
 		3631A8891646C3E3008DB7E5 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920EB158F81760025F0B3 /* CoreMIDI.framework */; };
 		3631A88A1646C3E3008DB7E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B920DD158F81670025F0B3 /* Foundation.framework */; };
-		36371A13186A1FAA0019606E /* A4SoundMorph.m in Sources */ = {isa = PBXBuildFile; fileRef = 36371A12186A1FAA0019606E /* A4SoundMorph.m */; };
-		36371A14186A1FAA0019606E /* A4SoundMorph.m in Sources */ = {isa = PBXBuildFile; fileRef = 36371A12186A1FAA0019606E /* A4SoundMorph.m */; };
 		3639847A17FC6EBE00E071F3 /* A4PVal.m in Sources */ = {isa = PBXBuildFile; fileRef = 3639847917FC6EBE00E071F3 /* A4PVal.m */; };
 		3639847B17FC6EBE00E071F3 /* A4PVal.m in Sources */ = {isa = PBXBuildFile; fileRef = 3639847917FC6EBE00E071F3 /* A4PVal.m */; };
 		363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 363D9C82175A3C7D00DC1ADF /* MDPattern.m */; };
@@ -192,6 +190,10 @@
 		36CA752517F271DF00BEC865 /* MDMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3643BD2A17E7B17900AA8663 /* MDMath.m */; };
 		36CEBAD1184969BD00849925 /* A4VoiceAllocator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */; };
 		36CEBAD2184969BD00849925 /* A4VoiceAllocator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */; };
+		36E188871874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E188861874AA2800F84304 /* NSMutableArray+Reverse.m */; };
+		36E188881874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E188861874AA2800F84304 /* NSMutableArray+Reverse.m */; };
+		36E1888B1874AA5E00F84304 /* NSArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */; };
+		36E1888C1874AA5E00F84304 /* NSArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */; };
 		36E1ED2E183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */; };
 		36E1ED2F183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */; };
 		36E1ED32183E8EE0001A9498 /* A4LFO.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED31183E8EE0001A9498 /* A4LFO.m */; };
@@ -283,8 +285,6 @@
 		3631499716F722BE00FAF523 /* NPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPair.h; sourceTree = "<group>"; };
 		3631499816F722BE00FAF523 /* NPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NPair.m; sourceTree = "<group>"; };
 		3631A8901646C3E4008DB7E5 /* libMachineDrumFramework-Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMachineDrumFramework-Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		36371A11186A1FAA0019606E /* A4SoundMorph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4SoundMorph.h; sourceTree = "<group>"; };
-		36371A12186A1FAA0019606E /* A4SoundMorph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4SoundMorph.m; sourceTree = "<group>"; };
 		3639847817FC6EAF00E071F3 /* A4PVal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4PVal.h; sourceTree = "<group>"; };
 		3639847917FC6EBE00E071F3 /* A4PVal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4PVal.m; sourceTree = "<group>"; };
 		363D9C81175A3C7D00DC1ADF /* MDPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPattern.h; sourceTree = "<group>"; };
@@ -418,6 +418,10 @@
 		36CA752317F2705C00BEC865 /* MDMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMath.h; sourceTree = "<group>"; };
 		36CEBACF184969BD00849925 /* A4VoiceAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4VoiceAllocator.h; sourceTree = "<group>"; };
 		36CEBAD0184969BD00849925 /* A4VoiceAllocator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4VoiceAllocator.m; sourceTree = "<group>"; };
+		36E188851874AA2800F84304 /* NSMutableArray+Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Reverse.h"; sourceTree = "<group>"; };
+		36E188861874AA2800F84304 /* NSMutableArray+Reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Reverse.m"; sourceTree = "<group>"; };
+		36E188891874AA5E00F84304 /* NSArray+Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Reverse.h"; sourceTree = "<group>"; };
+		36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Reverse.m"; sourceTree = "<group>"; };
 		36E1ED2C183DB1BF001A9498 /* A4ControllerdataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4ControllerdataHandler.h; sourceTree = "<group>"; };
 		36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4ControllerdataHandler.m; sourceTree = "<group>"; };
 		36E1ED30183E8EE0001A9498 /* A4LFO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4LFO.h; sourceTree = "<group>"; };
@@ -543,6 +547,10 @@
 				3623ED8517F7638100387DC8 /* NSData+MachinedrumBundle.m */,
 				3623ED8817F763CC00387DC8 /* NSBundle+MachinedrumBundle.h */,
 				3623ED8917F763CC00387DC8 /* NSBundle+MachinedrumBundle.m */,
+				36E188851874AA2800F84304 /* NSMutableArray+Reverse.h */,
+				36E188861874AA2800F84304 /* NSMutableArray+Reverse.m */,
+				36E188891874AA5E00F84304 /* NSArray+Reverse.h */,
+				36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -684,8 +692,6 @@
 				36E4C0301857B2F800F0E245 /* A4Settings.m */,
 				36121FD11869FBCD0078B9AF /* A4MorpherController.h */,
 				36121FD21869FBCD0078B9AF /* A4MorpherController.m */,
-				36371A11186A1FAA0019606E /* A4SoundMorph.h */,
-				36371A12186A1FAA0019606E /* A4SoundMorph.m */,
 			);
 			name = A4;
 			sourceTree = "<group>";
@@ -1116,10 +1122,10 @@
 				3631A8791646C3E3008DB7E5 /* MDPatternTrigGenerator.m in Sources */,
 				3631A87A1646C3E3008DB7E5 /* MDMachinedrumGlobalSettings.m in Sources */,
 				36074C611823C93600006650 /* A4SequencerTrack.m in Sources */,
-				36371A14186A1FAA0019606E /* A4SoundMorph.m in Sources */,
 				3631A87B1646C3E3008DB7E5 /* MDMIDI.m in Sources */,
 				36E1ED2F183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */,
 				3631A87C1646C3E3008DB7E5 /* MDSysexTransaction.m in Sources */,
+				36E1888C1874AA5E00F84304 /* NSArray+Reverse.m in Sources */,
 				36CA752417F271D800BEC865 /* MDMath.m in Sources */,
 				3631A87D1646C3E3008DB7E5 /* MDSysexTransactionController.m in Sources */,
 				3631A87E1646C3E3008DB7E5 /* PGMidi.m in Sources */,
@@ -1132,6 +1138,7 @@
 				3643BD3117E7B46500AA8663 /* A4Randomizer.m in Sources */,
 				3631A8831646C3E3008DB7E5 /* MDValueMap.m in Sources */,
 				3631A8841646C3E3008DB7E5 /* MDValuePair.m in Sources */,
+				36E188881874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */,
 				36BEA64917E8AED600932018 /* A4RandomizerPreset.m in Sources */,
 				3631A8851646C3E3008DB7E5 /* MDSDS.m in Sources */,
 				36E4BFCB18561B0D00F0E245 /* A4Request.m in Sources */,
@@ -1209,10 +1216,10 @@
 				36FE349A15CEB57200695E38 /* MDUserParameterLimit.m in Sources */,
 				364752F215D1AD63002DCA22 /* MDPatternTrigGenerator.m in Sources */,
 				36074C601823C93600006650 /* A4SequencerTrack.m in Sources */,
-				36371A13186A1FAA0019606E /* A4SoundMorph.m in Sources */,
 				362FE68715EF9E5B00DAFBB2 /* MDMachinedrumGlobalSettings.m in Sources */,
 				36E1ED2E183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */,
 				3699DF8D15F38DDF004C9D83 /* MDMIDI.m in Sources */,
+				36E1888B1874AA5E00F84304 /* NSArray+Reverse.m in Sources */,
 				3699DF8E15F38DDF004C9D83 /* MDSysexTransaction.m in Sources */,
 				3699DF8F15F38DDF004C9D83 /* MDSysexTransactionController.m in Sources */,
 				3699DF9715F38E76004C9D83 /* PGMidi.m in Sources */,
@@ -1225,6 +1232,7 @@
 				364CD2C015F5157200CA49A9 /* MDSong.m in Sources */,
 				3643BD3017E7B46500AA8663 /* A4Randomizer.m in Sources */,
 				364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */,
+				36E188871874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */,
 				364CD2C715F5169F00CA49A9 /* MDValuePair.m in Sources */,
 				36BEA64817E8AED600932018 /* A4RandomizerPreset.m in Sources */,
 				36E4BFCA18561B0D00F0E245 /* A4Request.m in Sources */,

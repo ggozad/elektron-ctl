@@ -109,33 +109,41 @@ void SetMIDISysExSpeed(MIDIEndpointRef ep, SInt32 speed)
 		[self.midiConnectionObservers removeObject:observer];
 }
 
+- (void)midiDidReset:(PGMidi *)midi
+{
+	[self reconnectToKnownMidiEndpoints];
+}
+
 - (void)midiDestinationAdded:(PGMidiDestination *)destination
 {
 	[self performSelector:@selector(reconnectToKnownMidiEndpoints) withObject:nil];
+	
 	for (id<PGMidiDelegate> observer in self.midiConnectionObservers)
 	{
-		[observer performSelector:@selector(midiDestinationAdded:) withObject:destination];
+		if([observer respondsToSelector:@selector(midiDestinationAdded:)])
+			[observer performSelector:@selector(midiDestinationAdded:) withObject:destination];
 	}
 }
 
 - (void)midiDestinationRemoved:(PGMidiDestination *)destination
 {
-	[self performSelector:@selector(reconnectToKnownMidiEndpoints) withObject:nil];
-	
-	if(destination == self.a4MidiDestination) self.a4MidiDestination = nil;
-	if(destination == self.machinedrumMidiDestination) self.machinedrumMidiDestination = nil;
-	if(destination == self.externalInputDestination) self.externalInputDestination = nil;
-	
 	for (id<PGMidiDelegate> observer in self.midiConnectionObservers)
 	{
 		if([observer respondsToSelector:@selector(midiDestinationRemoved:)])
 			[observer performSelector:@selector(midiDestinationRemoved:) withObject:destination];
 	}
+	
+	[self performSelector:@selector(reconnectToKnownMidiEndpoints) withObject:nil];
+	
+	if(destination == self.a4MidiDestination) self.a4MidiDestination = nil;
+	if(destination == self.machinedrumMidiDestination) self.machinedrumMidiDestination = nil;
+	if(destination == self.externalInputDestination) self.externalInputDestination = nil;
 }
 - (void)midiSourceAdded:(PGMidiSource *)source
 {
 	DLog(@"source added: %@", source.name);
 	[self performSelector:@selector(reconnectToKnownMidiEndpoints) withObject:nil];
+	
 	for (id<PGMidiDelegate> observer in self.midiConnectionObservers)
 	{
 		if([observer respondsToSelector:@selector(midiSourceAdded:)])
@@ -253,6 +261,15 @@ void SetMIDISysExSpeed(MIDIEndpointRef ep, SInt32 speed)
 	}
 }
 
+- (void)midiReceivedData:(NSData *)rawData fromSource:(PGMidiSource *)source
+{
+	for (id<MidiInputDelegate> i in self.midiInputObservers)
+	{
+		if([i respondsToSelector:@selector(midiReceivedData:fromSource:)])
+			[i midiReceivedData:rawData fromSource:source];
+	}
+}
+
 - (void)machineDrum:(MDMachineDrum *)md wantsToSendSysExData:(NSData *)data
 {
 	if(self.machinedrumMidiDestination)
@@ -348,6 +365,8 @@ void SetMIDISysExSpeed(MIDIEndpointRef ep, SInt32 speed)
 	
 	[[NSUserDefaults standardUserDefaults] setValue:name forKey:@"a4DestinationName"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
+	
+	DLog(@"set a4 source to %@", _a4MidiDestination.name);
 }
 
 static MDMIDI *_default = nil;
@@ -376,6 +395,7 @@ static MDMIDI *_default = nil;
 	{
 		self.deviceNamesForAutoConnect = @[
 									 @"Elektron Analog Four",
+									 @"Elektron Analog Keys",
 									 @"Elektron TM-1"];
 		
 		
@@ -387,8 +407,6 @@ static MDMIDI *_default = nil;
 		self.machinedrum.delegate = self;
 		self.sysex = [MDSysexTransactionController new];
 		[[PGMidi sharedInstance] setDelegate:self];
-	
-		
 		[self reconnectToKnownMidiEndpoints];
 		[self refreshSoftThruSettings];
 		
@@ -402,14 +420,12 @@ static MDMIDI *_default = nil;
 	return self;
 }
 
-- (void) midiEndpointDisconnect
-{
-	
-}
+
 
 - (void) reconnectToKnownMidiEndpoints
 {
 	DLog(@"trying to reconnect to previous midi endpoints..");
+	/*
 	NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
 	[d synchronize];
 	
@@ -465,6 +481,7 @@ static MDMIDI *_default = nil;
 				[self setMachinedrumMidiDestination:destination];
 		}
 	}
+	 */
 	
 	for (PGMidiSource *source in [[PGMidi sharedInstance] sources])
 	{
@@ -474,13 +491,14 @@ static MDMIDI *_default = nil;
 		{
 			if([autoConnectName isEqualToString:source.name])
 			{
-				if([source.name isEqualToString:@"Elektron TM-1"] && !self.machinedrumMidiSource)
+				if([source.name isEqualToString:@"Elektron TM-1"])
 				{
 					DLog(@"src success! connecting to %@", source.name);
 					[self setMachinedrumMidiSource:source];
 					break;
 				}
-				else if([source.name isEqualToString:@"Elektron Analog Four"] && !self.a4MidiSource)
+				else if([source.name isEqualToString:@"Elektron Analog Four"] ||
+						[source.name isEqualToString:@"Elektron Analog Keys"])
 				{
 					DLog(@"src success! connecting to %@", source.name);
 					[self setA4MidiSource:source];
@@ -505,13 +523,14 @@ static MDMIDI *_default = nil;
 		{
 			if([autoConnectName isEqualToString:destination.name])
 			{
-				if([destination.name isEqualToString:@"Elektron TM-1"] && !self.machinedrumMidiDestination)
+				if([destination.name isEqualToString:@"Elektron TM-1"])
 				{
 					DLog(@"dst success! connecting to %@", destination.name);
 					[self setMachinedrumMidiDestination:destination];
 					break;
 				}
-				else if([destination.name isEqualToString:@"Elektron Analog Four"] && !self.a4MidiDestination)
+				else if([destination.name isEqualToString:@"Elektron Analog Four"] ||
+						[destination.name isEqualToString:@"Elektron Analog Keys"])
 				{
 					DLog(@"dst success! connecting to %@", destination.name);
 					[self setA4MidiDestination:destination];
@@ -528,13 +547,6 @@ static MDMIDI *_default = nil;
 			}
 		}
 	}
-	
-	/*
-	if(self.machinedrumMidiDestination && self.machinedrumMidiSource)
-		return;
-	*/
-	
-	
 }
 
 @end

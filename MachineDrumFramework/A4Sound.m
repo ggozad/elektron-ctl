@@ -111,7 +111,11 @@
 	if(lock.param == A4NULL) return;
 	uint8_t i = A4SoundOffsetForParam(lock.param);
 	if(i == A4NULL) return;
-	_params->param[i] = lock.coarse << 8 & lock.fine;
+	
+	int16_t intval = lock.fine;
+	intval = intval << 8;
+	intval |= lock.coarse;
+	_params->param[i] = intval;
 }
 
 - (A4PVal)valueForParam:(A4Param)param

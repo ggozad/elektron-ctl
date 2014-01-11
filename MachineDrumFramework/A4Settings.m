@@ -66,6 +66,16 @@
 	}
 }
 
+- (uint8_t)muteMask
+{
+	return _payload[0xD];
+}
+
+- (void)setMuteMask:(uint8_t)muteMask
+{
+	_payload[0xD] = muteMask;
+}
+
 - (uint8_t)selectedTrack
 {
 	return self.selectedTrackParams;

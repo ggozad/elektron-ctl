@@ -281,6 +281,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 						{
 							// handle activesense
 						}
+						
+						[self passRawBytes:&byteValue len:1];
 					}
 					else
 					{
@@ -291,6 +293,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 						{
 							_status = MD_MIDI_STATUS_SYSEX_END;
 							NSUInteger sysexDataLength = _idx;
+							
+							[self passRawBytes:_buffer len:sysexDataLength];
 							
 							@autoreleasepool
 							{
@@ -323,6 +327,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									pc.channel = _buffer[0] & 0x0f;
 									pc.program = _buffer[1] & 0x7f;
 									
+									[self passRawBytes:_buffer len:2];
+									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedProgramChange:fromSource:)])
@@ -338,6 +344,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									MidiChannelPressure pressure;
 									pressure.channel =	_buffer[0] & 0x0f;
 									pressure.pressure = _buffer[1] & 0x7f;
+									
+									[self passRawBytes:_buffer len:2];
 									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
@@ -364,6 +372,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									noteOn.note = _buffer[1] & 0x7f;
 									noteOn.velocity = _buffer[2] & 0x7f;
 									
+									[self passRawBytes:_buffer len:_idx];
 									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
@@ -383,6 +392,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									noteOff.note =		_buffer[1] & 0x7f;
 									noteOff.velocity =	_buffer[2] & 0x7f;
 									
+									[self passRawBytes:_buffer len:_idx];
+									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedNoteOff:fromSource:)])
@@ -400,6 +411,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									cc.channel =	_buffer[0] & 0x0f;
 									cc.parameter =	_buffer[1] & 0x7f;
 									cc.value =		_buffer[2] & 0x7f;
+									
+									[self passRawBytes:_buffer len:_idx];
 									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
@@ -419,6 +432,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									aftertouch.note =		_buffer[1] & 0x7f;
 									aftertouch.pressure =	_buffer[2] & 0x7f;
 									
+									[self passRawBytes:_buffer len:_idx];
+									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedAftertouch:fromSource:)])
@@ -437,6 +452,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 									UInt16 pitch = (_buffer[2] & 0x7F) << 7 | (_buffer[1] & 0x7F);
 									pw.pitch = pitch;
 									
+									[self passRawBytes:_buffer len:_idx];
+									
 									dispatch_async([A4Queues voiceQueue], ^{
 										
 										if([_delegate respondsToSelector:@selector(midiReceivedPitchWheel:fromSource:)])
@@ -449,6 +466,8 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 								}
 								default: break;
 							}
+							
+							
 						}
 					}
 					if (_idx == kMidiInputParserBufferSize)
@@ -461,6 +480,18 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 			currentPacket = MIDIPacketNext(currentPacket);
 		}
 		
+	}
+}
+
+- (void) passRawBytes:(uint8_t *)bytes len:(NSUInteger)len
+{
+	if(_passRawOutput && [_delegate respondsToSelector:@selector(midiReceivedData:fromSource:)])
+	{
+		@autoreleasepool
+		{
+			NSData *d = [NSData dataWithBytes:bytes length:len];
+			[_delegate midiReceivedData:d fromSource:_source];
+		}
 	}
 }
 

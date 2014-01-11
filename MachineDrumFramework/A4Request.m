@@ -294,7 +294,7 @@ static A4Request *_default = nil;
 			for (A4Transaction *t in [[self sharedInstance] queue])
 			{
 				[[self sharedInstance] dispatchErrorHandlerForTransaction:t withError:
-				 [NSError errorWithDomain:@"timeout!" code:-1 userInfo:nil]];
+				 [NSError errorWithDomain:@"cancelled" code:-1 userInfo:nil]];
 			}
 			
 			
@@ -305,8 +305,8 @@ static A4Request *_default = nil;
 }
 
 + (NSInteger)requestWithKeys:(NSArray *)keys
-		   completionHandler:(void (^)(NSDictionary *))completionHandler
-				errorHandler:(void (^)(NSError *))errorHandler
+		   completionHandler:(void (^)(NSDictionary *dict))completionHandler
+				errorHandler:(void (^)(NSError *err))errorHandler
 {
 	return [self requestWithKeys:keys
 						 options:0
@@ -318,16 +318,19 @@ static A4Request *_default = nil;
 + (NSInteger)requestWithKeys:(NSArray *)keys
 					 options:(A4RequestOptions)optionsBitmask
 					delegate:(id<A4RequestDelegate>)delegate
-		   completionHandler:(void (^)(NSDictionary *))completionHandler
-				errorHandler:(void (^)(NSError *))errorHandler
+		   completionHandler:(void (^)(NSDictionary *dict))completionHandler
+				errorHandler:(void (^)(NSError *err))errorHandler
 {
-	return [self requestWithKeys:keys
-						 options:optionsBitmask
-						priority:A4RequestPriorityDefault
-						delegate:delegate
-				 completionQueue:dispatch_get_current_queue()
-			   completionHandler:completionHandler
-					errorHandler:errorHandler];
+	@synchronized(self)
+	{
+		return [self requestWithKeys:keys
+							 options:optionsBitmask
+							priority:A4RequestPriorityDefault
+							delegate:delegate
+					 completionQueue:dispatch_get_current_queue()
+				   completionHandler:completionHandler
+						errorHandler:errorHandler];
+	}
 }
 
 
@@ -336,8 +339,8 @@ static A4Request *_default = nil;
 					priority:(A4RequestPriority)priority
 					delegate:(id<A4RequestDelegate>)delegate
 			 completionQueue:(dispatch_queue_t)queue
-		   completionHandler:(void (^)(NSDictionary *))completionHandler
-				errorHandler:(void (^)(NSError *))errorHandler
+		   completionHandler:(void (^)(NSDictionary *dict))completionHandler
+				errorHandler:(void (^)(NSError *err))errorHandler
 {
 	@synchronized(self)
 	{
@@ -483,7 +486,7 @@ static A4Request *_default = nil;
 	}
 	if(t.options & A4RequestOptionsAllGlobals)
 	{
-		for (int i = 0; i < 128; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			Key key = KeyMake(A4SysexRequestID_Global, i);
 			[A4Request addKey:key toKeysArray: t.keysToProcess];
@@ -534,7 +537,23 @@ static A4Request *_default = nil;
 		if(_currentTransaction)
 		{
 			[A4Request cancelAllRequests];
-			[self cancelCurrentTransactionWithError:[NSError errorWithDomain:@"timeout" code:-1 userInfo:nil]];
+			
+			NSMutableArray *keys = @[].mutableCopy;
+			for (NSValue *keyVal in self.currentTransaction.keysToProcess)
+			{
+				NSString *keyString = [A4Request keyStringWithKey:keyVal.keyValue];
+				if(keyString)
+				{
+					[keys addObject:keyString];
+				}
+				else
+				{
+					[keys addObject:@"INVALID KEY"];
+				}
+			}
+			
+			[self cancelCurrentTransactionWithError:
+			 [NSError errorWithDomain:@"timeout" code:-1 userInfo:@{@"unprocessed keys" : keys}]];
 		}
 		
 	});
@@ -582,12 +601,35 @@ static A4Request *_default = nil;
 	[self inflateOptionsKeysInCurrentTransaction];
 	self.totalKeysForCurrentTransaction = self.currentTransaction.keysToProcess.mutableCopy;
 	self.currentTransactionKeysAddedDuringRequest = @[].mutableCopy;
-	[self processKeysInCurrentTransaction];
+	
+	[self addCurrentKeysToTotalByteCount];
+	
+	if(self.currentTransaction.options & A4RequestOptions_SAFER_)
+	{
+		[self processFirstKeyInCurrentTransaction];
+	}
+	else
+	{
+		[self processKeysInCurrentTransaction];
+	}
+}
+
+- (void) addCurrentKeysToTotalByteCount
+{
+	for(NSValue *v in _currentTransaction.keysToProcess)
+	{
+		Key key = v.keyValue;
+		if(KeyIsValid(key))
+		{
+			self.currentTransaction.totalPayloadByteCount += PayloadLenForRequestID(key.id);
+		}
+	}
 }
 
 - (void) processKeysInCurrentTransaction
 {
 	NSAssert(_currentTransaction, @"no transaction!");
+	NSAssert(_currentTransaction.keysToProcess.count, @"no keys to process!");
 	
 	for(NSValue *v in _currentTransaction.keysToProcess)
 	{
@@ -595,11 +637,28 @@ static A4Request *_default = nil;
 		if(KeyIsValid(key))
 		{
 			[self requestObjectWithKey:key];
-			self.currentTransaction.totalPayloadByteCount += PayloadLenForRequestID(key.id);
 		}
 	}
 	
 	[self startTimeout];
+}
+
+- (void) processFirstKeyInCurrentTransaction
+{
+	NSAssert(_currentTransaction, @"no transaction!");
+	NSAssert(_currentTransaction.keysToProcess.count, @"no key to process!");
+	
+	NSValue *val = _currentTransaction.keysToProcess[0];
+	Key key = val.keyValue;
+	if(KeyIsValid(key))
+	{
+		[self requestObjectWithKey:key];
+		[self startTimeout];
+	}
+	else
+	{
+		[self cancelCurrentTransactionWithError:[NSError errorWithDomain:@"invalid key" code:-1 userInfo:nil]];
+	}
 }
 
 - (void) addKeyToCurrentTransaction:(Key)newKey
@@ -764,6 +823,7 @@ static A4Request *_default = nil;
 
 - (void) cancelCurrentTransactionWithError:(NSError *)err
 {
+	[self stopListeningForSysex];
 	[self dispatchErrorHandlerForTransaction:self.currentTransaction withError:err];
 	self.currentTransaction = nil;
 	[self dequeue];
@@ -861,10 +921,15 @@ static A4Request *_default = nil;
 {
 	if(self.currentTransaction)
 	{
-		[self startTimeout];
 		if(! self.currentTransaction.keysToProcess.count)
 		{
 			[self addAdditionalKeysToCurrentTransaction];
+		}
+		
+		if(self.currentTransaction.options & A4RequestOptions_SAFER_ &&
+		   self.currentTransaction.keysToProcess.count)
+		{
+			[self processFirstKeyInCurrentTransaction];
 		}
 	}
 }
@@ -886,7 +951,15 @@ static A4Request *_default = nil;
 		if(self.currentTransaction.keysToProcess.count)
 		{
 			[self.totalKeysForCurrentTransaction addObjectsFromArray:self.currentTransaction.keysToProcess];
-			[self processKeysInCurrentTransaction];
+			if(self.currentTransaction.options & A4RequestOptions_SAFER_)
+			{
+				[self addCurrentKeysToTotalByteCount];
+				[self processFirstKeyInCurrentTransaction];
+			}
+			else
+			{
+				[self processKeysInCurrentTransaction];
+			}
 		}
 	}
 	else
@@ -898,6 +971,19 @@ static A4Request *_default = nil;
 
 - (void) currentTransactionAddReceivedObject:(A4SysexMessage *)message temp:(BOOL)temp
 {
+	if(!self.currentTransaction) return;
+	
+	if(! (self.currentTransaction.options & A4RequestOptions_SAFER_) && !message)
+	{
+		[self cancelCurrentTransactionWithError:[NSError errorWithDomain:@"failed sysex receive" code:-1 userInfo:nil]];
+		return;
+	}
+	else if (! message)
+	{
+		[self processFirstKeyInCurrentTransaction];
+		return;
+	}
+	
 	Key key;
 	if(temp)
 	{
@@ -980,110 +1066,100 @@ static A4Request *_default = nil;
 
 - (void) syx:(NSNotification *)n
 {
-	
-	if(!self.currentTransaction) return;
-	if(!self.currentTransaction.keysToProcess) return;
-	
-	NSData *d = n.object;
-
-	if(d.length < 0x07) return;
-	const uint8_t *bytes = d.bytes;
-	
-//	DLog(@"got syx with ID: 0x%X", bytes[0x06]);
-	
-	switch (bytes[0x06])
+	@synchronized(self)
 	{
-		case A4SysexMessageID_Kit:
+		if(!self.currentTransaction) return;
+		if(!self.currentTransaction.keysToProcess) return;
+		
+		NSData *d = n.object;
+		
+		if(d.length < 0x07) return;
+		const uint8_t *bytes = d.bytes;
+		
+		//	DLog(@"got syx with ID: 0x%X", bytes[0x06]);
+		
+		switch (bytes[0x06])
 		{
-			A4Kit *kit = [A4Kit messageWithSysexData:d];
-			NSAssert(kit, @"no kit!");
-			[self currentTransactionAddReceivedObject:kit temp:NO];
-			break;
+			case A4SysexMessageID_Kit:
+			{
+				A4Kit *kit = [A4Kit messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:kit temp:NO];
+				break;
+			}
+			case A4SysexMessageID_Pattern:
+			{
+				A4Pattern *pattern = [A4Pattern messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:pattern temp:NO];
+				break;
+			}
+			case A4SysexMessageID_Sound:
+			{
+				//			DLog(@"sound ID");
+				A4Sound *sound = [A4Sound messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:sound temp:NO];
+				break;
+			}
+			case A4SysexMessageID_Global:
+			{
+				A4Global *global = [A4Global messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:global temp:NO];
+				break;
+			}
+			case A4SysexMessageID_Song:
+			{
+				A4Song *song = [A4Song messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:song temp:NO];
+				break;
+			}
+			case A4SysexMessageID_Settings:
+			{
+				A4Settings *settings = [A4Settings messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:settings temp:NO];
+				break;
+			}
+				
+			case A4SysexMessageID_Kit_X:
+			{
+				A4Kit *kit = [A4Kit messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:kit temp:YES];
+				break;
+			}
+			case A4SysexMessageID_Pattern_X:
+			{
+				A4Pattern *pattern = [A4Pattern messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:pattern temp:YES];
+				break;
+			}
+			case A4SysexMessageID_Sound_X:
+			{
+				A4Sound *sound = [A4Sound messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:sound temp:YES];
+				break;
+			}
+			case A4SysexMessageID_Global_X:
+			{
+				A4Global *global = [A4Global messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:global temp:YES];
+				break;
+			}
+			case A4SysexMessageID_Song_X:
+			{
+				A4Song *song = [A4Song messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:song temp:YES];
+				break;
+			}
+			case A4SysexMessageID_Settings_X:
+			{
+				A4Settings *settings = [A4Settings messageWithSysexData:d];
+				[self currentTransactionAddReceivedObject:settings temp:YES];
+				break;
+			}
+				
+			default: break;
 		}
-		case A4SysexMessageID_Pattern:
-		{
-			A4Pattern *pattern = [A4Pattern messageWithSysexData:d];
-			NSAssert(pattern, @"no pattern!");
-			[self currentTransactionAddReceivedObject:pattern temp:NO];
-			break;
-		}
-		case A4SysexMessageID_Sound:
-		{
-//			DLog(@"sound ID");
-			A4Sound *sound = [A4Sound messageWithSysexData:d];
-			NSAssert(sound, @"no sound!");
-			[self currentTransactionAddReceivedObject:sound temp:NO];
-			break;
-		}
-		case A4SysexMessageID_Global:
-		{
-			A4Global *global = [A4Global messageWithSysexData:d];
-			NSAssert(global, @"no global!");
-			[self currentTransactionAddReceivedObject:global temp:NO];
-			break;
-		}
-		case A4SysexMessageID_Song:
-		{
-			A4Song *song = [A4Song messageWithSysexData:d];
-			NSAssert(song, @"no song!");
-			[self currentTransactionAddReceivedObject:song temp:NO];
-			break;
-		}
-		case A4SysexMessageID_Settings:
-		{
-			A4Settings *settings = [A4Settings messageWithSysexData:d];
-			NSAssert(settings, @"no settings!");
-			[self currentTransactionAddReceivedObject:settings temp:NO];
-			break;
-		}
-			
-		case A4SysexMessageID_Kit_X:
-		{
-			A4Kit *kit = [A4Kit messageWithSysexData:d];
-			NSAssert(kit, @"no kit!");
-			[self currentTransactionAddReceivedObject:kit temp:YES];
-			break;
-		}
-		case A4SysexMessageID_Pattern_X:
-		{
-			A4Pattern *pattern = [A4Pattern messageWithSysexData:d];
-			NSAssert(pattern, @"no pattern!");
-			[self currentTransactionAddReceivedObject:pattern temp:YES];
-			break;
-		}
-		case A4SysexMessageID_Sound_X:
-		{
-			A4Sound *sound = [A4Sound messageWithSysexData:d];
-			NSAssert(sound, @"no sound!");
-			[self currentTransactionAddReceivedObject:sound temp:YES];
-			break;
-		}
-		case A4SysexMessageID_Global_X:
-		{
-			A4Global *global = [A4Global messageWithSysexData:d];
-			NSAssert(global, @"no global!");
-			[self currentTransactionAddReceivedObject:global temp:YES];
-			break;
-		}
-		case A4SysexMessageID_Song_X:
-		{
-			A4Song *song = [A4Song messageWithSysexData:d];
-			NSAssert(song, @"no song!");
-			[self currentTransactionAddReceivedObject:song temp:YES];
-			break;
-		}
-		case A4SysexMessageID_Settings_X:
-		{
-			A4Settings *settings = [A4Settings messageWithSysexData:d];
-			NSAssert(settings, @"no settings!");
-			[self currentTransactionAddReceivedObject:settings temp:YES];
-			break;
-		}
-			
-		default: break;
+		
+		[self checkIfCurrentTransactionIsDone];
 	}
-	
-	[self checkIfCurrentTransactionIsDone];
 }
 
 

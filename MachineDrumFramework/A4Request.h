@@ -19,6 +19,7 @@ typedef enum A4RequestOptions
 	A4RequestOptionsAllSettings							= 1 << 6,
 	A4RequestOptionsAllSongs							= 1 << 7,
 	A4RequestOptionsSongsWithPatterns					= 1 << 8,
+	A4RequestOptions_SAFER_								= 1 << 9,
 }
 A4RequestOptions;
 
@@ -68,18 +69,18 @@ A4RequestPriority;
 						  priority:(A4RequestPriority)priority
 						  delegate:(id<A4RequestDelegate>)delegate
 				   completionQueue:(dispatch_queue_t)queue
-				 completionHandler:(void (^)(NSDictionary *)) completionHandler
-					  errorHandler:(void (^)(NSError *)) errorHandler;
+				 completionHandler:(void (^)(NSDictionary *dict)) completionHandler
+					  errorHandler:(void (^)(NSError *err)) errorHandler;
 
 + (A4RequestHandle)requestWithKeys:(NSArray *)keys
 						   options:(A4RequestOptions)optionsBitmask
 						  delegate:(id<A4RequestDelegate>)delegate
-				 completionHandler:(void (^)(NSDictionary *))completionHandler
-					  errorHandler:(void (^)(NSError *))errorHandler;
+				 completionHandler:(void (^)(NSDictionary *dict))completionHandler
+					  errorHandler:(void (^)(NSError *err))errorHandler;
 
 + (A4RequestHandle)requestWithKeys:(NSArray *)keys
-				 completionHandler:(void (^)(NSDictionary *))completionHandler
-					  errorHandler:(void (^)(NSError *))errorHandler;
+				 completionHandler:(void (^)(NSDictionary *dict))completionHandler
+					  errorHandler:(void (^)(NSError *err))errorHandler;
 
 
 @end

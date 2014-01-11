@@ -26,6 +26,7 @@
 - (void) midiReceivedAftertouch:(MidiAftertouch)aftertouch fromSource:(PGMidiSource *)source;
 - (void) midiReceivedPitchWheel:(MidiPitchWheel)pw fromSource:(PGMidiSource *)source;
 - (void) midiReceivedSysexData:(NSData *)sysexdata fromSource:(PGMidiSource *)source;
+- (void) midiReceivedData:(NSData *)rawData fromSource:(PGMidiSource *)source;
 @end
 
 @interface MidiInputParser : NSObject <PGMidiSourceDelegate>
@@ -35,4 +36,5 @@
 @property (assign, nonatomic) PGMidiSource *source;
 @property (nonatomic) BOOL interpolateClock;
 @property (nonatomic) NSUInteger interpolationDivisions;
+@property (nonatomic) BOOL passRawOutput;
 @end

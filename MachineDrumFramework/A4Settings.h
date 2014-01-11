@@ -42,6 +42,7 @@ A4SettingsParamPage;
 @interface A4Settings : A4SysexMessage
 - (BOOL) isTrackMuted:(uint8_t) track;
 - (void) setTrack:(uint8_t) track muted:(BOOL)muted;
+@property (nonatomic) uint8_t muteMask;
 @property (nonatomic) int8_t transpose;
 @property (nonatomic) int8_t multimapOctave;
 @property (nonatomic) uint8_t patternPage;

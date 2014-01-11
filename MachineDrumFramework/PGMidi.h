@@ -107,6 +107,7 @@ MidiPitchWheel;
 - (void) midiSourceRemoved:(PGMidiSource *)source;
 - (void) midiDestinationAdded:(PGMidiDestination *)destination;
 - (void) midiDestinationRemoved:(PGMidiDestination *)destination;
+- (void) midiDidReset:(PGMidi *)midi;
 @end
 
 /// Class for receiving MIDI input from any MIDI device.
@@ -131,7 +132,7 @@ MidiPitchWheel;
 
 
 + (PGMidi *) sharedInstance;
-
+- (void) reset;
 - (void) sendBytes:(const UInt8*)bytes size:(UInt32)size;
 - (void) sendPacketList:(const MIDIPacketList *)packetList;
 
@@ -152,13 +153,16 @@ MidiPitchWheel;
     PGMidi                  *_midi;
     MIDIEndpointRef          _endpoint;
     NSString                *_name;
+	NSString                *_manufacturer;
+	id						_midiProperties;
 #if TARGET_OS_IPHONE
 	BOOL					_isNetworkSession;
 #endif
 }
 @property (nonatomic,readonly) PGMidi          *midi;
 @property (nonatomic,readonly) MIDIEndpointRef  endpoint;
-@property (nonatomic,readonly) NSString        *name;
+@property (nonatomic,readonly) NSString        *name, *manufacturer;
+@property (nonatomic, strong) id				midiProperties;
 
 #if TARGET_OS_IPHONE
 @property (nonatomic,readonly) BOOL             isNetworkSession;

@@ -14,6 +14,7 @@
 
 
 @protocol A4ControllerdataHandlerDelegate <NSObject>
+@optional
 - (void) a4ControllerdataHandler:(A4ControllerdataHandler *)handler performanceKnob:(uint8_t)knob didChangeValue:(uint8_t)value;
 - (void) a4ControllerdataHandler:(A4ControllerdataHandler *)handler track:(uint8_t) trackIdx wasMuted:(BOOL)muted;
 @end

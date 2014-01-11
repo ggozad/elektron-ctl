@@ -507,8 +507,6 @@ ParameterSlide;
 
 - (void) updatePerformanceMacros
 {
-	if(_currentTrig.soundLock != A4NULL) return;
-	
 	for(int macroIdx = 0; macroIdx < A4PerformanceMacroCount; macroIdx++)
 	{
 		A4PerformanceMacro *macro = &_sourceKit.macros[macroIdx];

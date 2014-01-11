@@ -9,29 +9,20 @@
 #import <Foundation/Foundation.h>
 #import "A4Request.h"
 #import "A4Sound.h"
-#import "A4SoundMorph.h"
 
 
 @class A4MorpherController;
 @protocol A4MorpherControllerDelegate <NSObject>
-- (void) a4MorpherController:(A4MorpherController *)controller didReplaceMorph:(A4SoundMorph *)morph withMorph:(A4SoundMorph *)morph;
-- (void) a4MorpherController:(A4MorpherController *)controller morph:(A4SoundMorph *)morph didReachEndWithAction:(A4MorpherCompletionAction)action;
-- (void) a4MorpherController:(A4MorpherController *)controller morphDidBegin:(A4SoundMorph *)morph;
-- (void) a4MorpherController:(A4MorpherController *)controller morph:(A4SoundMorph *)morph didUpdateProgress:(double)progress;
-- (void) a4MorpherController:(A4MorpherController *)controller morph:(A4SoundMorph *)morph didFetchTrackIdx:(uint8_t)trackIdx;
-- (void) a4MorpherController:(A4MorpherController *)controller morph:(A4SoundMorph *)morph didFailWithError:(NSError *)error;
+@optional
+-(void) a4morpher:(A4MorpherController *)morpher didPostMessage:(NSString *)msg;
 @end
 
-@interface A4MorpherController : NSObject <A4SoundMorphDelegate>
+@interface A4MorpherController : NSObject
 @property (nonatomic, weak) id<A4MorpherControllerDelegate> delegate;
+@property (nonatomic) NSInteger track;
 
-- (A4SoundMorph *) beginMorphWithMode:(A4MorpherMorphMode)mode
-							   target:(uint8_t)targetIdx
-								 time:(double)t
-					 completionAction:(A4MorpherCompletionAction) action;
+- (void) pushTarget:(uint8_t)targetIdx apply:(BOOL)apply;
+- (void) popTarget:(uint8_t)target revertTo:(uint8_t)earlierTarget;
+- (void) revertToOriginal;
 
-- (void) setMorph:(A4SoundMorph *)morph completionAction:(A4MorpherCompletionAction)action applyImmediately:(BOOL)immediately;
-- (void) setMorph:(A4SoundMorph *)morph newTarget:(uint8_t)targetIdx additionalTime:(double)additionalTime;
-- (void) setMorph:(A4SoundMorph *)morph newTarget:(uint8_t)targetIdx setTimeFromNow:(double)newTime;
-- (void) updateMorphs;
 @end
