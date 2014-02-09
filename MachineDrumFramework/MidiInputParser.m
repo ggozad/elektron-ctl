@@ -49,7 +49,7 @@
 	{
 		if(!interpolationTimerIsSuspended) dispatch_suspend(interpolationTimer);
 		dispatch_source_cancel(interpolationTimer);
-		dispatch_release(interpolationTimer);
+//		dispatch_release(interpolationTimer);
 	}
 }
 
@@ -77,7 +77,7 @@ dispatch_source_t CreateDispatchTimer(uint64_t interval,
 		dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, interval), interval, leeway);
 		dispatch_source_set_event_handler(timer, block);
 		dispatch_resume(timer);
-		dispatch_retain(timer);
+//		dispatch_retain(timer);
 	}
 	return timer;
 }

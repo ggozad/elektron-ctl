@@ -117,6 +117,12 @@
 		365F419C1619EA5500E4231D /* MDSDS.m in Sources */ = {isa = PBXBuildFile; fileRef = 365F419B1619EA5500E4231D /* MDSDS.m */; };
 		366C9E34178D7525001545D9 /* A4PolyMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 366C9E33178D7525001545D9 /* A4PolyMapper.m */; };
 		366C9E35178D7525001545D9 /* A4PolyMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 366C9E33178D7525001545D9 /* A4PolyMapper.m */; };
+		366CDA1018A795980086C27C /* SMF.m in Sources */ = {isa = PBXBuildFile; fileRef = 366CDA0F18A795980086C27C /* SMF.m */; };
+		366CDA1118A795980086C27C /* SMF.m in Sources */ = {isa = PBXBuildFile; fileRef = 366CDA0F18A795980086C27C /* SMF.m */; };
+		366CDA1418A795C90086C27C /* SMFTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 366CDA1318A795C90086C27C /* SMFTrack.m */; };
+		366CDA1518A795C90086C27C /* SMFTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 366CDA1318A795C90086C27C /* SMFTrack.m */; };
+		366CDA1818A7A3D40086C27C /* SMFEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 366CDA1718A7A3D40086C27C /* SMFEvent.m */; };
+		366CDA1918A7A3D40086C27C /* SMFEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 366CDA1718A7A3D40086C27C /* SMFEvent.m */; };
 		3672089617ED0B8B00323F2F /* A4PatternTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3672089517ED0B8B00323F2F /* A4PatternTrack.m */; };
 		3672089717ED0B8B00323F2F /* A4PatternTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3672089517ED0B8B00323F2F /* A4PatternTrack.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
@@ -314,6 +320,12 @@
 		365F419B1619EA5500E4231D /* MDSDS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSDS.m; sourceTree = "<group>"; };
 		366C9E32178D7525001545D9 /* A4PolyMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4PolyMapper.h; sourceTree = "<group>"; };
 		366C9E33178D7525001545D9 /* A4PolyMapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4PolyMapper.m; sourceTree = "<group>"; };
+		366CDA0E18A795980086C27C /* SMF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMF.h; sourceTree = "<group>"; };
+		366CDA0F18A795980086C27C /* SMF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMF.m; sourceTree = "<group>"; };
+		366CDA1218A795C90086C27C /* SMFTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFTrack.h; sourceTree = "<group>"; };
+		366CDA1318A795C90086C27C /* SMFTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFTrack.m; sourceTree = "<group>"; };
+		366CDA1618A7A3D40086C27C /* SMFEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFEvent.h; sourceTree = "<group>"; };
+		366CDA1718A7A3D40086C27C /* SMFEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFEvent.m; sourceTree = "<group>"; };
 		3672089417ED0B8B00323F2F /* A4PatternTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4PatternTrack.h; sourceTree = "<group>"; };
 		3672089517ED0B8B00323F2F /* A4PatternTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4PatternTrack.m; sourceTree = "<group>"; };
 		36746CA91597DACD007F09F2 /* MDProcessingPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDProcessingPipeline.h; sourceTree = "<group>"; };
@@ -868,6 +880,12 @@
 				3699DF9415F38E76004C9D83 /* PGMidiFind.m */,
 				3699DF9515F38E76004C9D83 /* MidiInputParser.h */,
 				3699DF9615F38E76004C9D83 /* MidiInputParser.m */,
+				366CDA0E18A795980086C27C /* SMF.h */,
+				366CDA0F18A795980086C27C /* SMF.m */,
+				366CDA1218A795C90086C27C /* SMFTrack.h */,
+				366CDA1318A795C90086C27C /* SMFTrack.m */,
+				366CDA1618A7A3D40086C27C /* SMFEvent.h */,
+				366CDA1718A7A3D40086C27C /* SMFEvent.m */,
 			);
 			name = MIDI;
 			sourceTree = "<group>";
@@ -1095,6 +1113,7 @@
 				3631A8601646C3E3008DB7E5 /* MDKitReceiveTester.m in Sources */,
 				3631A8611646C3E3008DB7E5 /* MDKitTrack.m in Sources */,
 				3631A8621646C3E3008DB7E5 /* MDKitTrackParams.m in Sources */,
+				366CDA1918A7A3D40086C27C /* SMFEvent.m in Sources */,
 				3623ED6117F7197F00387DC8 /* A4Project.m in Sources */,
 				3631A8631646C3E3008DB7E5 /* MDMachineDrum.m in Sources */,
 				3631A8641646C3E3008DB7E5 /* MDParameterLock.m in Sources */,
@@ -1106,6 +1125,7 @@
 				3631A86D1646C3E3008DB7E5 /* MDProcessingPipeline.m in Sources */,
 				3631A86E1646C3E3008DB7E5 /* MDProc.m in Sources */,
 				3631A86F1646C3E3008DB7E5 /* MDProcedureTrigGenerator.m in Sources */,
+				366CDA1518A795C90086C27C /* SMFTrack.m in Sources */,
 				3631A8701646C3E3008DB7E5 /* MDProcedureCondition.m in Sources */,
 				3631A8711646C3E3008DB7E5 /* MDProcedureArpeggiator.m in Sources */,
 				36CEBAD2184969BD00849925 /* A4VoiceAllocator.m in Sources */,
@@ -1164,6 +1184,7 @@
 				36871BDB182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */,
 				3672089717ED0B8B00323F2F /* A4PatternTrack.m in Sources */,
 				36121FD41869FBCE0078B9AF /* A4MorpherController.m in Sources */,
+				366CDA1118A795980086C27C /* SMF.m in Sources */,
 				36431AA617804B3F007283A9 /* MDSongRow.m in Sources */,
 				36431AAA17804B51007283A9 /* MDSongParser.m in Sources */,
 				36871BCE182DA17400750F0F /* A4Sequencer.m in Sources */,
@@ -1189,6 +1210,7 @@
 				36B9212B158F82CC0025F0B3 /* MDKitParser.m in Sources */,
 				36B9212C158F82CC0025F0B3 /* MDKitReceiveTester.m in Sources */,
 				36B9212D158F82CC0025F0B3 /* MDKitTrack.m in Sources */,
+				366CDA1818A7A3D40086C27C /* SMFEvent.m in Sources */,
 				3623ED6017F7197F00387DC8 /* A4Project.m in Sources */,
 				36B9212E158F82CC0025F0B3 /* MDKitTrackParams.m in Sources */,
 				36B9212F158F82CC0025F0B3 /* MDMachineDrum.m in Sources */,
@@ -1200,6 +1222,7 @@
 				36814F041594CD8700220C88 /* MDPitch.m in Sources */,
 				36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */,
 				362A7EDD159A15D3007478D7 /* MDProc.m in Sources */,
+				366CDA1418A795C90086C27C /* SMFTrack.m in Sources */,
 				362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */,
 				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
 				36CEBAD1184969BD00849925 /* A4VoiceAllocator.m in Sources */,
@@ -1258,6 +1281,7 @@
 				36871BDA182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */,
 				3672089617ED0B8B00323F2F /* A4PatternTrack.m in Sources */,
 				36121FD31869FBCE0078B9AF /* A4MorpherController.m in Sources */,
+				366CDA1018A795980086C27C /* SMF.m in Sources */,
 				36431AA517804B3F007283A9 /* MDSongRow.m in Sources */,
 				36431AA917804B51007283A9 /* MDSongParser.m in Sources */,
 				36871BCD182DA17400750F0F /* A4Sequencer.m in Sources */,
@@ -1378,10 +1402,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "MachinedrumBundle copy-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "MachinedrumBundle-iOS";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -1409,10 +1435,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "MachinedrumBundle copy-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "MachinedrumBundle-iOS";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -1496,10 +1524,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
 			};
@@ -1519,10 +1547,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
 				VALIDATE_PRODUCT = YES;
@@ -1532,7 +1560,7 @@
 		36B920E9158F81680025F0B3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jakob Penca (SPE82V37JG)";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /tmp/MachineDrumFramework.dst;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1548,10 +1576,10 @@
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/iOS App Unit Tests/Frameworks/OCMockLibrary\"",
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/Mac App Unit Tests/Frameworks/OCMockLibrary\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9FC9C224-7A2A-4E56-9450-76E3D817F0B1";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -1561,7 +1589,7 @@
 		36B920EA158F81680025F0B3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jakob Penca (SPE82V37JG)";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /tmp/MachineDrumFramework.dst;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1577,10 +1605,10 @@
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/iOS App Unit Tests/Frameworks/OCMockLibrary\"",
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/Mac App Unit Tests/Frameworks/OCMockLibrary\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9FC9C224-7A2A-4E56-9450-76E3D817F0B1";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";

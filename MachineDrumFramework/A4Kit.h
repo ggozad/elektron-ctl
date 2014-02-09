@@ -52,8 +52,8 @@ A4PolySettings;
 - (A4Sound *)soundAtTrack:(uint8_t)track copy:(BOOL)copy;
 - (A4Sound *)copySound:(A4Sound *)sound toTrack:(uint8_t)track;
 - (void) copyFXSettingsFromKit:(A4Kit *)kit;
-//- (void) setFxParamValue:(A4PVal)value;
-//- (A4PVal) valueForFxParam:(A4Param)param;
+- (void) setFxParamValue:(A4PVal)value;
+- (A4PVal) valueForFxParam:(A4Param)param;
 - (uint8_t) levelForTrack:(uint8_t)t;
 - (void) setLevel:(uint8_t)level forTrack:(uint8_t)t;
 

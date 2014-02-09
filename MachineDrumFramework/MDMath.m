@@ -11,6 +11,7 @@
 
 double mdmath_clamp(double x, double a, double b)
 {
+	if(a > b) {	double tmp = a; a = b; b = tmp; }
 	return x < a ? a : (x > b ? b : x);
 }
 
@@ -19,14 +20,27 @@ double mdmath_map(double value, double istart, double istop, double ostart, doub
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
 
+double mdmath_map_clamp(double value, double istart, double istop, double ostart, double ostop)
+{
+	value = mdmath_map(value, istart, istop, ostart, ostop);
+	return mdmath_clamp(value, ostart, ostop);
+}
+
 float mdmath_clampf(float x, float a, float b)
 {
+	if(a > b) {	double tmp = a; a = b; b = tmp; }
 	return x < a ? a : (x > b ? b : x);
 }
 
 float mdmath_mapf(float value, float istart, float istop, float ostart, float ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
+float mdmath_mapf_clamp(float value, float istart, float istop, float ostart, float ostop)
+{
+	value = mdmath_mapf(value, istart, istop, ostart, ostop);
+	return mdmath_clampf(value, ostart, ostop);
 }
 
 long mdmath_wrap(long kX, long const kLowerBound, long const kUpperBound)

@@ -233,7 +233,6 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
 
 - (void)sendNoteOn:(MidiNoteOn)noteOn
 {
-	
 	noteOn.channel = 0x90 | noteOn.channel;
 	const uint8_t bytes[3] = {noteOn.channel, noteOn.note, noteOn.velocity};
 	[self sendBytes: bytes size:3];
@@ -249,6 +248,12 @@ void PGMIDIReadProc(const MIDIPacketList *pktlist, void *readProcRefCon, void *s
 {
 	cc.channel = 0xB0 | (cc.channel & 0x0F);
 	[self sendBytes:(uint8_t *) & cc size:3];
+}
+
+- (void)sendProgramChange:(MidiProgramChange)pc
+{
+	pc.channel = 0xC0 | (pc.channel & 0x0F);
+	[self sendBytes:(uint8_t *) & pc size:2];
 }
 
 - (void)sendPitchWheel:(MidiPitchWheel)pw

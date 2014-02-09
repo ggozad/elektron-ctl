@@ -15,6 +15,7 @@
 @class A4PolyMapper;
 
 @interface MDMIDI : NSObject <PGMidiDelegate, MidiInputDelegate, MDMachineDrumDelegate>
+@property (nonatomic) BOOL autoConnect;
 @property (strong, nonatomic) MDMachineDrum *machinedrum;
 @property (strong, nonatomic) PGMidiSource *externalInputSource;
 @property (strong, nonatomic) PGMidiDestination *externalInputDestination;

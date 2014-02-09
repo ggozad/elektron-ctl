@@ -92,7 +92,7 @@ A4SoundModulatorType;
 
 typedef struct A4ModTarget
 {
-	uint8_t coarse;
+	int8_t coarse;
 	uint8_t fine;
 	uint8_t track;
 	A4Param param;

@@ -217,6 +217,7 @@ MidiPitchWheel;
 - (void) sendNoteOn:(MidiNoteOn)noteOn;
 - (void) sendNoteOff:(MidiNoteOff)noteOff;
 - (void) sendControlChange:(MidiControlChange)cc;
+- (void) sendProgramChange:(MidiProgramChange)pc;
 - (void) sendPitchWheel:(MidiPitchWheel)pw;
 - (void) sendBytes:(const UInt8*)bytes size:(UInt32)size;
 - (void) sendPacketList:(const MIDIPacketList *)packetList;

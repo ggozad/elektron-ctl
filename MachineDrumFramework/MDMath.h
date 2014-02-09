@@ -66,11 +66,13 @@ static float mdmath_gaussRandf()
 
 double mdmath_clamp(double x, double a, double b);
 double mdmath_map(double value, double istart, double istop, double ostart, double ostop);
+double mdmath_map_clamp(double value, double istart, double istop, double ostart, double ostop);
+
 double mdmath_rand(double min, double max);
 long mdmath_randi(long min, long max);
 
 float mdmath_clampf(float x, float a, float b);
 float mdmath_mapf(float value, float istart, float istop, float ostart, float ostop);
-float mdmath_randf(float min, float max);
+float mdmath_mapf_clamp(float value, float istart, float istop, float ostart, float ostop);
 
 long mdmath_wrap(long kX, long const kLowerBound, long const kUpperBound);

@@ -127,7 +127,7 @@
 	uint8_t voice = [self oldestVoice];
 	if(voice == A4NULL) return A4NULL;
 	
-	DLog(@"stealing: %d", voice);
+//	DLog(@"stealing: %d", voice);
 	
 	BOOL didFreeVoice = [self freeVoice:voice];
 	if(didFreeVoice)
@@ -151,7 +151,7 @@
 					
 					if(!hasVoices)
 					{
-						DLog(@"closing a gate");
+//						DLog(@"closing a gate");
 						GateEvent event = _gates[i];
 						[self removeGate:event];
 						[self.delegate a4VoiceAllocator:self didNullifyGate:event];
@@ -288,7 +288,7 @@
 	int num = [self totalRequestedVoicesInGates:gates len:len];
 	if(num > 4) num = 4;
 	
-	DLog(@"handle on requests: %d", num);
+//	DLog(@"handle on requests: %d", num);
 	
 	int allocatedVoices = 0;
 	for(int noteIdx = 0; noteIdx < 4; noteIdx++)
@@ -328,15 +328,14 @@
 
 - (void)handleOffRequests:(GateEvent *)gates len:(NSUInteger)len
 {
-	int num = [self totalRequestedVoicesInGates:gates len:len];
-	DLog(@"num: %d", num);
+//	DLog(@"num: %d", num);
 	
 	for(int i = 0; i < len; i++)
 	{
 		[self removeGate:gates[i]];
 	}
 	
-	printf("gates len: %d\n", _gatesLen);
+//	printf("gates len: %d\n", _gatesLen);
 }
 
 - (int) totalRequestedVoicesInGates:(GateEvent *)gates len:(NSUInteger)len

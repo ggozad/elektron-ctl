@@ -182,12 +182,10 @@
 	memmove(self.payload + offset, kit.payload + offset, len);
 }
 
-/*
 - (void) setFxParamValue:(A4PVal)value
 {
 	if(!_payload) return;
 	if(! A4ParamFxIsLockable(value.param)) return;
-	value = A4PValFxSanitizeClamp(value);
 	
 	_payload[A4KitOffsetForFxParam(value.param)] = value.coarse;
 	if(A4ParamFxIs16Bit(value.param))
@@ -203,7 +201,7 @@
 	uint8_t  fine  = _payload[offset+1];
 	return A4PValFxMake16(param, coarse, fine);
 }
-*/
+
 
 - (uint8_t)levelForTrack:(uint8_t)t
 {

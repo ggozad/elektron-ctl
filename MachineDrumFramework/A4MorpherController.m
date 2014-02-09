@@ -88,7 +88,7 @@ A4MorpherIntent;
 	[self.targetRequestHandles removeAllObjects];
 	[self.targetSounds removeAllObjects];
 	
-	[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"CANCEL ALL"]];
+//	[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"CANCEL ALL"]];
 }
 
 - (void) popTarget:(uint8_t)target revertTo:(uint8_t)earlierTarget
@@ -102,7 +102,7 @@ A4MorpherIntent;
 	
 	if(self.originalSound)
 	{
-		[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"REVERT: \"%@\"", self.originalSound.name]];
+//		[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"REVERT: \"%@\"", self.originalSound.name]];
 		[self.originalSound sendTemp];
 		[self cancelAll];
 	}
@@ -127,11 +127,11 @@ A4MorpherIntent;
 				[s sendTemp];
 				s.position = targetIdx;
 				
-				[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"--- PUSH %@ (cached) ---", s.name]];
+//				[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"--- PUSH %@ (cached) ---", s.name]];
 				
 				if(apply)
 				{
-					[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"--- APPLY %@ (cached) ---", s.name]];
+//					[self.delegate a4morpher:self didPostMessage:[NSString stringWithFormat:@"--- APPLY %@ (cached) ---", s.name]];
 					[self cancelAll];
 				}
 				return;
@@ -150,12 +150,12 @@ A4MorpherIntent;
 													  
 													  self.trackIdxRequestHandle = 0;
 													  A4Settings *settings = dict[@"set.x"];
-													  [self.delegate a4morpher:self didPostMessage:@"GOT SETTINGS"];
+//													  [self.delegate a4morpher:self didPostMessage:@"GOT SETTINGS"];
 													  
 													  if(settings.selectedTrackParams < 4)
 													  {
-														  [self.delegate a4morpher:self didPostMessage:
-														   [NSString stringWithFormat:@"TRK OKAY: %d", settings.selectedTrackParams]];
+//														  [self.delegate a4morpher:self didPostMessage:
+//														   [NSString stringWithFormat:@"TRK OKAY: %d", settings.selectedTrackParams]];
 														  
 														  self.track = settings.selectedTrackParams;
 														  if(apply)
@@ -170,16 +170,16 @@ A4MorpherIntent;
 													  }
 													  else
 													  {
-														  [self.delegate a4morpher:self didPostMessage:
-														   [NSString stringWithFormat:@"TRK INVALID: %d", settings.selectedTrackParams]];
+//														  [self.delegate a4morpher:self didPostMessage:
+//														   [NSString stringWithFormat:@"TRK INVALID: %d", settings.selectedTrackParams]];
 														  [self cancelAll];
 													  }
 												  }
 											  
 											  } errorHandler:^(NSError *err) {
 											  
-												  [self.delegate a4morpher:self didPostMessage:
-												   [NSString stringWithFormat:@"FAIL SETTINGS REQUEST: %@", err]];
+//												  [self.delegate a4morpher:self didPostMessage:
+//												   [NSString stringWithFormat:@"FAIL SETTINGS REQUEST: %@", err]];
 												  [self cancelAll];
 											  
 											  }];
@@ -198,8 +198,8 @@ A4MorpherIntent;
 
 - (void) requestAndPushTarget:(NSInteger)i withIntent:(A4MorpherIntent) intent
 {
-	[self.delegate a4morpher:self didPostMessage:
-	 [NSString stringWithFormat:@"REQ TGT: %d for %@", i, intent == A4MorpherIntentApplyTargetSound ? @"APPLY" : @"HOLD"]];
+//	[self.delegate a4morpher:self didPostMessage:
+//	 [NSString stringWithFormat:@"REQ TGT: %d for %@", i, intent == A4MorpherIntentApplyTargetSound ? @"APPLY" : @"HOLD"]];
 	
 	self.targetIdxTemp = i;
 	self.intentOnTargetSoundFetched = intent;
@@ -229,8 +229,8 @@ A4MorpherIntent;
 													  if(self.intentOnTargetSoundFetched == A4MorpherIntentApplyTargetSound &&
 														 self.track != -1)
 													  {
-														  [self.delegate a4morpher:self didPostMessage:
-														   [NSString stringWithFormat:@"--- APPLY \"%@\" NOW ---", sound.name]];
+//														  [self.delegate a4morpher:self didPostMessage:
+//														   [NSString stringWithFormat:@"--- APPLY \"%@\" NOW ---", sound.name]];
 														  
 														  sound.position = self.track;
 														  [sound sendTemp];
@@ -243,14 +243,14 @@ A4MorpherIntent;
 														  sound.position = self.track;
 														  [sound sendTemp];
 														  sound.position = tmp;
-														  [self.delegate a4morpher:self didPostMessage:
-														   [NSString stringWithFormat:@"--- PUSH \"%@\"NOW ---", sound.name]];
+//														  [self.delegate a4morpher:self didPostMessage:
+//														   [NSString stringWithFormat:@"--- PUSH \"%@\"NOW ---", sound.name]];
 													  }
 													  else if (self.intentOnTargetSoundFetched == A4MorpherIntentPushTargetSound &&
 															   self.track != -1)
 													  {
-														  [self.delegate a4morpher:self didPostMessage:
-														   [NSString stringWithFormat:@"QUEUE TGT \"%@\"", sound.name]];
+//														  [self.delegate a4morpher:self didPostMessage:
+//														   [NSString stringWithFormat:@"QUEUE TGT \"%@\"", sound.name]];
 														  self.targetIdxTemp = sound.position;
 													  }
 												  }
@@ -258,8 +258,8 @@ A4MorpherIntent;
 										  
 											  } errorHandler:^(NSError *err) {
 										  
-												  [self.delegate a4morpher:self didPostMessage:
-												   [NSString stringWithFormat:@"FAIL TGT SND REQUEST: %@", err]];
+//												  [self.delegate a4morpher:self didPostMessage:
+//												   [NSString stringWithFormat:@"FAIL TGT SND REQUEST: %@", err]];
 												  [self cancelAll];
 										  
 											  }];
@@ -272,8 +272,8 @@ A4MorpherIntent;
 {
 	if(self.track == -1)
 	{
-		[self.delegate a4morpher:self didPostMessage:
-		 [NSString stringWithFormat:@"FAIL @ REQ SRC, TRK INVALID"]];
+//		[self.delegate a4morpher:self didPostMessage:
+//		 [NSString stringWithFormat:@"FAIL @ REQ SRC, TRK INVALID"]];
 		return;
 	}
 	
@@ -288,8 +288,8 @@ A4MorpherIntent;
 					 self.originalSound = dict[sndKey];
 					 self.originalSoundRequestHandle = 0;
 					 
-					 [self.delegate a4morpher:self didPostMessage:
-					  [NSString stringWithFormat:@"GOT SRC \"%@\"", self.originalSound.name]];
+//					 [self.delegate a4morpher:self didPostMessage:
+//					  [NSString stringWithFormat:@"GOT SRC \"%@\"", self.originalSound.name]];
 					 
 					 if(self.intentOnOriginalSoundFetched == A4MorpherIntentPushTargetSound)
 					 {
@@ -312,8 +312,8 @@ A4MorpherIntent;
 				 
 			 } errorHandler:^(NSError *err) {
 				 
-				 [self.delegate a4morpher:self didPostMessage:
-				  [NSString stringWithFormat:@"FAIL ORIG SND REQUEST: %@", err]];
+//				 [self.delegate a4morpher:self didPostMessage:
+//				  [NSString stringWithFormat:@"FAIL ORIG SND REQUEST: %@", err]];
 				 [self cancelAll];
 				 
 			 }];

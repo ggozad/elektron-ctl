@@ -144,6 +144,24 @@ double A4PValDoubleVal(A4PVal lock)
 	}
 }
 
+int16_t A4PValIntVal(A4PVal lockValue)
+{
+	int16_t intval = CFSwapInt16BigToHost(lockValue.coarse | lockValue.fine << 8);
+	return intval;
+}
+
+A4PVal A4PValMakeI(A4Param param, int16_t value)
+{
+	A4PVal pval;
+	pval.param = param;
+	value = CFSwapInt16HostToBig(value);
+	BOOL is16Bit = A4ParamIs16Bit(param);
+	pval.coarse = value & 0xFF;
+	if(!is16Bit) pval.coarse = MIN(pval.coarse, A4ParamMax(param));
+	pval.fine = is16Bit ? (value >> 8) & 0xFF : 0;
+	return pval;
+}
+
 A4PVal A4PValMakeNormalized(A4Param param, double normalizedDoubleValue)
 {
 	normalizedDoubleValue = mdmath_clamp(normalizedDoubleValue, 0, 1);
@@ -190,6 +208,41 @@ A4PVal A4PValTranslateForSound(A4PVal val)
 	val.fine *= 2;
 	return val;
 }
+
+
+A4PVal A4PValFxMake16(A4Param param, uint8_t coarse, int8_t fine)
+{
+	A4PVal pval;
+	pval.param = param;
+	pval.coarse = coarse;
+	pval.fine = fine;
+	return pval;
+}
+
+
+
+A4PVal A4PValFxMakeI(A4Param param, int16_t value)
+{
+	A4PVal pval;
+	pval.param = param;
+	value = CFSwapInt16HostToBig(value);
+	pval.coarse = value & 0xFF;
+	BOOL is16Bit = A4ParamFxIs16Bit(param);
+	if(! is16Bit)
+	{
+		pval.coarse = MIN(pval.coarse, A4ParamFxMax(param));
+	}
+	pval.fine =  is16Bit ? (value >> 8) & 0xFF : 0;
+	return pval;
+}
+
+
+int16_t A4PValFxIntVal(A4PVal lockValue)
+{
+	int16_t intval = CFSwapInt16BigToHost(lockValue.coarse | lockValue.fine << 8);
+	return intval;
+}
+
 
 /*
 A4PVal A4PValFxMin(A4Param param)

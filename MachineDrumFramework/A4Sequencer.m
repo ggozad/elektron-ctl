@@ -349,7 +349,7 @@
 {
 	@synchronized(self)
 	{
-		if([pattern isEqualToPattern:_pattern]) return NO;
+//		if([pattern isEqualToPattern:_pattern]) return NO;
 		
 		_pattern = [A4Pattern messageWithSysexData:pattern.sysexData];
 		switch(_pattern.timeScale)

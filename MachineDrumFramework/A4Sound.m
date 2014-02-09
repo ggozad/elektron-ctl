@@ -112,10 +112,8 @@
 	uint8_t i = A4SoundOffsetForParam(lock.param);
 	if(i == A4NULL) return;
 	
-	int16_t intval = lock.fine;
-	intval = intval << 8;
-	intval |= lock.coarse;
-	_params->param[i] = intval;
+	int16_t intval = A4PValIntVal(lock);
+	_params->param[i] = CFSwapInt16HostToBig(intval);
 }
 
 - (A4PVal)valueForParam:(A4Param)param
@@ -125,7 +123,7 @@
 	if(offset == A4NULL) return A4PValMakeInvalid();
 	
 	int16_t intval = _params->param[offset];
-	return A4PValMake16(param, intval & 0xFF, intval >> 8);
+	return A4PValMakeI(param, CFSwapInt16BigToHost(intval));
 }
 
 - (void)setName:(NSString *)name
