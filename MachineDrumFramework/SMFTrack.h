@@ -10,6 +10,7 @@
 #import "SMFEvent.h"
 
 @interface SMFTrack : NSObject
-@property (nonatomic, strong) NSMutableArray *trackEvents;
-@property (nonatomic, strong) NSData *data;
+@property (nonatomic, strong) NSMutableArray *events;
+@property (nonatomic, copy) NSData *data;
+- (void) insertEvent:(SMFEvent *)event;
 @end

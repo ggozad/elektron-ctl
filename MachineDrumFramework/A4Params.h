@@ -421,3 +421,5 @@ uint8_t A4ParamMaxi(A4Param p);
 double A4ParamFxMin(A4Param p);
 double A4ParamFxMax(A4Param p);
 
+float A4ParamEnvGateLengthMultiplier(uint8_t val);
+

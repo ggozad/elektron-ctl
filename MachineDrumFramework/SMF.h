@@ -22,5 +22,5 @@ SMFFormat;
 @property (nonatomic, strong) NSMutableArray *tracks;
 @property (nonatomic, strong) NSData *data;
 @property (nonatomic) SMFFormat format;
-
+@property (nonatomic) uint16_t ticksPerBeat;
 @end

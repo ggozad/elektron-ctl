@@ -36,7 +36,14 @@
 
 - (NSData *)data
 {
-	return [NSData dataWithBytes:_header length:kHeaderSize];
+	_header[0x0B] = self.tracks.count;
+	NSMutableData *d = [NSMutableData dataWithBytes:_header length:kHeaderSize];
+	for(SMFTrack *trk in self.tracks)
+	{
+		[d appendData:trk.data];
+	}
+	
+	return d;
 }
 
 - (void)setData:(NSData *)data
@@ -59,6 +66,19 @@
 - (SMFFormat)format
 {
 	return _header[0x09];
+}
+
+- (void)setTicksPerBeat:(uint16_t)ticksPerBeat
+{
+	ticksPerBeat &= 0x7FFF;
+	uint16_t *ptr = (uint16_t *)(_header + 0xC);
+	*ptr = CFSwapInt16(ticksPerBeat);
+}
+
+- (uint16_t)ticksPerBeat
+{
+	uint16_t *ptr = (uint16_t *)(_header + 0xC);
+	return CFSwapInt16(*ptr);
 }
 
 @end
