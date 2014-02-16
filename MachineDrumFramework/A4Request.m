@@ -327,7 +327,7 @@ static A4Request *_default = nil;
 							 options:optionsBitmask
 							priority:A4RequestPriorityDefault
 							delegate:delegate
-					 completionQueue:dispatch_get_current_queue()
+					 completionQueue:dispatch_get_main_queue()
 				   completionHandler:completionHandler
 						errorHandler:errorHandler];
 	}
@@ -399,14 +399,14 @@ static A4Request *_default = nil;
 			
 		};
 		
-		dispatch_queue_t currentQueue = dispatch_get_current_queue();
-		if(currentQueue != [A4Queues sysexQueue])
+		dispatch_queue_t mainQueue = dispatch_get_main_queue();
+		if(mainQueue != [A4Queues sysexQueue])
 		{
 			dispatch_async([A4Queues sysexQueue], theBlock);
 		}
 		else
 		{
-			dispatch_async(currentQueue, theBlock);
+			dispatch_async(mainQueue, theBlock);
 		}
 		
 		return handle;

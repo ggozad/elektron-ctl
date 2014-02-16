@@ -10,13 +10,15 @@
 #import "MDMachinedrumPublic.h"
 
 @interface SMFEvent()
-{
-	NSUInteger _delta;
-}
-@property (nonatomic, strong) NSData *deltaData;
 @end
 
 @implementation SMFEvent
+
++ (instancetype)smfEventWithAbsoluteTick:(NSUInteger)absoluteTick bytes:(uint8_t *)bytes length:(NSUInteger)length
+{
+	NSData *d = [NSData dataWithBytes:bytes length:length];
+	return [self smfEventWithAbsoluteTick:absoluteTick messageData:d];
+}
 
 + (instancetype) smfEventWithAbsoluteTick:(NSUInteger)absouluteTicks messageData:(NSData *)msg
 {
@@ -48,6 +50,12 @@
 	return [self smfEventWithAbsoluteTick:absouluteTicks messageData:data];
 }
 
+
++ (instancetype)smfEventWithDelta:(NSUInteger)delta bytes:(uint8_t *)bytes length:(NSUInteger)length
+{
+	NSData *d = [NSData dataWithBytes:bytes length:length];
+	return [self smfEventWithDelta:delta messageData:d];
+}
 
 + (instancetype)smfEventWithDelta:(NSUInteger)delta messageData:(NSData *)msg
 {
@@ -122,13 +130,10 @@
 		}
 		self.deltaData = [NSData dataWithBytes:rev length:len];
 	}
-	
-	_delta = delta;
 }
 
 - (NSUInteger)delta
 {
-	/*
 	if(!self.deltaData) return 0;
 	const uint8_t *bytes = self.deltaData.bytes;
 	NSUInteger len = self.deltaData.length;
@@ -150,8 +155,6 @@
 	}
 	
 	return retVal;
-	 */
-	return _delta;
 }
 
 @end

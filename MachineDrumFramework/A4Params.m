@@ -1789,6 +1789,186 @@ float A4ParamEnvGateLengthMultiplier(uint8_t val)
 	return 0;
 }
 
+uint8_t A4ParamForNRPN(uint8_t LSB)
+{
+	switch (LSB)
+	{
+		case 0: return A4ParamOsc1Pit; // MOD PARAM!
+		case 2: return A4ParamOsc1Det;
+		case 3: return A4ParamOsc1Trk;
+		case 4: return A4ParamOsc1Lev;
+		case 5: return A4ParamOsc1Wav;
+		case 6: return A4ParamOsc1Sub;
+		case 7: return A4ParamOsc1PW;
+		case 8: return A4ParamOsc1SPD;
+		case 9: return A4ParamOsc1PWM;
+			
+		case 10: return A4ParamNoisSH;
+		case 12: return A4ParamNoisFad;
+		case 14: return A4ParamNoisLev;
+			
+		case 20: return A4ParamOsc2Pit; // MOD PARAM!
+		case 22: return A4ParamOsc2Det;
+		case 23: return A4ParamOsc2Trk;
+		case 24: return A4ParamOsc2Lev;
+		case 25: return A4ParamOsc2Wav;
+		case 26: return A4ParamOsc2Sub;
+		case 27: return A4ParamOsc2PW;
+		case 28: return A4ParamOsc2SPD;
+		case 29: return A4ParamOsc2PWM;
+			
+		case 30: return A4ParamOscAm1;
+		case 31: return A4ParamOscSmd;
+		case 32: return A4ParamOscSnc;
+		case 33: return A4ParamOscBnd;
+		case 34: return A4ParamOscSli;
+		case 35: return A4ParamOscAm2;
+		case 36: return A4ParamOscTrg;
+		case 37: return A4ParamOscFad;
+		case 38: return A4ParamOscSpd;
+		case 39: return A4ParamOscVib;
+			
+		case 40: return A4ParamFiltFr1;
+		case 41: return A4ParamFiltRs1;
+		case 42: return A4ParamFiltOd1;
+		case 43: return A4ParamFiltTr1;
+		case 44: return A4ParamFiltDp1;
+		case 45: return A4ParamFiltFr2;
+		case 46: return A4ParamFiltRs2;
+		case 47: return A4ParamFiltTp2;
+		case 48: return A4ParamFiltTr2;
+		case 49: return A4ParamFiltDp2;
+			
+		case 50: return A4ParamAmpAtk;
+		case 51: return A4ParamAmpDec;
+		case 52: return A4ParamAmpSus;
+		case 53: return A4ParamAmpRel;
+		case 54: return A4ParamAmpShp;
+		case 55: return A4ParamAmpCho;
+		case 56: return A4ParamAmpDel;
+		case 57: return A4ParamAmpRev;
+		case 58: return A4ParamAmpPan;
+		case 59: return A4ParamAmpVol;
+			
+		case 60: return A4ParamEnv1Atk;
+		case 61: return A4ParamEnv1Dec;
+		case 62: return A4ParamEnv1Sus;
+		case 63: return A4ParamEnv1Rel;
+		case 64: return A4ParamEnv1Shp;
+		case 65: return A4ParamEnv1Len;
+		case 66: return A4ParamEnv1DsA;
+		case 67: return A4ParamEnv1DpA;
+		case 68: return A4ParamEnv1DsB;
+		case 69: return A4ParamEnv1DpB;
+			
+		case 70: return A4ParamEnv2Atk;
+		case 71: return A4ParamEnv2Dec;
+		case 72: return A4ParamEnv2Sus;
+		case 73: return A4ParamEnv2Rel;
+		case 74: return A4ParamEnv2Shp;
+		case 75: return A4ParamEnv2Len;
+		case 76: return A4ParamEnv2DsA;
+		case 77: return A4ParamEnv2DpA;
+		case 78: return A4ParamEnv2DsB;
+		case 79: return A4ParamEnv2DpB;
+			
+		case 80: return A4ParamLfo1Spd;
+		case 81: return A4ParamLfo1Mul;
+		case 82: return A4ParamLfo1Fad;
+		case 83: return A4ParamLfo1Sph;
+		case 84: return A4ParamLfo1Mod;
+		case 85: return A4ParamLfo1Wav;
+		case 86: return A4ParamLfo1DsA;
+		case 87: return A4ParamLfo1DpA;
+		case 88: return A4ParamLfo1DsB;
+		case 89: return A4ParamLfo1DpB;
+			
+		case 90: return A4ParamLfo2Spd;
+		case 91: return A4ParamLfo2Mul;
+		case 92: return A4ParamLfo2Fad;
+		case 93: return A4ParamLfo2Sph;
+		case 94: return A4ParamLfo2Mod;
+		case 95: return A4ParamLfo2Wav;
+		case 96: return A4ParamLfo2DsA;
+		case 97: return A4ParamLfo2DpA;
+		case 98: return A4ParamLfo2DsB;
+		case 99: return A4ParamLfo2DpB;
+	}
+	return A4NULL;
+}
 
+uint8_t A4ParamFXForNRPN(uint8_t LSB)
+{
+	switch (LSB)
+	{
+		case 0: return A4ParamFxExtChoL;
+		case 1: return A4ParamFxExtDelL;
+		case 2: return A4ParamFxExtRevL;
+		case 3: return A4ParamFxExtPanL;
+		case 4: return A4ParamFxExtVolL;
+		case 5: return A4ParamFxExtChoR;
+		case 6: return A4ParamFxExtDelR;
+		case 7: return A4ParamFxExtRevR;
+		case 8: return A4ParamFxExtPanR;
+		case 9: return A4ParamFxExtVolR;
+			
+		case 40: return A4ParamFxChoPre;
+		case 41: return A4ParamFxChoSpd;
+		case 42: return A4ParamFxChoDep;
+		case 43: return A4ParamFxChoWid;
+		case 44: return A4ParamFxChoFdb;
+		case 45: return A4ParamFxChoHpf;
+		case 46: return A4ParamFxChoLpf;
+		case 47: return A4ParamFxChoDel;
+		case 48: return A4ParamFxChoRev;
+		case 49: return A4ParamFxChoVol;
+			
+		case 50: return A4ParamFxDelTim;
+		case 51: return A4ParamFxDelX;
+//		case 52: return A4ParamFxdel;	// no param
+		case 53: return A4ParamFxDelWid;
+		case 54: return A4ParamFxDelFdb;
+		case 55: return A4ParamFxDelHpf;
+		case 56: return A4ParamFxDelLpf;
+		case 57: return A4ParamFxDelOvr;
+		case 58: return A4ParamFxDelRev;
+		case 59: return A4ParamFxDelVol;
+			
+		case 60: return A4ParamFxRevPre;
+		case 61: return A4ParamFxRevDec;
+		case 62: return A4ParamFxRevFrq;
+		case 63: return A4ParamFxRevGai;
+//		case 64: return A4ParamFxChoFdb; // no param
+		case 65: return A4ParamFxRevHpf;
+		case 66: return A4ParamFxRevLpf;
+//		case 67: return A4ParamFxChoDel; // no param
+//		case 68: return A4ParamFxChoRev; // no param
+		case 69: return A4ParamFxRevVol;
+			
+		case 80: return A4ParamFxLfo1Spd;
+		case 81: return A4ParamFxLfo1Mul;
+		case 82: return A4ParamFxLfo1Fad;
+		case 83: return A4ParamFxLfo1Sph;
+		case 84: return A4ParamFxLfo1Mod;
+		case 85: return A4ParamFxLfo1Wav;
+		case 86: return A4ParamFxLfo1DsA;
+		case 87: return A4ParamFxLfo1DpA;
+		case 88: return A4ParamFxLfo1DsB;
+		case 89: return A4ParamFxLfo1DpB;
+			
+		case 90: return A4ParamFxLfo2Spd;
+		case 91: return A4ParamFxLfo2Mul;
+		case 92: return A4ParamFxLfo2Fad;
+		case 93: return A4ParamFxLfo2Sph;
+		case 94: return A4ParamFxLfo2Mod;
+		case 95: return A4ParamFxLfo2Wav;
+		case 96: return A4ParamFxLfo2DsA;
+		case 97: return A4ParamFxLfo2DpA;
+		case 98: return A4ParamFxLfo2DsB;
+		case 99: return A4ParamFxLfo2DpB;
+	}
+	
+	return A4NULL;
+}
 
 

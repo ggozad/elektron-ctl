@@ -423,3 +423,6 @@ double A4ParamFxMax(A4Param p);
 
 float A4ParamEnvGateLengthMultiplier(uint8_t val);
 
+uint8_t A4ParamForNRPN(uint8_t LSB);
+uint8_t A4ParamFXForNRPN(uint8_t LSB);
+

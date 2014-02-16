@@ -8,6 +8,7 @@
 
 #import "A4ControllerdataHandler.h"
 #import "MDMIDI.h"
+#import "A4Params.h"
 
 @interface A4ControllerdataHandler ()
 {
@@ -30,11 +31,44 @@
 {
 	if( NRPNBuf[0] == 0 && lastNRPNChannel == _performanceChannel)
 	{
-		[self.delegate a4ControllerdataHandler:self performanceKnob:NRPNBuf[1] didChangeValue:NRPNBuf[2]];
+		if([_delegate respondsToSelector:@selector(a4ControllerdataHandler:performanceKnob:didChangeValue:)])
+			[_delegate a4ControllerdataHandler:self performanceKnob:NRPNBuf[1] didChangeValue:NRPNBuf[2]];
 	}
 	else if (NRPNBuf[0] == 1 && NRPNBuf[1] == 101)
 	{
-		[self.delegate a4ControllerdataHandler:self track:lastNRPNChannel wasMuted:NRPNBuf[2]];
+		if([_delegate respondsToSelector:@selector(a4ControllerdataHandler:track:wasMuted:)])
+			[self.delegate a4ControllerdataHandler:self track:lastNRPNChannel wasMuted:NRPNBuf[2]];
+	}
+	else
+	{
+		if(NRPNBuf[0] == 1 && lastNRPNChannel < 4)
+		{
+			uint8_t param = A4ParamForNRPN(NRPNBuf[1]);
+			if(param != A4NULL)
+			{
+				A4PVal pval;
+				pval.param = param;
+				pval.coarse = NRPNBuf[2];
+				pval.fine = NRPNBuf[3];
+				
+				if([_delegate respondsToSelector:@selector(a4ControllerdataHandler:track:synthParamChanged:)])
+					[_delegate a4ControllerdataHandler:self track:lastNRPNChannel synthParamChanged:pval];
+			}
+		}
+		else if (NRPNBuf[0] == 2 && lastNRPNChannel == 4)
+		{
+			uint8_t param = A4ParamFXForNRPN(NRPNBuf[1]);
+			if(param != A4NULL)
+			{
+				A4PVal pval;
+				pval.param = param;
+				pval.coarse = NRPNBuf[2];
+				pval.fine = NRPNBuf[3];
+				
+				if([_delegate respondsToSelector:@selector(a4ControllerdataHandler:FXParamChanged:)])
+					[_delegate a4ControllerdataHandler:self FXParamChanged:pval];
+			}
+		}
 	}
 }
 
@@ -42,7 +76,7 @@
 {
 //	printf("cc chn: %d ctrl: %d val: %d\n", controlChange.channel, controlChange.parameter, controlChange.value);
 	
-	if(source == _inputSource)
+	if(source == [[MDMIDI sharedInstance] a4MidiSource])
 	{
 		switch (controlChange.parameter)
 		{
@@ -167,11 +201,11 @@
 		{
 			if(controlChange.channel < 6 && controlChange.parameter == 94)
 			{
-				[self.delegate a4ControllerdataHandler:self track:controlChange.channel wasMuted:controlChange.value];
+				if([_delegate respondsToSelector:@selector(a4ControllerdataHandler:track:wasMuted:)])
+					[_delegate a4ControllerdataHandler:self track:controlChange.channel wasMuted:controlChange.value];
 			}
 		}
 	}
-	
 }
 
 - (id)init
@@ -185,6 +219,7 @@
 
 - (void)dealloc
 {
+	[[MDMIDI sharedInstance] removeObserverForMidiInputParserEvents:self];
 	free(NRPNBuf);
 }
 
@@ -193,27 +228,10 @@
 	if(performanceChannel < 16) _performanceChannel = performanceChannel;
 }
 
-- (void)setInputSource:(PGMidiSource *)inputSource
-{
-	if(inputSource != _inputSource)
-	{
-		if(_inputSource && inputSource == nil)
-		{
-			[[MDMIDI sharedInstance] removeObserverForMidiInputParserEvents:self];
-		}
-		else if (_inputSource == nil && inputSource)
-		{
-			[[MDMIDI sharedInstance] addObserverForMidiInputParserEvents:self];
-		}
-	}
-	
-	_inputSource = inputSource;
-}
-
 + (instancetype)controllerdataHandlerWithDelegate:(id<A4ControllerdataHandlerDelegate>)delegate
 {
 	A4ControllerdataHandler *handler = [self new];
-	
+	[[MDMIDI sharedInstance] addObserverForMidiInputParserEvents:handler];
 	handler.delegate = delegate;
 	handler.enabled = YES;
 	

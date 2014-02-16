@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SMFEvent.h"
+#import "SMFEndOfTrackEvent.h"
 
 @interface SMFTrack : NSObject
 @property (nonatomic, strong) NSMutableArray *events;

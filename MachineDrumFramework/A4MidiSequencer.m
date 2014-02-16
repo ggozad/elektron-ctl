@@ -54,7 +54,7 @@
 - (void)midiReceivedProgramChange:(MidiProgramChange)programChange fromSource:(PGMidiSource *)source
 {
 //	DLog(@"lul?");
-	if(source == _inputDevice)
+	if(source == [[MDMIDI sharedInstance] a4MidiSource])
 	{
 //		DLog(@"lul! %d", programChange.program);
 		A4SequencerMode mode = A4SequencerModeQueue;
@@ -66,7 +66,7 @@
 
 - (void)midiReceivedTransport:(uint8_t)transport fromSource:(PGMidiSource *)source
 {
-	if(source != _inputDevice) return;
+	if(source != [[MDMIDI sharedInstance] a4MidiSource]) return;
 	
 	switch (transport)
 	{
@@ -93,13 +93,13 @@
 
 - (void)midiReceivedClockFromSource:(PGMidiSource *)source
 {
-	if(source != _inputDevice) return;
+	if(source != [[MDMIDI sharedInstance] a4MidiSource]) return;
 	[self handleClock];
 }
 
 - (void) midiReceivedClockInterpolationFromSource:(PGMidiSource *)source
 {
-	if(source != _inputDevice) return;
+	if(source != [[MDMIDI sharedInstance] a4MidiSource]) return;
 	[self handleClock];
 }
 
@@ -177,27 +177,12 @@
 	}
 }
 
-- (void)setInputDevice:(PGMidiSource *)inputDevice
-{
-	if(inputDevice != _inputDevice)
-	{
-		if(inputDevice == nil && self.playing)
-		{
-			[self stop];
-		}
-		_inputDevice = inputDevice;
-		self.clockInterpolationFactor = _inputDevice.parser.interpolationDivisions;
-		self.controllerdataHandler.inputSource = inputDevice;
-	}
-}
-
 + (instancetype)sequencerWithDelegate:(id<A4MidiSequencerDelegate>)delegate
 						 outputDevice:(PGMidiDestination *)dst
 						  inputDevice:(PGMidiSource *)src
 {
 	A4MidiSequencer *sequencer = [self sequencerWithDelegate:delegate];
 	sequencer.outputDevice = dst;
-	sequencer.inputDevice = src;
 	
 	for(int i = 0; i < 6; i++)
 	{

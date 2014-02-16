@@ -6,10 +6,14 @@
 //  Copyright (c) 2013 Jakob Penca. All rights reserved.
 //
 
+
+
 #import "A4SysexMessage.h"
 #import "A4PatternTrack.h"
 #import "A4Trig.h"
 #import "A4Params.h"
+
+#pragma once
 
 @class A4Pattern;
 

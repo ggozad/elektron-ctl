@@ -42,7 +42,6 @@
 	{
 		[d appendData:trk.data];
 	}
-	
 	return d;
 }
 

@@ -22,24 +22,25 @@
 
 - (NSData *)data
 {
-	uint8_t trackHeader[] = {'M', 'T', 'r', 'k', 0, 0, 0, 0};
-	UInt32 *eventByteCount = (UInt32 *)&trackHeader[7];
-	NSMutableData *eventsData = [NSMutableData data];
-	for (SMFEvent *event in self.events)
+	UInt32 eventByteCount = 0;
+	NSMutableData *eventsData = nil;
+	
+	if(self.events.count)
 	{
-		NSData *d = event.data;
-		*eventByteCount += d.length;
-		[eventsData appendData:d];
+		eventsData = [NSMutableData data];
+		for (SMFEvent *event in self.events)
+		{
+			NSData *d = event.data;
+			eventByteCount += d.length;
+			[eventsData appendData:d];
+		}
 	}
 	
-	*eventByteCount += 4;
-	
-	NSMutableData *trackData = [NSMutableData dataWithBytes:trackHeader length:8];
-	[trackData appendData:eventsData];
-	
-	static uint8_t eof[] = {0x00, 0xFF, 0x2F, 0x00};
-	[trackData appendBytes:eof length:4];
-	
+	uint8_t trackHeader[] = {'M', 'T', 'r', 'k', 0, 0, 0, 0};
+	NSMutableData *trackData = [NSMutableData dataWithBytes:trackHeader length:4];
+	eventByteCount = CFSwapInt32(eventByteCount);
+	[trackData appendBytes:&eventByteCount length:4];
+	if(eventsData) [trackData appendData:eventsData];
 	return trackData;
 }
 

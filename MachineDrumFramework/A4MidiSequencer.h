@@ -19,7 +19,6 @@
 @end
 
 @interface A4MidiSequencer : A4Sequencer <MidiInputDelegate, PGMidiDelegate, A4ControllerdataHandlerDelegate>
-@property (nonatomic, weak) PGMidiSource *inputDevice;
 @property (nonatomic, weak) PGMidiDestination *outputDevice;
 @property (nonatomic, strong) A4ControllerdataHandler *controllerdataHandler;
 @property (nonatomic, weak) id<A4MidiSequencerDelegate>delegate;
