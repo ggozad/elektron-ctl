@@ -2,9 +2,15 @@ A framework for iOS/OSX which enables deep MIDI control of the Elektron Machined
 
 as of today, undocumented.
 
-some examples:
+example:
 
-```[A4Request requestWithKeys:@[@"pat.x"]
+```Objective-C
+
+// request the current A4 Pattern 
+// randomize all existing sound-locks
+// send the pattern back to the unit
+
+[A4Request requestWithKeys:@[@"pat.x"]
 			 completionHandler:^(NSDictionary *dict) {
 				 
 				 A4Pattern *pattern = dict[@"pat.x"];
