@@ -152,6 +152,8 @@
 		36871BDB182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BD9182F12FD00750F0F /* A4TrackingMidiSequencer.m */; };
 		36871BDE182F150900750F0F /* A4TrackerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BDD182F150900750F0F /* A4TrackerTrack.m */; };
 		36871BDF182F150900750F0F /* A4TrackerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BDD182F150900750F0F /* A4TrackerTrack.m */; };
+		3694051E18D0E5C600DA04E6 /* A4APIPoly.m in Sources */ = {isa = PBXBuildFile; fileRef = 3694051D18D0E5C600DA04E6 /* A4APIPoly.m */; };
+		3694051F18D0E5C600DA04E6 /* A4APIPoly.m in Sources */ = {isa = PBXBuildFile; fileRef = 3694051D18D0E5C600DA04E6 /* A4APIPoly.m */; };
 		36944DCF18C37110004DE1C9 /* MDMarkovChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DCE18C37110004DE1C9 /* MDMarkovChain.m */; };
 		36944DD018C37110004DE1C9 /* MDMarkovChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DCE18C37110004DE1C9 /* MDMarkovChain.m */; };
 		36944DD418C3CB39004DE1C9 /* MDSampleSlicer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DD318C3CB39004DE1C9 /* MDSampleSlicer.m */; };
@@ -387,6 +389,8 @@
 		36871BD9182F12FD00750F0F /* A4TrackingMidiSequencer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4TrackingMidiSequencer.m; sourceTree = "<group>"; };
 		36871BDC182F150800750F0F /* A4TrackerTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4TrackerTrack.h; sourceTree = "<group>"; };
 		36871BDD182F150900750F0F /* A4TrackerTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4TrackerTrack.m; sourceTree = "<group>"; };
+		3694051C18D0E5C600DA04E6 /* A4APIPoly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4APIPoly.h; sourceTree = "<group>"; };
+		3694051D18D0E5C600DA04E6 /* A4APIPoly.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4APIPoly.m; sourceTree = "<group>"; };
 		36944DCD18C37110004DE1C9 /* MDMarkovChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMarkovChain.h; sourceTree = "<group>"; };
 		36944DCE18C37110004DE1C9 /* MDMarkovChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMarkovChain.m; sourceTree = "<group>"; };
 		36944DD218C3CB39004DE1C9 /* MDSampleSlicer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSampleSlicer.h; sourceTree = "<group>"; };
@@ -796,6 +800,8 @@
 				3680137518CCA081008DF4C4 /* A4APIParams.m */,
 				3680137818CD1367008DF4C4 /* A4APIPattern.h */,
 				3680137918CD1367008DF4C4 /* A4APIPattern.m */,
+				3694051C18D0E5C600DA04E6 /* A4APIPoly.h */,
+				3694051D18D0E5C600DA04E6 /* A4APIPoly.m */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -1256,6 +1262,7 @@
 				3631A8651646C3E3008DB7E5 /* MDParameterLockRow.m in Sources */,
 				3631A8671646C3E3008DB7E5 /* MDPatternParameterLocks.m in Sources */,
 				3631A8681646C3E3008DB7E5 /* MDPatternParser.m in Sources */,
+				3694051F18D0E5C600DA04E6 /* A4APIPoly.m in Sources */,
 				3612B5E118AD5BED009CEDB9 /* A4PerformanceMacroSequencer.m in Sources */,
 				3631A86A1646C3E3008DB7E5 /* MDSysexRouter.m in Sources */,
 				3631A86C1646C3E3008DB7E5 /* MDPitch.m in Sources */,
@@ -1367,6 +1374,7 @@
 				36B92130158F82CC0025F0B3 /* MDParameterLock.m in Sources */,
 				36B92131158F82CC0025F0B3 /* MDParameterLockRow.m in Sources */,
 				36B92133158F82CC0025F0B3 /* MDPatternParameterLocks.m in Sources */,
+				3694051E18D0E5C600DA04E6 /* A4APIPoly.m in Sources */,
 				3612B5E018AD5BED009CEDB9 /* A4PerformanceMacroSequencer.m in Sources */,
 				36B92134158F82CC0025F0B3 /* MDPatternParser.m in Sources */,
 				36B4B0B7158F9263009CFC0A /* MDSysexRouter.m in Sources */,

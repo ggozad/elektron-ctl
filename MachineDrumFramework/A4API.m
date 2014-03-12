@@ -12,6 +12,7 @@
 #import "A4APITrack.h"
 #import "A4APIPattern.h"
 #import "A4APIParams.h"
+#import "A4APIPoly.h"
 #import "A4APIStringNumericIterator.h"
 
 @implementation A4API
@@ -91,6 +92,11 @@
 	else if ([t[0] isEqualToString:@"BPM"] && t.count == 1)
 	{
 		[self executeGetBPMonCompletion:completionHandler onError:errorHandler];
+	}
+	else if ([t[0] isEqualToString:@"POLY"] && t.count >= 3)
+	{
+		[A4APIPoly executePolyCommandWithArgs:[t subarrayWithRange:NSMakeRange(1, t.count-1)]
+								 onCompletion:completionHandler onError:errorHandler];
 	}
 	else if ([t[0] isEqualToString:@"PATTERN"] && t.count == 3)
 	{
