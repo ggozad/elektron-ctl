@@ -154,5 +154,6 @@ A4SoundSettings;
 - (A4PVal) valueForParam:(A4Param)param;
 - (void) addTag:(A4SoundTags)tag;
 - (void) removeTag:(A4SoundTags)tag;
+- (BOOL) tagMatchesAnyTag:(A4SoundTags)tag;
 
 @end

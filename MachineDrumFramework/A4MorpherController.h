@@ -10,6 +10,12 @@
 #import "A4Request.h"
 #import "A4Sound.h"
 
+typedef enum A4MorpherControllerMode
+{
+	A4MorpherControllerModeSounds,
+	A4MorpherControllerModeKits
+}
+A4MorpherControllerMode;
 
 @class A4MorpherController;
 @protocol A4MorpherControllerDelegate <NSObject>
@@ -20,9 +26,12 @@
 @interface A4MorpherController : NSObject
 @property (nonatomic, weak) id<A4MorpherControllerDelegate> delegate;
 @property (nonatomic) NSInteger track;
+@property (nonatomic) NSInteger manualTrack;
+@property (nonatomic) BOOL useManualTrack;
+@property (nonatomic, strong) NSMutableArray *soundCache, *kitCache;
+@property (nonatomic) A4MorpherControllerMode mode;
 
 - (void) pushTarget:(uint8_t)targetIdx apply:(BOOL)apply;
-- (void) popTarget:(uint8_t)target revertTo:(uint8_t)earlierTarget;
 - (void) revertToOriginal;
 
 @end

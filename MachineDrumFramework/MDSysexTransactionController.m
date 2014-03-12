@@ -239,6 +239,7 @@ TransactionReturnType;
 	_canProcessTransaction = NO;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(machinedrumDumpReceived:) name:kMDSysexKitDumpNotification object:nil];
+	[self.timeoutTimer invalidate];
 	self.timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timeOut:) userInfo:self.currentTransaction repeats:NO];
 	[[[MDMIDI sharedInstance] machinedrum] requestKitDumpForSlot:kitNum];
 }
@@ -431,6 +432,7 @@ TransactionReturnType;
 - (void) timeOut:(id)userInfo
 {
 	DLog(@"timeout!");
+	[self.timeoutTimer invalidate];
 	self.timeoutTimer = nil;
 	
 	DLog(@"notifying delegate of fail...");
@@ -439,6 +441,7 @@ TransactionReturnType;
 	[self.currentTransaction.delegate sysexTransactionFailed:self.currentTransaction];
 	self.currentTransaction = nil;
 	_canProcessTransaction = YES;
+	[self dequeue];
 }
 
 - (MDSysexTransaction *) connectionFailedTransactionWithTag:(NSString *)tag

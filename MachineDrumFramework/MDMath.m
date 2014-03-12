@@ -45,7 +45,7 @@ float mdmath_mapf_clamp(float value, float istart, float istop, float ostart, fl
 
 long mdmath_wrap(long kX, long const kLowerBound, long const kUpperBound)
 {
-    int range_size = kUpperBound - kLowerBound + 1;
+    long range_size = kUpperBound - kLowerBound + 1;
 	
     if (kX < kLowerBound)
         kX += range_size * ((kLowerBound - kX) / range_size + 1);

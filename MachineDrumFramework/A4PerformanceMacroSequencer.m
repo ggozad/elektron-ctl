@@ -11,6 +11,8 @@
 #import "MDMIDI.h"
 #import "MDConstants.h"
 #import "A4ControllerdataHandler.h"
+#import "MDMath.h"
+#import <stdlib.h>
 
 typedef struct SeqCC
 {
@@ -43,10 +45,10 @@ uint8_t nextStep()
 
 @interface A4PerformanceMacroSequencer() <PGMidiDelegate, MidiInputDelegate, A4ControllerdataHandlerDelegate>
 @property (nonatomic) Sequence *sequence;
-@property (nonatomic) uint8_t internalStep;
-@property (nonatomic) int clock;
-@property (nonatomic) BOOL running;
+@property (nonatomic) uint8_t *internalStep; // 8
+@property (nonatomic) long clock;
 @property (nonatomic, strong) A4ControllerdataHandler *controllerHandler;
+@property (nonatomic) BOOL skipFirstStepAfterStart;
 @end
 
 @implementation A4PerformanceMacroSequencer
@@ -79,7 +81,7 @@ uint8_t nextStep()
 		cc.parameter = controller;
 		cc.value = value;
 		
-		uint8_t s = _tracking ? _internalStep : _nonTrackingStep;
+		uint8_t s = _tracking ? _internalStep[_timeScale] : _nonTrackingStep;
 		SequencerStep *step = &_sequence->steps[s];
 		SeqCC *seqcc = &step->seqCC[knob];
 		seqcc->cc = cc;
@@ -129,20 +131,35 @@ uint8_t nextStep()
 			self.sequence->steps[i].armed = YES;
 		}
 		
-		_tracking = YES;
+		_internalStep = calloc(8, sizeof(uint8_t));
+		_timeScale = A4macroSequencerTimeScale_1_4;
 	}
 	return self;
 }
 
 - (void)dealloc
 {
-	free(self.sequence);
+	free(_sequence);
+	free(_internalStep);
 }
 
 - (void) reset
 {
 	_clock = 0;
-	_internalStep = 0;
+	_skipFirstStepAfterStart = YES;
+	
+	for (int i = 0; i < 7; i++)
+	{
+		_internalStep[i] = 0;
+	}
+	
+	if(_skippedSteps != 0xFFFF)
+	{
+		while([self stepIsSkipped:_internalStep[_internalStep[_timeScale]]])
+		{
+			_internalStep[_timeScale]++;
+		}
+	}
 }
 
 - (void)clearAll
@@ -181,6 +198,20 @@ uint8_t nextStep()
 	}
 }
 
+- (void)setStep:(int)idx skipped:(BOOL)skip
+{
+	if(idx < 0 || idx > 15) return;
+	if(skip) _skippedSteps |= (1 << idx);
+	else _skippedSteps &= ~ (uint16_t) (1 << idx);
+}
+
+- (BOOL)stepIsSkipped:(int)idx
+{
+	if(idx < 0 || idx > 15) return NO;
+	uint16_t compare = 1 << idx;
+	return (_skippedSteps & compare) > 0;
+}
+
 - (void)setStep:(int)idx active:(BOOL)active
 {
 	if(idx < 0 || idx > 15) return;
@@ -206,7 +237,7 @@ uint8_t nextStep()
 
 - (uint8_t)trackingStep
 {
-	return _internalStep;
+	return _internalStep[_timeScale];
 }
 
 - (void)holdStep:(int)idx
@@ -241,22 +272,30 @@ uint8_t nextStep()
 	[self handleTick];
 }
 
+- (BOOL) clockPassesStep
+{
+	static const short pulses[] = {3,4,6,8,12,24,48,96};
+	return _clock % (pulses[_timeScale]*16) == 0;
+}
+
 - (void) handleTick
 {
 	if(_running)
 	{
-		if(_clock % (6*16) == 0)
+		if([self clockPassesStep])
 		{
-			if(_tracking)
+			[self advanceInternalStep];
+			
+			if(_tracking && _skippedSteps != 0xFFFF && ![self stepIsSkipped:_internalStep[_timeScale]])
 			{
-				[self.delegate a4PerformanceMacroSequencer:self didAdvanceToStep:_internalStep];
+				[self.delegate a4PerformanceMacroSequencer:self didAdvanceToStep:_internalStep[_timeScale]];
 				
 				if(_clearing)
 				{
-					[self clearStep:_internalStep];
+					[self clearStep:_internalStep[_timeScale]];
 				}
 				
-				SequencerStep sequencerStep = _sequence->steps[_internalStep];
+				SequencerStep sequencerStep = _sequence->steps[_internalStep[_timeScale]];
 				if(sequencerStep.armed)
 				{
 					for (int i = 0; i < 10; i++)
@@ -271,15 +310,32 @@ uint8_t nextStep()
 					}
 				}
 			}
-			
-			
-			_internalStep++;
-			if(_internalStep == 16) _internalStep = 0;
 		}
 		
 		_clock++;
-		if(_clock == 16*6*16) _clock = 0;
+		if(_clock == 6*16*96) _clock = 0;
 	}
+}
+
+- (void) advanceInternalStep
+{
+	if(_skippedSteps == 0xFFFF) return;
+	if(_skipFirstStepAfterStart)
+	{
+		_skipFirstStepAfterStart = NO;
+		return;
+	}
+	
+	printf("adv step: ");
+	int step = _internalStep[_timeScale]+1;
+	if(step >= 16) step -= 16;
+	while([self stepIsSkipped:step])
+	{
+		step++;
+		if(step >= 16) step -= 16;
+	}
+	printf("%d\n", step);
+	_internalStep[_timeScale] = step;
 }
 
 - (void)midiReceivedTransport:(uint8_t)transport fromSource:(PGMidiSource *)source
@@ -297,7 +353,8 @@ uint8_t nextStep()
 		case MD_MIDI_RT_CONTINUE:
 		{
     		_running = YES;
-			[self.delegate a4PerformanceMacroSequencer:self didContinueAtStep:_internalStep];
+			_skipFirstStepAfterStart = YES;
+			[self.delegate a4PerformanceMacroSequencer:self didContinueAtStep:_internalStep[_timeScale]];
 			[self handleTick];
     		break;
 		}

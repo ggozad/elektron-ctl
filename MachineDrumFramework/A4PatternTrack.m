@@ -119,6 +119,16 @@
 	return trig;
 }
 
+- (A4Trig)trigAtStepAllFieldsFilled:(uint8_t)step
+{
+	if(step > 63) return A4TrigMakeEmpty();
+	A4Trig trig = [self trigAtStep:step];
+	if(trig.notes[0] == A4NULL) trig.notes[0] = _settings->trigNote;
+	if(trig.velocity == A4NULL) trig.velocity = _settings->trigVelocity;
+	if(trig.length == A4NULL) trig.length = _settings->trigLength;
+	return trig;
+}
+
 - (void)clearTrigAtStep:(uint8_t)step
 {
 	if(step > 63) return;

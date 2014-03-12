@@ -116,6 +116,8 @@
 		364CD2C015F5157200CA49A9 /* MDSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2BF15F5157200CA49A9 /* MDSong.m */; };
 		364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2C315F515BF00CA49A9 /* MDValueMap.m */; };
 		364CD2C715F5169F00CA49A9 /* MDValuePair.m in Sources */ = {isa = PBXBuildFile; fileRef = 364CD2C615F5169F00CA49A9 /* MDValuePair.m */; };
+		364E548018C1F5310075FF19 /* A4BasslineGenerator2.m in Sources */ = {isa = PBXBuildFile; fileRef = 364E547F18C1F5310075FF19 /* A4BasslineGenerator2.m */; };
+		364E548118C1F5310075FF19 /* A4BasslineGenerator2.m in Sources */ = {isa = PBXBuildFile; fileRef = 364E547F18C1F5310075FF19 /* A4BasslineGenerator2.m */; };
 		365F419C1619EA5500E4231D /* MDSDS.m in Sources */ = {isa = PBXBuildFile; fileRef = 365F419B1619EA5500E4231D /* MDSDS.m */; };
 		366C9E34178D7525001545D9 /* A4PolyMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 366C9E33178D7525001545D9 /* A4PolyMapper.m */; };
 		366C9E35178D7525001545D9 /* A4PolyMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 366C9E33178D7525001545D9 /* A4PolyMapper.m */; };
@@ -129,6 +131,18 @@
 		3672089717ED0B8B00323F2F /* A4PatternTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3672089517ED0B8B00323F2F /* A4PatternTrack.m */; };
 		36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */; };
 		367C3B4A15F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 367C3B4915F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m */; };
+		368012FA18C8D808008DF4C4 /* A4API.m in Sources */ = {isa = PBXBuildFile; fileRef = 368012F918C8D808008DF4C4 /* A4API.m */; };
+		368012FB18C8D808008DF4C4 /* A4API.m in Sources */ = {isa = PBXBuildFile; fileRef = 368012F918C8D808008DF4C4 /* A4API.m */; };
+		3680136318CA5146008DF4C4 /* A4APIStringNumericIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680136218CA5146008DF4C4 /* A4APIStringNumericIterator.m */; };
+		3680136418CA5146008DF4C4 /* A4APIStringNumericIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680136218CA5146008DF4C4 /* A4APIStringNumericIterator.m */; };
+		3680136E18CBC6A0008DF4C4 /* A4APITrig.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680136D18CBC6A0008DF4C4 /* A4APITrig.m */; };
+		3680136F18CBC6A0008DF4C4 /* A4APITrig.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680136D18CBC6A0008DF4C4 /* A4APITrig.m */; };
+		3680137218CBE3FD008DF4C4 /* A4APITrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680137118CBE3FD008DF4C4 /* A4APITrack.m */; };
+		3680137318CBE3FD008DF4C4 /* A4APITrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680137118CBE3FD008DF4C4 /* A4APITrack.m */; };
+		3680137618CCA081008DF4C4 /* A4APIParams.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680137518CCA081008DF4C4 /* A4APIParams.m */; };
+		3680137718CCA081008DF4C4 /* A4APIParams.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680137518CCA081008DF4C4 /* A4APIParams.m */; };
+		3680137A18CD1367008DF4C4 /* A4APIPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680137918CD1367008DF4C4 /* A4APIPattern.m */; };
+		3680137B18CD1367008DF4C4 /* A4APIPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 3680137918CD1367008DF4C4 /* A4APIPattern.m */; };
 		36814F041594CD8700220C88 /* MDPitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 36814F031594CD8700220C88 /* MDPitch.m */; };
 		36871BCD182DA17400750F0F /* A4Sequencer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BCC182DA17400750F0F /* A4Sequencer.m */; };
 		36871BCE182DA17400750F0F /* A4Sequencer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BCC182DA17400750F0F /* A4Sequencer.m */; };
@@ -138,6 +152,10 @@
 		36871BDB182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BD9182F12FD00750F0F /* A4TrackingMidiSequencer.m */; };
 		36871BDE182F150900750F0F /* A4TrackerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BDD182F150900750F0F /* A4TrackerTrack.m */; };
 		36871BDF182F150900750F0F /* A4TrackerTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 36871BDD182F150900750F0F /* A4TrackerTrack.m */; };
+		36944DCF18C37110004DE1C9 /* MDMarkovChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DCE18C37110004DE1C9 /* MDMarkovChain.m */; };
+		36944DD018C37110004DE1C9 /* MDMarkovChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DCE18C37110004DE1C9 /* MDMarkovChain.m */; };
+		36944DD418C3CB39004DE1C9 /* MDSampleSlicer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DD318C3CB39004DE1C9 /* MDSampleSlicer.m */; };
+		36944DD518C3CB39004DE1C9 /* MDSampleSlicer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36944DD318C3CB39004DE1C9 /* MDSampleSlicer.m */; };
 		3699DF8D15F38DDF004C9D83 /* MDMIDI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8815F38DDF004C9D83 /* MDMIDI.m */; };
 		3699DF8E15F38DDF004C9D83 /* MDSysexTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8A15F38DDF004C9D83 /* MDSysexTransaction.m */; };
 		3699DF8F15F38DDF004C9D83 /* MDSysexTransactionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3699DF8C15F38DDF004C9D83 /* MDSysexTransactionController.m */; };
@@ -202,6 +220,8 @@
 		36E188881874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E188861874AA2800F84304 /* NSMutableArray+Reverse.m */; };
 		36E1888B1874AA5E00F84304 /* NSArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */; };
 		36E1888C1874AA5E00F84304 /* NSArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */; };
+		36E1C47718B9370900D9E6B1 /* A4BasslineGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1C47618B9370900D9E6B1 /* A4BasslineGenerator.m */; };
+		36E1C47818B9370900D9E6B1 /* A4BasslineGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1C47618B9370900D9E6B1 /* A4BasslineGenerator.m */; };
 		36E1ED2E183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */; };
 		36E1ED2F183DB1BF001A9498 /* A4ControllerdataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */; };
 		36E1ED32183E8EE0001A9498 /* A4LFO.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E1ED31183E8EE0001A9498 /* A4LFO.m */; };
@@ -215,6 +235,8 @@
 		36E4C0311857B2F800F0E245 /* A4Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4C0301857B2F800F0E245 /* A4Settings.m */; };
 		36E4C0321857B2F800F0E245 /* A4Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E4C0301857B2F800F0E245 /* A4Settings.m */; };
 		36EC2340174145B30053E8AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36EC233F174145B30053E8AF /* AVFoundation.framework */; };
+		36ED48A418BF8E0C00BC6BBA /* A4ArpBaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 36ED48A318BF8E0C00BC6BBA /* A4ArpBaker.m */; };
+		36ED48A518BF8E0C00BC6BBA /* A4ArpBaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 36ED48A318BF8E0C00BC6BBA /* A4ArpBaker.m */; };
 		36FE349715CEB55100695E38 /* MDUserParameterValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 36FE349615CEB55100695E38 /* MDUserParameterValue.m */; };
 		36FE349A15CEB57200695E38 /* MDUserParameterLimit.m in Sources */ = {isa = PBXBuildFile; fileRef = 36FE349915CEB57200695E38 /* MDUserParameterLimit.m */; };
 		36FFB2F818AADD78008B2DF0 /* A4MidiFileGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36FFB2F718AADD78008B2DF0 /* A4MidiFileGenerator.m */; };
@@ -324,6 +346,8 @@
 		364CD2C315F515BF00CA49A9 /* MDValueMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDValueMap.m; sourceTree = "<group>"; };
 		364CD2C515F5169F00CA49A9 /* MDValuePair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDValuePair.h; sourceTree = "<group>"; };
 		364CD2C615F5169F00CA49A9 /* MDValuePair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDValuePair.m; sourceTree = "<group>"; };
+		364E547E18C1F5310075FF19 /* A4BasslineGenerator2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4BasslineGenerator2.h; sourceTree = "<group>"; };
+		364E547F18C1F5310075FF19 /* A4BasslineGenerator2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4BasslineGenerator2.m; sourceTree = "<group>"; };
 		365F419A1619EA5500E4231D /* MDSDS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSDS.h; sourceTree = "<group>"; };
 		365F419B1619EA5500E4231D /* MDSDS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSDS.m; sourceTree = "<group>"; };
 		366C9E32178D7525001545D9 /* A4PolyMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4PolyMapper.h; sourceTree = "<group>"; };
@@ -340,6 +364,18 @@
 		36746CAA1597DACD007F09F2 /* MDProcessingPipeline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDProcessingPipeline.m; sourceTree = "<group>"; };
 		367C3B4815F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMachinedrumGlobalSettingsParser.h; sourceTree = "<group>"; };
 		367C3B4915F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMachinedrumGlobalSettingsParser.m; sourceTree = "<group>"; };
+		368012F818C8D808008DF4C4 /* A4API.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4API.h; sourceTree = "<group>"; };
+		368012F918C8D808008DF4C4 /* A4API.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4API.m; sourceTree = "<group>"; };
+		3680136118CA5146008DF4C4 /* A4APIStringNumericIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4APIStringNumericIterator.h; sourceTree = "<group>"; };
+		3680136218CA5146008DF4C4 /* A4APIStringNumericIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4APIStringNumericIterator.m; sourceTree = "<group>"; };
+		3680136C18CBC6A0008DF4C4 /* A4APITrig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4APITrig.h; sourceTree = "<group>"; };
+		3680136D18CBC6A0008DF4C4 /* A4APITrig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4APITrig.m; sourceTree = "<group>"; };
+		3680137018CBE3FD008DF4C4 /* A4APITrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4APITrack.h; sourceTree = "<group>"; };
+		3680137118CBE3FD008DF4C4 /* A4APITrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4APITrack.m; sourceTree = "<group>"; };
+		3680137418CCA081008DF4C4 /* A4APIParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4APIParams.h; sourceTree = "<group>"; };
+		3680137518CCA081008DF4C4 /* A4APIParams.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4APIParams.m; sourceTree = "<group>"; };
+		3680137818CD1367008DF4C4 /* A4APIPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4APIPattern.h; sourceTree = "<group>"; };
+		3680137918CD1367008DF4C4 /* A4APIPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4APIPattern.m; sourceTree = "<group>"; };
 		36814F011594CD8700220C88 /* MDConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDConstants.h; sourceTree = "<group>"; };
 		36814F021594CD8700220C88 /* MDPitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDPitch.h; sourceTree = "<group>"; };
 		36814F031594CD8700220C88 /* MDPitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDPitch.m; sourceTree = "<group>"; };
@@ -351,6 +387,10 @@
 		36871BD9182F12FD00750F0F /* A4TrackingMidiSequencer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4TrackingMidiSequencer.m; sourceTree = "<group>"; };
 		36871BDC182F150800750F0F /* A4TrackerTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4TrackerTrack.h; sourceTree = "<group>"; };
 		36871BDD182F150900750F0F /* A4TrackerTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4TrackerTrack.m; sourceTree = "<group>"; };
+		36944DCD18C37110004DE1C9 /* MDMarkovChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMarkovChain.h; sourceTree = "<group>"; };
+		36944DCE18C37110004DE1C9 /* MDMarkovChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMarkovChain.m; sourceTree = "<group>"; };
+		36944DD218C3CB39004DE1C9 /* MDSampleSlicer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSampleSlicer.h; sourceTree = "<group>"; };
+		36944DD318C3CB39004DE1C9 /* MDSampleSlicer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSampleSlicer.m; sourceTree = "<group>"; };
 		3699DF8715F38DDF004C9D83 /* MDMIDI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDMIDI.h; sourceTree = "<group>"; };
 		3699DF8815F38DDF004C9D83 /* MDMIDI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDMIDI.m; sourceTree = "<group>"; };
 		3699DF8915F38DDF004C9D83 /* MDSysexTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSysexTransaction.h; sourceTree = "<group>"; };
@@ -442,6 +482,8 @@
 		36E188861874AA2800F84304 /* NSMutableArray+Reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Reverse.m"; sourceTree = "<group>"; };
 		36E188891874AA5E00F84304 /* NSArray+Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Reverse.h"; sourceTree = "<group>"; };
 		36E1888A1874AA5E00F84304 /* NSArray+Reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Reverse.m"; sourceTree = "<group>"; };
+		36E1C47518B9370900D9E6B1 /* A4BasslineGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4BasslineGenerator.h; sourceTree = "<group>"; };
+		36E1C47618B9370900D9E6B1 /* A4BasslineGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4BasslineGenerator.m; sourceTree = "<group>"; };
 		36E1ED2C183DB1BF001A9498 /* A4ControllerdataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4ControllerdataHandler.h; sourceTree = "<group>"; };
 		36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4ControllerdataHandler.m; sourceTree = "<group>"; };
 		36E1ED30183E8EE0001A9498 /* A4LFO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4LFO.h; sourceTree = "<group>"; };
@@ -456,6 +498,8 @@
 		36E4C0301857B2F800F0E245 /* A4Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4Settings.m; sourceTree = "<group>"; };
 		36EC233D174145A50053E8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		36EC233F174145B30053E8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		36ED48A218BF8E0C00BC6BBA /* A4ArpBaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = A4ArpBaker.h; sourceTree = "<group>"; };
+		36ED48A318BF8E0C00BC6BBA /* A4ArpBaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = A4ArpBaker.m; sourceTree = "<group>"; };
 		36FE349515CEB55100695E38 /* MDUserParameterValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDUserParameterValue.h; sourceTree = "<group>"; };
 		36FE349615CEB55100695E38 /* MDUserParameterValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDUserParameterValue.m; sourceTree = "<group>"; };
 		36FE349815CEB57200695E38 /* MDUserParameterLimit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDUserParameterLimit.h; sourceTree = "<group>"; };
@@ -598,15 +642,14 @@
 				36E1ED2D183DB1BF001A9498 /* A4ControllerdataHandler.m */,
 				3612B5DE18AD5BED009CEDB9 /* A4PerformanceMacroSequencer.h */,
 				3612B5DF18AD5BED009CEDB9 /* A4PerformanceMacroSequencer.m */,
+				36E1C47518B9370900D9E6B1 /* A4BasslineGenerator.h */,
+				36E1C47618B9370900D9E6B1 /* A4BasslineGenerator.m */,
+				36ED48A218BF8E0C00BC6BBA /* A4ArpBaker.h */,
+				36ED48A318BF8E0C00BC6BBA /* A4ArpBaker.m */,
+				364E547E18C1F5310075FF19 /* A4BasslineGenerator2.h */,
+				364E547F18C1F5310075FF19 /* A4BasslineGenerator2.m */,
 			);
 			name = Tools;
-			sourceTree = "<group>";
-		};
-		36181D6B17EF6868001C9132 /* Integration */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Integration;
 			sourceTree = "<group>";
 		};
 		3621607618B145660000477D /* Params */ = {
@@ -738,16 +781,54 @@
 			name = Sysex;
 			sourceTree = "<group>";
 		};
-		36B54867176C677700DF1F6E /* Sequencer */ = {
+		368012F718C8D7E5008DF4C4 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				368012F818C8D808008DF4C4 /* A4API.h */,
+				368012F918C8D808008DF4C4 /* A4API.m */,
+				3680136118CA5146008DF4C4 /* A4APIStringNumericIterator.h */,
+				3680136218CA5146008DF4C4 /* A4APIStringNumericIterator.m */,
+				3680136C18CBC6A0008DF4C4 /* A4APITrig.h */,
+				3680136D18CBC6A0008DF4C4 /* A4APITrig.m */,
+				3680137018CBE3FD008DF4C4 /* A4APITrack.h */,
+				3680137118CBE3FD008DF4C4 /* A4APITrack.m */,
+				3680137418CCA081008DF4C4 /* A4APIParams.h */,
+				3680137518CCA081008DF4C4 /* A4APIParams.m */,
+				3680137818CD1367008DF4C4 /* A4APIPattern.h */,
+				3680137918CD1367008DF4C4 /* A4APIPattern.m */,
 			);
-			name = Sequencer;
+			name = API;
+			sourceTree = "<group>";
+		};
+		36944DCC18C370DA004DE1C9 /* Markov */ = {
+			isa = PBXGroup;
+			children = (
+				36944DCD18C37110004DE1C9 /* MDMarkovChain.h */,
+				36944DCE18C37110004DE1C9 /* MDMarkovChain.m */,
+			);
+			name = Markov;
+			sourceTree = "<group>";
+		};
+		36944DD118C3CAE5004DE1C9 /* MD */ = {
+			isa = PBXGroup;
+			children = (
+				36BAC90616414DB800F29993 /* MDUserDataTypes */,
+				3603C5C116276F49008EA901 /* Snapshots */,
+				36FE349015CEB4C900695E38 /* UserLogic */,
+				36D4192815BD9EB100DCFBCF /* PatternManipulation */,
+				362A7EDE159A160D007478D7 /* Process */,
+				36BAC90B16414EA600F29993 /* MIDI */,
+				3631494D16F6FFE900FAF523 /* Audio */,
+				36BAC90C16414ED500F29993 /* Helpers */,
+			);
+			name = MD;
 			sourceTree = "<group>";
 		};
 		36B61E0E170C401500C2EC42 /* A4 */ = {
 			isa = PBXGroup;
 			children = (
+				368012F718C8D7E5008DF4C4 /* API */,
+				3623ED7717F7618300387DC8 /* Resources */,
 				3621607618B145660000477D /* Params */,
 				3612B5DD18AD59E8009CEDB9 /* Tools */,
 				3612B5DC18AD59AC009CEDB9 /* Sequencer */,
@@ -803,21 +884,12 @@
 		36B920DF158F81670025F0B3 /* MachineDrumFramework */ = {
 			isa = PBXGroup;
 			children = (
+				36944DD118C3CAE5004DE1C9 /* MD */,
+				36944DCC18C370DA004DE1C9 /* Markov */,
 				3623ED8317F762F000387DC8 /* Categories */,
-				3623ED7717F7618300387DC8 /* Resources */,
-				36181D6B17EF6868001C9132 /* Integration */,
-				36B54867176C677700DF1F6E /* Sequencer */,
 				36B61E0E170C401500C2EC42 /* A4 */,
 				36B4B06A158F8777009CFC0A /* MDMachinedrumPublic.h */,
 				36814F011594CD8700220C88 /* MDConstants.h */,
-				3631494D16F6FFE900FAF523 /* Audio */,
-				36BAC90C16414ED500F29993 /* Helpers */,
-				36BAC90B16414EA600F29993 /* MIDI */,
-				36BAC90616414DB800F29993 /* MDUserDataTypes */,
-				3603C5C116276F49008EA901 /* Snapshots */,
-				36FE349015CEB4C900695E38 /* UserLogic */,
-				36D4192815BD9EB100DCFBCF /* PatternManipulation */,
-				362A7EDE159A160D007478D7 /* Process */,
 				36B920E0158F81670025F0B3 /* Supporting Files */,
 			);
 			path = MachineDrumFramework;
@@ -963,6 +1035,8 @@
 				36BBC1A715C0617F0087886B /* MDPatternRegion.m */,
 				364752F015D1AD63002DCA22 /* MDPatternTrigGenerator.h */,
 				364752F115D1AD63002DCA22 /* MDPatternTrigGenerator.m */,
+				36944DD218C3CB39004DE1C9 /* MDSampleSlicer.h */,
+				36944DD318C3CB39004DE1C9 /* MDSampleSlicer.m */,
 			);
 			name = PatternManipulation;
 			sourceTree = "<group>";
@@ -1072,7 +1146,7 @@
 		36B920D1158F81670025F0B3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Jakob Penca";
 			};
 			buildConfigurationList = 36B920D4158F81670025F0B3 /* Build configuration list for PBXProject "MachineDrumFramework" */;
@@ -1161,12 +1235,14 @@
 			files = (
 				36CA752217F26F2500BEC865 /* A4Params.m in Sources */,
 				3631A8591646C3E3008DB7E5 /* MDPatternTrack.m in Sources */,
+				3680136418CA5146008DF4C4 /* A4APIStringNumericIterator.m in Sources */,
 				36AAE6D61832FDFD008F85AA /* A4Timepiece.m in Sources */,
 				3631A85A1646C3E3008DB7E5 /* MDSysexUtil.m in Sources */,
 				3631A85C1646C3E3008DB7E5 /* MDKit.m in Sources */,
 				3631A85D1646C3E3008DB7E5 /* MDKitLFOSettings.m in Sources */,
 				3631A85E1646C3E3008DB7E5 /* MDKitMachine.m in Sources */,
 				3631A85F1646C3E3008DB7E5 /* MDKitParser.m in Sources */,
+				36944DD518C3CB39004DE1C9 /* MDSampleSlicer.m in Sources */,
 				36E1ED33183E8EE0001A9498 /* A4LFO.m in Sources */,
 				3631A8601646C3E3008DB7E5 /* MDKitReceiveTester.m in Sources */,
 				3631A8611646C3E3008DB7E5 /* MDKitTrack.m in Sources */,
@@ -1175,6 +1251,8 @@
 				3623ED6117F7197F00387DC8 /* A4Project.m in Sources */,
 				3631A8631646C3E3008DB7E5 /* MDMachineDrum.m in Sources */,
 				3631A8641646C3E3008DB7E5 /* MDParameterLock.m in Sources */,
+				364E548118C1F5310075FF19 /* A4BasslineGenerator2.m in Sources */,
+				3680137718CCA081008DF4C4 /* A4APIParams.m in Sources */,
 				3631A8651646C3E3008DB7E5 /* MDParameterLockRow.m in Sources */,
 				3631A8671646C3E3008DB7E5 /* MDPatternParameterLocks.m in Sources */,
 				3631A8681646C3E3008DB7E5 /* MDPatternParser.m in Sources */,
@@ -1185,10 +1263,12 @@
 				3631A86E1646C3E3008DB7E5 /* MDProc.m in Sources */,
 				3631A86F1646C3E3008DB7E5 /* MDProcedureTrigGenerator.m in Sources */,
 				366CDA1518A795C90086C27C /* SMFTrack.m in Sources */,
+				3680137B18CD1367008DF4C4 /* A4APIPattern.m in Sources */,
 				3631A8701646C3E3008DB7E5 /* MDProcedureCondition.m in Sources */,
 				3631A8711646C3E3008DB7E5 /* MDProcedureArpeggiator.m in Sources */,
 				36CEBAD2184969BD00849925 /* A4VoiceAllocator.m in Sources */,
 				3631A8721646C3E3008DB7E5 /* MDProcedureScaleFilter.m in Sources */,
+				36ED48A518BF8E0C00BC6BBA /* A4ArpBaker.m in Sources */,
 				36871BDF182F150900750F0F /* A4TrackerTrack.m in Sources */,
 				3631A8731646C3E3008DB7E5 /* MDPatternCopiPasta.m in Sources */,
 				3631A8741646C3E3008DB7E5 /* MDPatternNode.m in Sources */,
@@ -1211,6 +1291,7 @@
 				36E4C0321857B2F800F0E245 /* A4Settings.m in Sources */,
 				3631A87F1646C3E3008DB7E5 /* PGMidiFind.m in Sources */,
 				3631A8801646C3E3008DB7E5 /* MidiInputParser.m in Sources */,
+				36944DD018C37110004DE1C9 /* MDMarkovChain.m in Sources */,
 				3631A8811646C3E3008DB7E5 /* MDMachinedrumGlobalSettingsParser.m in Sources */,
 				3631A8821646C3E3008DB7E5 /* MDSong.m in Sources */,
 				36C69113183542AE0085CA59 /* A4Envelope.m in Sources */,
@@ -1219,6 +1300,7 @@
 				3631A8841646C3E3008DB7E5 /* MDValuePair.m in Sources */,
 				36E188881874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */,
 				36BEA64917E8AED600932018 /* A4RandomizerPreset.m in Sources */,
+				3680137318CBE3FD008DF4C4 /* A4APITrack.m in Sources */,
 				3631A8851646C3E3008DB7E5 /* MDSDS.m in Sources */,
 				36E4BFCB18561B0D00F0E245 /* A4Request.m in Sources */,
 				3631495116F7000500FAF523 /* WaveEditor.m in Sources */,
@@ -1233,6 +1315,7 @@
 				36B61E22170C402500C2EC42 /* A4Song.m in Sources */,
 				36B61E24170C402500C2EC42 /* A4Sound.m in Sources */,
 				36B61E26170C402500C2EC42 /* A4SysexMessage.m in Sources */,
+				368012FB18C8D808008DF4C4 /* A4API.m in Sources */,
 				36AE3F58173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */,
 				3639847B17FC6EBE00E071F3 /* A4PVal.m in Sources */,
 				363D9C86175A3C7E00DC1ADF /* MDPattern.m in Sources */,
@@ -1240,8 +1323,10 @@
 				36871BD2182DC5B700750F0F /* A4MidiSequencer.m in Sources */,
 				36AD3387184C0F4B0001E036 /* A4SequencerHelper.m in Sources */,
 				363D9C88175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
+				36E1C47818B9370900D9E6B1 /* A4BasslineGenerator.m in Sources */,
 				363D9C8E175A99CB00DC1ADF /* MDKitDiffs.m in Sources */,
 				363D9C90175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
+				3680136F18CBC6A0008DF4C4 /* A4APITrig.m in Sources */,
 				36871BDB182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */,
 				3672089717ED0B8B00323F2F /* A4PatternTrack.m in Sources */,
 				36121FD41869FBCE0078B9AF /* A4MorpherController.m in Sources */,
@@ -1261,12 +1346,14 @@
 			files = (
 				36181D7617F102D5001C9132 /* A4Trig.m in Sources */,
 				36CA752117F26F1C00BEC865 /* A4Params.m in Sources */,
+				3680136318CA5146008DF4C4 /* A4APIStringNumericIterator.m in Sources */,
 				36AAE6D51832FDFD008F85AA /* A4Timepiece.m in Sources */,
 				362C5E7F159BD95B000D53CB /* MDPatternTrack.m in Sources */,
 				362C5E80159BD95B000D53CB /* MDSysexUtil.m in Sources */,
 				36B92128158F82CC0025F0B3 /* MDKit.m in Sources */,
 				36B92129158F82CC0025F0B3 /* MDKitLFOSettings.m in Sources */,
 				36B9212A158F82CC0025F0B3 /* MDKitMachine.m in Sources */,
+				36944DD418C3CB39004DE1C9 /* MDSampleSlicer.m in Sources */,
 				36E1ED32183E8EE0001A9498 /* A4LFO.m in Sources */,
 				36B9212B158F82CC0025F0B3 /* MDKitParser.m in Sources */,
 				36B9212C158F82CC0025F0B3 /* MDKitReceiveTester.m in Sources */,
@@ -1275,6 +1362,8 @@
 				3623ED6017F7197F00387DC8 /* A4Project.m in Sources */,
 				36B9212E158F82CC0025F0B3 /* MDKitTrackParams.m in Sources */,
 				36B9212F158F82CC0025F0B3 /* MDMachineDrum.m in Sources */,
+				364E548018C1F5310075FF19 /* A4BasslineGenerator2.m in Sources */,
+				3680137618CCA081008DF4C4 /* A4APIParams.m in Sources */,
 				36B92130158F82CC0025F0B3 /* MDParameterLock.m in Sources */,
 				36B92131158F82CC0025F0B3 /* MDParameterLockRow.m in Sources */,
 				36B92133158F82CC0025F0B3 /* MDPatternParameterLocks.m in Sources */,
@@ -1285,10 +1374,12 @@
 				36746CAB1597DACD007F09F2 /* MDProcessingPipeline.m in Sources */,
 				362A7EDD159A15D3007478D7 /* MDProc.m in Sources */,
 				366CDA1418A795C90086C27C /* SMFTrack.m in Sources */,
+				3680137A18CD1367008DF4C4 /* A4APIPattern.m in Sources */,
 				362A7EEC159A17B3007478D7 /* MDProcedureTrigGenerator.m in Sources */,
 				362A7EF0159A18A8007478D7 /* MDProcedureCondition.m in Sources */,
 				36CEBAD1184969BD00849925 /* A4VoiceAllocator.m in Sources */,
 				362A7F06159A7B89007478D7 /* MDProcedureArpeggiator.m in Sources */,
+				36ED48A418BF8E0C00BC6BBA /* A4ArpBaker.m in Sources */,
 				36871BDE182F150900750F0F /* A4TrackerTrack.m in Sources */,
 				362A7F0E159A939A007478D7 /* MDProcedureScaleFilter.m in Sources */,
 				36BBC1A815C0617F0087886B /* MDPatternCopiPasta.m in Sources */,
@@ -1311,6 +1402,7 @@
 				36E4C0311857B2F800F0E245 /* A4Settings.m in Sources */,
 				36CA752517F271DF00BEC865 /* MDMath.m in Sources */,
 				3699DF9815F38E76004C9D83 /* PGMidiFind.m in Sources */,
+				36944DCF18C37110004DE1C9 /* MDMarkovChain.m in Sources */,
 				3699DF9915F38E76004C9D83 /* MidiInputParser.m in Sources */,
 				367C3B4A15F3AF8400C81CBE /* MDMachinedrumGlobalSettingsParser.m in Sources */,
 				36C69112183542AE0085CA59 /* A4Envelope.m in Sources */,
@@ -1319,6 +1411,7 @@
 				364CD2C415F515BF00CA49A9 /* MDValueMap.m in Sources */,
 				36E188871874AA2800F84304 /* NSMutableArray+Reverse.m in Sources */,
 				364CD2C715F5169F00CA49A9 /* MDValuePair.m in Sources */,
+				3680137218CBE3FD008DF4C4 /* A4APITrack.m in Sources */,
 				36BEA64817E8AED600932018 /* A4RandomizerPreset.m in Sources */,
 				36E4BFCA18561B0D00F0E245 /* A4Request.m in Sources */,
 				365F419C1619EA5500E4231D /* MDSDS.m in Sources */,
@@ -1333,6 +1426,7 @@
 				36B61E21170C402500C2EC42 /* A4Song.m in Sources */,
 				36B61E23170C402500C2EC42 /* A4Sound.m in Sources */,
 				36B61E25170C402500C2EC42 /* A4SysexMessage.m in Sources */,
+				368012FA18C8D808008DF4C4 /* A4API.m in Sources */,
 				36AE3F57173EFC7E00D7EAF1 /* MDAudioRecorder.m in Sources */,
 				3639847A17FC6EBE00E071F3 /* A4PVal.m in Sources */,
 				363D9C85175A3C7E00DC1ADF /* MDPattern.m in Sources */,
@@ -1340,8 +1434,10 @@
 				36871BD1182DC5B700750F0F /* A4MidiSequencer.m in Sources */,
 				36AD3386184C0F4B0001E036 /* A4SequencerHelper.m in Sources */,
 				363D9C87175A3C7E00DC1ADF /* MDPatternPrivate.m in Sources */,
+				36E1C47718B9370900D9E6B1 /* A4BasslineGenerator.m in Sources */,
 				363D9C8D175A99CB00DC1ADF /* MDKitDiffs.m in Sources */,
 				363D9C8F175A99CB00DC1ADF /* MDPatternDiffs.m in Sources */,
+				3680136E18CBC6A0008DF4C4 /* A4APITrig.m in Sources */,
 				36871BDA182F12FD00750F0F /* A4TrackingMidiSequencer.m in Sources */,
 				3672089617ED0B8B00323F2F /* A4PatternTrack.m in Sources */,
 				36121FD31869FBCE0078B9AF /* A4MorpherController.m in Sources */,
@@ -1380,6 +1476,7 @@
 		3623EDC017F7BC7A00387DC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1413,6 +1510,7 @@
 		3623EDC117F7BC7A00387DC8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1512,6 +1610,7 @@
 		3631A88E1646C3E3008DB7E5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /tmp/MachineDrumFramework.dst;
@@ -1528,6 +1627,7 @@
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/iOS App Unit Tests/Frameworks/OCMockLibrary\"",
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/Mac App Unit Tests/Frameworks/OCMockLibrary\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "MachineDrumFramework-Mac";
@@ -1541,6 +1641,7 @@
 		3631A88F1646C3E3008DB7E5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /tmp/MachineDrumFramework.dst;
@@ -1557,6 +1658,7 @@
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/iOS App Unit Tests/Frameworks/OCMockLibrary\"",
 					"\"$(SRCROOT)/../libs/MagicalRecord/Project Files/Mac App Unit Tests/Frameworks/OCMockLibrary\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "MachineDrumFramework-Mac";
@@ -1588,8 +1690,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				ONLY_ACTIVE_ARCH = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -1611,7 +1713,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
@@ -1647,6 +1749,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -1676,6 +1779,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};

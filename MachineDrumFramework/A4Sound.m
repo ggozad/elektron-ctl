@@ -166,4 +166,12 @@
 	self.tags = mask;
 }
 
+- (BOOL)tagMatchesAnyTag:(A4SoundTags)tag
+{
+	A4SoundTagBitmask tags = self.tags;
+	A4SoundTagBitmask matchTagMask = tag;
+	BOOL match = (tags & matchTagMask) != 0;
+	return match;
+}
+
 @end

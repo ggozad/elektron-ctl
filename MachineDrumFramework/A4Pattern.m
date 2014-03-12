@@ -10,6 +10,7 @@
 #import "A4PatternTrack.h"
 #import "NSData+MachinedrumBundle.h"
 #import "A4SysexHelper.h"
+#import "MDMath.h"
 
 @implementation A4Pattern
 
@@ -150,6 +151,19 @@ BOOL A4LocksCreateForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t trac
 void A4LocksRelease(A4PVal **locks)
 {
 	if(*locks != NULL) free(*locks);
+}
+
+uint8_t A4PatternPulsesPerStepForTimescale(A4PatternTimeScale timeScale)
+{
+	uint8_t num = 6;
+	     if(timeScale == A4PatternTimeScale_1_8) num = 48;
+	else if(timeScale == A4PatternTimeScale_1_4) num = 24;
+	else if(timeScale == A4PatternTimeScale_1_2) num = 12;
+	else if(timeScale == A4PatternTimeScale_3_4) num = 8;
+	else if(timeScale == A4PatternTimeScale_1_1) num = 6;
+	else if(timeScale == A4PatternTimeScale_3_2) num = 4;
+	else if(timeScale == A4PatternTimeScale_2_1) num = 3;
+	return num;
 }
 
 + (A4Pattern *)defaultPattern
@@ -680,6 +694,38 @@ void A4LocksRelease(A4PVal **locks)
 		}
 	}
 	return 0xFF;
+}
+
+- (void)shiftTrack:(uint8_t)trackIdx steps:(int8_t)shift
+{
+	if(trackIdx > 5 || shift == 0) return;
+	
+	A4PVal locksBuf[128]; uint8_t locksLen = 0;
+	A4PatternTrack *track = [self track:trackIdx];
+	int trackLen = track.settings->trackLength;
+	
+	A4Pattern *patternCopy = [A4Pattern messageWithSysexData:self.sysexData];
+	
+	for(int stepIdx = 0; stepIdx < trackLen; stepIdx++)
+	{
+		[self clearTrigAtStep:stepIdx inTrack:trackIdx];
+	}
+	
+	for(int stepIdx = 0; stepIdx < trackLen; stepIdx++)
+	{
+		int newStepIdx = mdmath_wrap(stepIdx+shift, 0, trackLen-1);
+		
+		A4Trig trig = [patternCopy trigAtStep:stepIdx inTrack:trackIdx];
+		[self setTrig:trig atStep:newStepIdx inTrack:trackIdx];
+		
+		if(A4LocksForTrackAndStep(patternCopy, stepIdx, trackIdx, locksBuf, &locksLen))
+		{
+			for(uint8_t lockIdx = 0; lockIdx < locksLen; lockIdx++)
+			{
+				[self setLock:locksBuf[lockIdx] atStep:newStepIdx inTrack:trackIdx];
+			}
+		}
+	}
 }
 
 

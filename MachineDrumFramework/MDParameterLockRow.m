@@ -33,9 +33,7 @@
 {
 	char *bytes = (char *) self.valueStepData.bytes;
 	bytes[step] = value;
-	
-	
-	
+
 	self.valueStepData = [NSData dataWithBytes:bytes length:64];
 	
 	bytes = (char *) self.valueStepData.bytes;

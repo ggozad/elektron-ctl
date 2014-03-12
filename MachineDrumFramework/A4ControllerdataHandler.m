@@ -74,7 +74,7 @@
 
 - (void)midiReceivedControlChange:(MidiControlChange)controlChange fromSource:(PGMidiSource *)source
 {
-//	printf("cc chn: %d ctrl: %d val: %d\n", controlChange.channel, controlChange.parameter, controlChange.value);
+	printf("cc chn: %d ctrl: %d val: %d\n", controlChange.channel, controlChange.parameter, controlChange.value);
 	
 	if(source == [[MDMIDI sharedInstance] a4MidiSource])
 	{

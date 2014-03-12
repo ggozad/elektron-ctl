@@ -31,6 +31,7 @@ typedef enum A4ArpMode
 	A4ArpModeCycle,
 	A4ArpModeShuffle,
 	A4ArpModeRandom,
+	A4ArpModePoly,
 }
 A4ArpMode;
 
@@ -117,6 +118,7 @@ A4Arp;
 - (void) clearAllTrigs;
 - (void) setTrig:(A4Trig)trig atStep:(uint8_t)step;
 - (A4Trig) trigAtStep:(uint8_t)step;
+- (A4Trig) trigAtStepAllFieldsFilled:(uint8_t)step;
 - (void) clearTrigAtStep:(uint8_t)step;
 
 @end

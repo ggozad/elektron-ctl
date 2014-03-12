@@ -21,7 +21,7 @@ NSInteger clockticksForNoteLength(uint8_t len, NSInteger mult)
 	return -1;
 }
 
-int int8cmp(const void *aa, const void *bb)
+static int int8cmp(const void *aa, const void *bb)
 {
     const int8_t *a = aa, *b = bb;
     return (*a < *b) ? -1 : (*a > *b);
@@ -596,13 +596,6 @@ static void GateEventSetID(GateEvent *event)
 	}
 }
 */
-
-
-- (void) updateCurrentTrig
-{
-	
-}
-
 
 
 - (void) constrainKeyInTrig:(A4Trig *)trig

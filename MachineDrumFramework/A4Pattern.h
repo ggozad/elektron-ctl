@@ -78,6 +78,7 @@ typedef struct A4PatternSettings
 }
 A4PatternSettings;
 
+uint8_t A4PatternPulsesPerStepForTimescale(A4PatternTimeScale timeScale);
 BOOL A4LocksForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t track, A4PVal *locks, uint8_t *len);
 BOOL A4LocksCreateForTrackAndStep(A4Pattern *pattern, uint8_t step, uint8_t track, A4PVal **locks, uint8_t *len);
 void A4LocksRelease(A4PVal **locks);
@@ -115,6 +116,9 @@ void A4LocksRelease(A4PVal **locks);
 - (BOOL) clearAllLocksInTrack:(uint8_t)track;
 - (BOOL) clearAllLocks;
 - (void) clearTrack:(uint8_t)track;
+
+- (void) shiftTrack:(uint8_t)track steps:(int8_t) shift;
+
 - (A4PatternTrack *) track:(uint8_t)i;
 - (A4PatternTrack *) track:(uint8_t)i copy:(BOOL)copy;
 - (A4PatternTrack *) copyTrack:(A4PatternTrack *)track toIndex:(uint8_t)i;
