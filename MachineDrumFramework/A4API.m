@@ -138,6 +138,14 @@
 													  onCompletion:completionHandler
 														   onError:errorHandler];
 		}
+		else if(trackIt.isValid && t.count == 4 && [t[2] isEqualToString:@"LEVEL"])
+		{
+			NSArray *args = [t subarrayWithRange:NSMakeRange(3, t.count-3)];
+			[A4APITrack executeLevelCommandWithTrackIterator:trackIt
+															  args:args
+													  onCompletion:completionHandler
+														   onError:errorHandler];
+		}
 		else if(trackIt.isValid && t.count >= 4 && [t[2] isEqualToString:@"SETUP"])
 		{
 			NSArray *args = [t subarrayWithRange:NSMakeRange(3, t.count-3)];

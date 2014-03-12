@@ -11,8 +11,54 @@
 #import "A4PatternTrack.h"
 #import "A4Request.h"
 #import "MDMath.h"
+#import "A4Kit.h"
 
 @implementation A4APITrack
+
++ (void) executeLevelCommandWithTrackIterator:(A4APIStringNumericIterator *)trackIt
+										 args:(NSArray *)args
+								 onCompletion:(void (^)(NSString *))completionHandler
+									  onError:(void (^)(NSString *))errorHandler
+{
+	if(!args.count)
+	{
+		errorHandler(@"NO ARGS");
+		return;
+	}
+	
+	NSString *levelStr = args[0];
+	int level = -1;
+	int trackIdx = [trackIt currentValue]-1;
+	
+	A4APIStringNumericIterator *it =
+	[A4APIStringNumericIterator iteratorWithStringToken:levelStr
+												  range:A4ApiIteratorRangeMake(0, 127)
+												   mode:A4ApiIteratorRangeModeBreak
+												  inVal:A4ApiIteratorInputValInt
+												 retVal:A4ApiIteratorReturnValInt];
+	
+	if(it.isValid) level = [it currentValue];
+	
+	if(level == -1)
+	{
+		errorHandler(@"INVALID LEVEL");
+		return;
+	}
+	
+	[A4Request requestWithKeys:@[@"kit.x"]
+			 completionHandler:^(NSDictionary *dict) {
+				 A4Kit *kit = dict[@"kit.x"];
+				 [kit setLevel:level forTrack:trackIdx];
+				 [kit sendTemp];
+				 completionHandler([NSString stringWithFormat:@"TRACK %d LEVEL %d", trackIdx+1, level]);
+			 } errorHandler:^(NSError *err) {
+				 errorHandler(err.description);
+			 }];
+	
+	
+	
+}
+
 
 + (void) executeShiftCommandWithTrackIterator:(A4APIStringNumericIterator *)trackIt
 										 args:(NSString *)arg
